@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F7F5F0"/>
+  <path d="M790 0h410v630H610z" fill="#173D36"/>
+  <path d="M680 630 880 172l320 105v353z" fill="#245249"/>
+  <path d="M104 108h420M104 522h420" stroke="#C5AF8B" stroke-width="2"/>
+  <text x="104" y="275" fill="#173D36" font-family="Georgia,serif" font-size="116" letter-spacing="16">ALVAR</text>
+  <text x="110" y="335" fill="#202523" font-family="Arial,sans-serif" font-size="24" letter-spacing="8">CONSULTORES INMOBILIARIOS</text>
+  <text x="110" y="434" fill="#6D604B" font-family="Arial,sans-serif" font-size="24">Madrid · Pinto · Móstoles</text>
+  <circle cx="1000" cy="126" r="50" fill="#C5AF8B" opacity=".85"/>
+</svg>

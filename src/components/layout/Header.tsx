@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Container';
@@ -13,6 +13,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -27,19 +28,19 @@ export function Header() {
     <>
       <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
         <Container className="site-header__inner">
-          <Link to="/" className="brand-mark" aria-label="Alvar Consultores Inmobiliarios, inicio">
+          <Link to="/" className="brand-mark">
             <strong>ALVAR</strong><small>CONSULTORES INMOBILIARIOS</small>
           </Link>
           <nav className="desktop-nav" aria-label="Navegación principal">
             {links.map(([label, to]) => <NavLink key={to} to={to} end={to === '/'}>{label}</NavLink>)}
           </nav>
           <Button to="/#valoracion" className="header-cta">Valora tu inmueble</Button>
-          <button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menú" aria-expanded={menuOpen}>
+          <button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menú" aria-controls="mobile-navigation" aria-expanded={menuOpen}>
             <span /><span />
           </button>
         </Container>
       </header>
-      <MobileNavigation open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <MobileNavigation open={menuOpen} onClose={closeMenu} />
     </>
   );
 }

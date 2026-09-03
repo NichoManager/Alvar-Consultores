@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+# Fase de desarrollo: la exclusión temporal se declara mediante meta robots.
 Sitemap: https://www.alvarconsultoresinmobiliarios.es/sitemap.xml

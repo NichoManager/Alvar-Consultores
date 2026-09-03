@@ -29,7 +29,7 @@ export function MobileNavigation({ open, onClose }: MobileNavigationProps) {
 
   if (!open) return null;
   return (
-    <div ref={dialogRef} className="mobile-nav" role="dialog" aria-modal="true" aria-label="Navegación principal">
+    <div id="mobile-navigation" ref={dialogRef} className="mobile-nav" role="dialog" aria-modal="true" aria-label="Navegación principal">
       <div className="mobile-nav__top">
         <span className="brand-mark"><strong>ALVAR</strong><small>CONSULTORES INMOBILIARIOS</small></span>
         <button className="icon-button" onClick={onClose} aria-label="Cerrar menú">×</button>
@@ -41,8 +41,8 @@ export function MobileNavigation({ open, onClose }: MobileNavigationProps) {
       </nav>
       <div className="mobile-nav__bottom">
         <Button to="/#valoracion" onClick={onClose}>Solicitar valoración</Button>
-        <a href={`tel:${business.phoneMobileHref}`}>{business.phoneMobile}</a>
-        <a href={business.instagramUrl} target="_blank" rel="noreferrer">Instagram · {business.instagram}</a>
+        <a className="mobile-nav__phone" href={`tel:${business.phoneMobileHref}`}>{business.phoneMobile}</a>
+        <div className="mobile-nav__social"><a href={business.instagramUrl} target="_blank" rel="noreferrer">Instagram ↗</a><a href={business.tiktokUrl} target="_blank" rel="noreferrer">TikTok ↗</a></div>
       </div>
     </div>
   );

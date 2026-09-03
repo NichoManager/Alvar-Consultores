@@ -9,7 +9,7 @@ export function Footer() {
       <Container>
         <div className="site-footer__lead">
           <p className="eyebrow">ALVAR CONSULTORES</p>
-          <h2>Tu próxima operación<br />empieza aquí.</h2>
+          <h2>Tu propiedad merece<br />una estrategia clara.</h2>
           <Button to="/contacto" variant="light">Hablar con un asesor</Button>
         </div>
         <div className="site-footer__grid">

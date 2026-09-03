@@ -5,11 +5,10 @@ import { ArchitecturalVisual } from '../ui/ArchitecturalVisual';
 export function PropertyCard({ property }: { property: Property }) {
   return (
     <article className="property-card">
-      <Link to={`/inmuebles/${property.slug}`} aria-label={`Ver ${property.title}`}>
+      <Link to={`/inmuebles/${property.slug}`}>
         <div className="property-card__media">
-          <ArchitecturalVisual variant={property.visual} label={`Visual provisional para ${property.title}`} />
-          <span className="property-card__badge">{property.status}</span>
-          <span className="demo-badge">CONTENIDO DEMO</span>
+          <ArchitecturalVisual variant={property.visual} decorative />
+          <span className="property-card__badge">{property.operation === 'Comprar' ? 'En venta' : 'En alquiler'}</span>
         </div>
         <div className="property-card__body">
           <p className="property-card__location">{property.area} · {property.city}</p>

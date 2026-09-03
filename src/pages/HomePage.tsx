@@ -37,31 +37,32 @@ export function HomePage() {
 
       <section id="inmuebles-destacados" className="section-pad">
         <Container>
-          <Reveal className="heading-row"><SectionHeading eyebrow="PROPIEDADES DESTACADAS" title={<>Inmuebles<br /><em>seleccionados</em></>} text="Una muestra demo de viviendas y oportunidades preparada para conectar el inventario real del equipo." /><Button to="/inmuebles" variant="text">Ver todos</Button></Reveal>
-          <PropertyGrid properties={properties.filter((property) => property.featured)} />
+          <Reveal className="heading-row"><SectionHeading eyebrow="PROPIEDADES DESTACADAS" title={<>Una selección<br /><em>con intención.</em></>} text="Referencias orientativas para mostrar el tipo de búsqueda que podemos gestionar en Madrid y su zona sur." /><Button to="/inmuebles" variant="text">Ver selección</Button></Reveal>
+          <p className="selection-note">Selección orientativa. Inventario sujeto a actualización.</p>
+          <PropertyGrid properties={properties.filter((property) => property.featured)} editorial />
         </Container>
       </section>
 
       <section className="about-home section-pad">
         <Container className="about-home__grid">
-          <Reveal className="about-home__visual"><ArchitecturalVisual variant="facade" label="Espacio reservado para una fotografía real del responsable o equipo" /><span className="editorial-number">18</span></Reveal>
+          <Reveal className="about-home__visual"><ArchitecturalVisual variant="facade" label="Composición editorial inspirada en arquitectura residencial" /><span className="editorial-number">18</span></Reveal>
           <Reveal className="about-home__content"><SectionHeading eyebrow="ALVAR CONSULTORES" title={<>Experiencia inmobiliaria.<br /><em>Trato personal.</em></>} /><p>En Alvar Consultores Inmobiliarios entendemos que comprar o vender una propiedad no es una operación cualquiera. Por eso acompañamos a cada cliente desde la primera valoración hasta la firma final, cuidando la negociación, la documentación y cada decisión del proceso.</p><p>Más de 18 años de experiencia nos permiten combinar conocimiento del mercado con un servicio cercano, transparente y orientado a que cada operación resulte sencilla y segura.</p><div className="experience-signature"><strong>Más de 18 años</strong><span>asesorando operaciones inmobiliarias.</span></div><Button to="/nosotros" variant="secondary">Conoce nuestro enfoque</Button></Reveal>
         </Container>
       </section>
 
       <section id="servicios" className="services-home section-pad">
-        <Container><Reveal><SectionHeading eyebrow="SERVICIOS" title={<>Todo lo que necesitas,<br /><em>en un mismo equipo.</em></>} /></Reveal><div className="services-list">{services.map(([number, title, text]) => <ServiceBlock key={number} number={number} title={title} text={text} />)}</div></Container>
+        <Container><Reveal><SectionHeading eyebrow="SERVICIOS" title={<>Una operación.<br /><em>Cada decisión coordinada.</em></>} /></Reveal><div className="services-list">{services.map(([number, title, text]) => <ServiceBlock key={number} number={number} title={title} text={text} />)}</div></Container>
       </section>
 
       <section className="seller-section section-pad">
         <Container className="seller-section__grid">
           <Reveal><SectionHeading inverse eyebrow="¿ESTÁS PENSANDO EN VENDER?" title={<>Descubre cuánto puede valer hoy <em>tu propiedad.</em></>} text="Realizamos una valoración profesional teniendo en cuenta ubicación, características, estado del inmueble y operaciones comparables de la zona." /><ul className="check-list"><li>Valoración personalizada</li><li>Estrategia de venta</li><li>Acompañamiento integral</li><li>Sin compromiso inicial</li></ul><div className="button-row"><Button to="/#valoracion" variant="light">Solicitar valoración</Button><a href={`tel:${business.phoneMobileHref}`} className="text-link text-link--light">{business.phoneMobile} ↗</a></div></Reveal>
-          <Reveal><ArchitecturalVisual variant="courtyard" label="Composición arquitectónica provisional para captación de propietarios" /></Reveal>
+          <Reveal><ArchitecturalVisual variant="courtyard" label="Composición editorial para propietarios" /></Reveal>
         </Container>
       </section>
 
       <section id="valoracion" className="valuation-section section-pad">
-        <Container className="valuation-section__grid"><Reveal><p className="eyebrow">VALORACIÓN PROFESIONAL</p><h2>Vender bien empieza por <em>valorar bien.</em></h2><p>Cuéntanos los datos básicos de tu inmueble. Esta versión demuestra el recorrido del formulario sin enviar información a servicios externos.</p><span className="section-index">02 / PROPIETARIOS</span></Reveal><Reveal><ValuationForm /></Reveal></Container>
+        <Container className="valuation-section__grid"><Reveal><p className="eyebrow">VALORACIÓN PROFESIONAL</p><h2>Vender bien empieza por <em>valorar bien.</em></h2><p>Cuéntanos los datos básicos de tu inmueble para preparar una valoración inicial y definir la estrategia adecuada.</p><span className="section-index">02 / PROPIETARIOS</span></Reveal><Reveal><ValuationForm /></Reveal></Container>
       </section>
 
       <section id="proceso" className="process-section section-pad">
@@ -77,7 +78,7 @@ export function HomePage() {
       <section id="opiniones" className="reviews-section section-pad"><Container><Reveal className="reviews-section__header"><div className="rating"><strong>5,0</strong><span>★★★★★</span><small>Google · 12 reseñas</small></div><SectionHeading eyebrow="OPINIONES" title={<>Clientes que confían en nosotros<br />para <em>decisiones importantes.</em></>} /></Reveal><p className="reviews-disclaimer">Opiniones de clientes · síntesis de experiencias, no citas literales verificadas</p><div className="review-grid">{reviews.map((review, index) => <ReviewCard key={review.source} review={review} index={index} />)}</div></Container></section>
       <CTASection />
       <LocationBlock />
-      <section className="home-contact-form section-pad"><Container className="home-contact-form__grid"><SectionHeading eyebrow="CONTACTO" title={<>Cuéntanos tu<br /><em>próximo paso.</em></>} text="Compra, venta, alquiler o inversión. Déjanos tu consulta y prepararemos el canal de contacto adecuado." /><ContactForm /></Container></section>
+      <section className="home-contact-form section-pad"><Container className="home-contact-form__grid"><SectionHeading eyebrow="CONTACTO" title={<>¿Qué necesitas resolver<br /><em>con tu inmueble?</em></>} text="Compra, venta, alquiler o inversión. Explícanos tu situación y ordenaremos contigo las decisiones importantes." /><ContactForm /></Container></section>
     </>
   );
 }

@@ -19,6 +19,7 @@ export const properties: Property[] = [
     published: true,
     createdAt: '2026-08-18',
     visual: 'arch',
+    isDemo: true,
   },
   {
     id: 'demo-002',
@@ -37,6 +38,7 @@ export const properties: Property[] = [
     published: true,
     createdAt: '2026-08-12',
     visual: 'courtyard',
+    isDemo: true,
   },
   {
     id: 'demo-003',
@@ -55,6 +57,7 @@ export const properties: Property[] = [
     published: true,
     createdAt: '2026-08-04',
     visual: 'facade',
+    isDemo: true,
   },
 ];
 

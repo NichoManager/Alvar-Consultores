@@ -26,6 +26,7 @@ export interface Property {
   published: boolean;
   createdAt: string;
   visual: 'arch' | 'courtyard' | 'facade';
+  isDemo: boolean;
 }
 
 export interface Article {
