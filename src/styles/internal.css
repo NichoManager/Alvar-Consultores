@@ -35,7 +35,39 @@
 
 @media (max-width: 900px) {
   .container-site { width: min(100% - 4rem,84rem); }
-  .hero { height: auto; min-height: 0; }.hero__grid { grid-template-columns: 1fr; }.hero__content { padding-top: 5rem; }.hero__visual { height: 30rem; }.hero__visual .architectural-visual { min-height: 100%; }
+  .hero {
+  height: auto;
+  min-height: 0;
+  background:
+    radial-gradient(circle at 16% 14%, rgba(197, 175, 139, .14), transparent 24rem),
+    var(--ivory);
+}
+
+.hero__grid {
+  grid-template-columns: 1fr;
+}
+
+.hero__content {
+  max-width: 46rem;
+  padding-top: 5rem;
+}
+
+.hero__visual {
+  height: 31rem;
+  padding-top: 0;
+}
+
+.hero__visual-frame {
+  min-height: 100%;
+}
+
+.hero__visual .architectural-visual {
+  min-height: 100%;
+}
+
+.hero__caption {
+  padding-left: 1rem;
+}
   .quick-search { grid-template-columns: 1fr 1fr; gap: 1rem; padding-block: 2rem; }.quick-search label { border-left: 0; padding: .8rem; background: var(--ivory); }.quick-search .button { margin-left: 0; }.property-grid { grid-template-columns: 1fr 1fr; }
   .property-grid--editorial { grid-template-rows: auto; gap: 3rem 1.5rem; }.property-grid--editorial .property-card:first-child { grid-column: 1/-1; grid-row: auto; }.property-grid--editorial .property-card:first-child .property-card__media { min-height: 32rem; }.property-grid--editorial .property-card:not(:first-child) > a { display: block; }.property-grid--editorial .property-card:not(:first-child) .property-card__media { aspect-ratio: 1.28; }
   .about-home__grid,.seller-section__grid,.valuation-section__grid,.areas-section__grid,.investment-section__grid,.home-contact-form__grid,.story-section__grid,.contact-page__grid { grid-template-columns: 1fr; }
