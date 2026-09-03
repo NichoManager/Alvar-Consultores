@@ -102,11 +102,27 @@ export function HomePage() {
       <section className="about-home section-pad">
         <Container className="about-home__grid">
           <Reveal className="about-home__visual">
-            <ArchitecturalVisual
-              variant="facade"
-              label="Composición editorial inspirada en arquitectura residencial"
-            />
-            <span className="editorial-number">18</span>
+            <div className="about-home__media-card">
+              <ArchitecturalVisual
+                variant="facade"
+                label="Composición editorial inspirada en arquitectura residencial"
+              />
+
+              <div className="about-home__seal" aria-hidden="true">
+                <strong>18+</strong>
+                <span>años</span>
+              </div>
+
+              <div className="about-home__caption">
+                <span>Madrid capital y alrededores</span>
+                <p>Valoración, estrategia, negociación y firma.</p>
+              </div>
+            </div>
+
+            <div className="about-home__note">
+              <span>ALVAR CONSULTORES</span>
+              <p>Criterio inmobiliario, trato directo y acompañamiento real.</p>
+            </div>
           </Reveal>
 
           <Reveal className="about-home__content">
@@ -122,26 +138,41 @@ export function HomePage() {
             />
 
             <p>
-              En Alvar Consultores Inmobiliarios entendemos que comprar o vender una
-              propiedad no es una operación cualquiera. Por eso acompañamos a cada
-              cliente desde la primera valoración hasta la firma final, cuidando la
-              negociación, la documentación y cada decisión del proceso.
+              Comprar, vender o alquilar una propiedad no debería sentirse como una
+              sucesión de dudas. En Alvar Consultores Inmobiliarios ordenamos el
+              proceso desde el primer contacto: valoración, estrategia, visitas,
+              negociación, documentación y firma.
             </p>
 
             <p>
               Más de 18 años de experiencia nos permiten combinar conocimiento del
-              mercado con un servicio cercano, transparente y orientado a que cada
-              operación resulte sencilla y segura.
+              mercado con una forma de trabajar cercana, transparente y centrada en
+              proteger cada decisión importante.
             </p>
 
-            <div className="experience-signature">
-              <strong>Más de 18 años</strong>
-              <span>asesorando operaciones inmobiliarias.</span>
+            <div className="about-home__facts" aria-label="Datos destacados de Alvar Consultores">
+              <div>
+                <strong>18+</strong>
+                <span>años de experiencia</span>
+              </div>
+              <div>
+                <strong>5,0</strong>
+                <span>valoración en Google</span>
+              </div>
+              <div>
+                <strong>1</strong>
+                <span>interlocutor de confianza</span>
+              </div>
             </div>
 
-            <Button to="/nosotros" variant="secondary">
-              Conoce nuestro enfoque
-            </Button>
+            <div className="about-home__actions">
+              <Button to="/nosotros" variant="secondary">
+                Conoce nuestro enfoque
+              </Button>
+              <a href={`tel:${business.phoneMobileHref}`} className="text-link">
+                Hablar con Alvar ↗
+              </a>
+            </div>
           </Reveal>
         </Container>
       </section>
