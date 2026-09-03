@@ -54,8 +54,8 @@ export function Header() {
             <img
               src="/images/alvar/logo-alvar-circular.png"
               alt="Alvar Consultores Inmobiliarios"
-              width="1024"
-              height="1024"
+              width="1254"
+              height="1254"
             />
           </Link>
 
