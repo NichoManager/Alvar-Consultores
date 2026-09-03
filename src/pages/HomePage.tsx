@@ -531,25 +531,35 @@ export function HomePage() {
       <section id="opiniones" className="reviews-section section-pad">
         <Container>
           <Reveal className="reviews-section__header">
-            <div className="rating">
+            <div
+              className="rating"
+              role="img"
+              aria-label="Valoración media de 5 sobre 5 en Google, basada en 12 reseñas"
+            >
+              <span className="rating__label" aria-hidden="true">
+                Valoración media
+              </span>
               <strong>5,0</strong>
-              <span>★★★★★</span>
+              <span className="rating__stars" aria-hidden="true">
+                ★★★★★
+              </span>
               <small>Google · 12 reseñas</small>
             </div>
 
-            <SectionHeading
-              eyebrow="OPINIONES"
-              title={
-                <>
-                  Clientes que confían en nosotros
-                  <br />
-                  para <em>decisiones importantes.</em>
-                </>
-              }
-            />
+            <div className="reviews-section__intro">
+              <p className="eyebrow">OPINIONES</p>
+              <h2>
+                Confianza en operaciones <em>que importan.</em>
+              </h2>
+              <p>
+                Comprar, vender o alquilar una propiedad implica decisiones relevantes.
+                Por eso el trato, la claridad y el acompañamiento pesan tanto como el
+                resultado.
+              </p>
+            </div>
           </Reveal>
 
-          <p className="reviews-disclaimer">
+          <p className="reviews-disclaimer" role="note">
             Opiniones de clientes · síntesis de experiencias, no citas literales verificadas
           </p>
 
