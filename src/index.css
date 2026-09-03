@@ -348,11 +348,6 @@ em {
   background: var(--sand);
 }
 
-.site-header.is-over-hero:not(.is-scrolled) .brand-mark--image::before {
-  opacity: 1;
-  transform: scale(1);
-}
-
 .site-header.is-over-hero:not(.is-scrolled) .header-cta {
   border-color: rgba(248, 246, 240, 0.34);
   background: rgba(17, 24, 50, 0.9);
@@ -403,33 +398,13 @@ em {
 }
 
 .brand-mark.brand-mark--image {
-  position: relative;
-  z-index: 0;
   min-width: 0;
-  width: clamp(6.2rem, 6.6vw, 6.75rem);
-  height: 4.35rem;
+  width: clamp(7rem, 7.6vw, 7.8rem);
+  height: 5rem;
   align-items: center;
   justify-content: center;
   justify-self: start;
   flex: 0 0 auto;
-}
-
-.brand-mark--image::before {
-  content: '';
-  position: absolute;
-  inset: -0.1rem -0.34rem;
-  z-index: -1;
-  border: 1px solid rgba(184, 148, 77, 0.46);
-  border-radius: var(--radius-sm);
-  background: linear-gradient(145deg, rgba(248, 246, 240, 0.92), rgba(248, 246, 240, 0.82));
-  box-shadow: 0 8px 20px rgba(16, 20, 38, 0.12);
-  opacity: 0;
-  transform: scale(0.98);
-  transition:
-    opacity 0.25s var(--ease),
-    transform 0.3s var(--ease);
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
 }
 
 .brand-mark--image img {
@@ -437,6 +412,9 @@ em {
   height: 100%;
   max-height: none;
   object-fit: contain;
+  filter:
+    drop-shadow(0 0 1px rgba(248, 246, 240, 0.88))
+    drop-shadow(0 5px 12px rgba(16, 20, 38, 0.24));
 }
 
 .desktop-nav {
@@ -622,16 +600,16 @@ em {
   background:
     linear-gradient(
       90deg,
-      rgba(17, 24, 50, 0.86) 0%,
-      rgba(17, 24, 50, 0.76) 34%,
-      rgba(17, 24, 50, 0.42) 58%,
-      rgba(17, 24, 50, 0.16) 100%
+      rgba(17, 24, 50, 0.78) 0%,
+      rgba(17, 24, 50, 0.67) 34%,
+      rgba(17, 24, 50, 0.32) 58%,
+      rgba(17, 24, 50, 0.08) 100%
     ),
     linear-gradient(
       0deg,
-      rgba(17, 24, 50, 0.62) 0%,
-      rgba(17, 24, 50, 0.12) 45%,
-      rgba(17, 24, 50, 0.18) 100%
+      rgba(17, 24, 50, 0.5) 0%,
+      rgba(17, 24, 50, 0.08) 45%,
+      rgba(17, 24, 50, 0.12) 100%
     );
 }
 
@@ -2153,12 +2131,8 @@ em {
   }
 
   .brand-mark.brand-mark--image {
-    width: 5.7rem;
-    height: 3.7rem;
-  }
-
-  .brand-mark--image::before {
-    inset: -0.08rem -0.28rem;
+    width: 6.2rem;
+    height: 4.1rem;
   }
 
   .brand-mark strong {

@@ -42,7 +42,7 @@ export function Header() {
             aria-label="Alvar Consultores Inmobiliarios"
           >
             <img
-              src="/images/alvar/logo-alvar-consultores-inmobiliarios.webp"
+              src="/images/alvar/logo-alvar-consultores-inmobiliarios.png"
               alt="Alvar Consultores Inmobiliarios"
               width="197"
               height="155"
