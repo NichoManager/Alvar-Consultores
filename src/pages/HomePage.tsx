@@ -294,6 +294,7 @@ export function HomePage() {
             <div
               className="valuation-section__trust"
               aria-label="Criterios incluidos en la valoración profesional"
+              role="list"
             >
               {[
                 ['01', 'Análisis de zona'],
@@ -301,7 +302,7 @@ export function HomePage() {
                 ['03', 'Estrategia de venta'],
                 ['04', 'Próximos pasos claros'],
               ].map(([number, label]) => (
-                <div key={number}>
+                <div key={number} role="listitem">
                   <span>{number}</span>
                   <strong>{label}</strong>
                 </div>
@@ -328,33 +329,67 @@ export function HomePage() {
 
       <section id="proceso" className="process-section section-pad">
         <Container>
-          <Reveal>
-            <SectionHeading
-              eyebrow="NUESTRO PROCESO"
-              title={
-                <>
-                  De la primera conversación
-                  <br />
-                  <em>a la firma.</em>
-                </>
-              }
-            />
+          <Reveal className="process-section__intro">
+            <div className="process-section__heading">
+              <p className="eyebrow">NUESTRO PROCESO</p>
+              <h2>
+                De la primera conversación <em>a la firma.</em>
+              </h2>
+            </div>
+
+            <div className="process-section__copy">
+              <p>
+                Ordenamos cada fase para que sepas qué toca decidir, qué documentación
+                preparar y cómo avanzar con seguridad.
+              </p>
+              <span>Madrid capital y alrededores · Acompañamiento de principio a fin</span>
+            </div>
           </Reveal>
 
-          <div className="timeline">
+          <ol className="process-section__timeline">
             {[
-              ['01', 'Valoramos', 'Analizamos tu situación, el inmueble y el mercado.'],
-              ['02', 'Planificamos', 'Definimos precio, estrategia y próximos pasos.'],
-              ['03', 'Gestionamos', 'Nos ocupamos de visitas, negociación y documentación.'],
-              ['04', 'Firmamos', 'Coordinamos todo hasta cerrar la operación.'],
-            ].map(([n, t, p]) => (
-              <Reveal key={n} className="timeline__item">
-                <span>{n}</span>
-                <h3>{t}</h3>
-                <p>{p}</p>
-              </Reveal>
+              [
+                '01',
+                'Escuchamos',
+                'Entendemos tu situación, tus objetivos y el tipo de operación que necesitas resolver.',
+              ],
+              [
+                '02',
+                'Valoramos',
+                'Analizamos el inmueble, la zona, el mercado y las operaciones comparables.',
+              ],
+              [
+                '03',
+                'Planificamos',
+                'Definimos estrategia, precio, posicionamiento, tiempos y próximos pasos.',
+              ],
+              [
+                '04',
+                'Gestionamos',
+                'Coordinamos visitas, consultas, negociación, documentación y seguimiento.',
+              ],
+              [
+                '05',
+                'Firmamos',
+                'Acompañamos el cierre de la operación para que llegues a la firma con todo claro.',
+              ],
+            ].map(([number, title, text]) => (
+              <li key={number} className="process-section__item">
+                <Reveal className="process-section__item-inner">
+                  <span>{number}</span>
+                  <h3>{title}</h3>
+                  <p>{text}</p>
+                </Reveal>
+              </li>
             ))}
-          </div>
+          </ol>
+
+          <Reveal className="process-section__footer">
+            <p>Cada operación tiene matices. El método ayuda a tomar mejores decisiones.</p>
+            <Button to="/contacto" variant="secondary">
+              Hablar del proceso
+            </Button>
+          </Reveal>
         </Container>
       </section>
 
