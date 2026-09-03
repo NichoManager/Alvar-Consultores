@@ -274,19 +274,53 @@ export function HomePage() {
 
       <section id="valoracion" className="valuation-section section-pad">
         <Container className="valuation-section__grid">
-          <Reveal>
-            <p className="eyebrow">VALORACIÓN PROFESIONAL</p>
-            <h2>
-              Vender bien empieza por <em>valorar bien.</em>
-            </h2>
-            <p>
-              Cuéntanos los datos básicos de tu inmueble para preparar una valoración
-              inicial y definir la estrategia adecuada.
-            </p>
-            <span className="section-index">02 / PROPIETARIOS</span>
+          <Reveal className="valuation-section__content">
+            <div className="valuation-section__intro">
+              <p className="eyebrow">VALORACIÓN PROFESIONAL</p>
+              <h2>
+                Vender bien empieza por <em>valorar bien.</em>
+              </h2>
+              <p className="valuation-section__lead">
+                Cuéntanos los datos básicos de tu inmueble y prepararemos una primera
+                orientación con criterio: ubicación, estado, demanda, operaciones
+                comparables y estrategia de salida al mercado.
+              </p>
+              <p className="valuation-section__note">
+                Sin compromiso inicial. Sin valoraciones automáticas infladas. Con
+                criterio inmobiliario real.
+              </p>
+            </div>
+
+            <div
+              className="valuation-section__trust"
+              aria-label="Criterios incluidos en la valoración profesional"
+            >
+              {[
+                ['01', 'Análisis de zona'],
+                ['02', 'Precio de mercado'],
+                ['03', 'Estrategia de venta'],
+                ['04', 'Próximos pasos claros'],
+              ].map(([number, label]) => (
+                <div key={number}>
+                  <span>{number}</span>
+                  <strong>{label}</strong>
+                </div>
+              ))}
+            </div>
+
+            <span className="section-index valuation-section__index">04 / VALORACIÓN</span>
           </Reveal>
 
-          <Reveal>
+          <Reveal className="valuation-section__form-panel">
+            <div className="valuation-section__form-heading">
+              <span>Orientación personalizada</span>
+              <h3>Solicita tu valoración</h3>
+              <p>
+                Te responderemos para concretar los datos necesarios antes de darte una
+                orientación.
+              </p>
+            </div>
+
             <ValuationForm />
           </Reveal>
         </Container>
