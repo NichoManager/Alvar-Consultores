@@ -469,33 +469,61 @@ export function HomePage() {
 
       <section className="investment-section section-pad">
         <Container className="investment-section__grid">
-          <Reveal>
+          <Reveal className="investment-section__content">
             <p className="eyebrow">INVERSIÓN INMOBILIARIA</p>
             <h2>
-              Decisiones inmobiliarias
-              <br />
-              <em>con criterio.</em>
+              Decisiones inmobiliarias con <em>mirada patrimonial.</em>
             </h2>
-          </Reveal>
-
-          <Reveal>
             <p className="investment-section__lead">
-              Asesoramos a inversores que buscan activos con potencial de rentabilidad,
-              alquiler o revalorización.
+              Asesoramos a clientes que buscan comprar, vender o invertir con una lectura
+              clara del activo, la zona, el precio de mercado y el potencial real de cada
+              operación.
+            </p>
+            <p className="investment-section__microcopy">
+              No se trata de comprar rápido. Se trata de comprar bien.
             </p>
 
-            <ul className="editorial-list">
-              <li>Análisis de oportunidad</li>
-              <li>Rentabilidad estimada</li>
-              <li>Precio de mercado</li>
-              <li>Potencial de alquiler</li>
-              <li>Viviendas y locales</li>
-              <li>Terrenos y promoción</li>
+            <div className="investment-section__actions">
+              <Button to="/contacto" variant="light">
+                Consultar una oportunidad
+              </Button>
+              <span>06 / INVERSIÓN</span>
+            </div>
+          </Reveal>
+
+          <Reveal className="investment-section__panel">
+            <div className="investment-section__highlight">
+              <span>Consultoría inmobiliaria</span>
+              <h3>Criterio antes de decidir</h3>
+              <p>
+                Antes de avanzar, revisamos ubicación, estado del inmueble, comparables,
+                documentación y objetivo de la operación.
+              </p>
+            </div>
+
+            <ul
+              className="investment-section__factors"
+              aria-label="Factores del análisis de inversión inmobiliaria"
+            >
+              {[
+                ['01', 'Análisis de oportunidad'],
+                ['02', 'Precio de mercado'],
+                ['03', 'Potencial de alquiler'],
+                ['04', 'Perfil de demanda'],
+                ['05', 'Rentabilidad estimada'],
+                ['06', 'Riesgos y próximos pasos'],
+              ].map(([number, factor]) => (
+                <li key={number}>
+                  <span>{number}</span>
+                  <strong>{factor}</strong>
+                </li>
+              ))}
             </ul>
 
-            <Button to="/contacto" variant="light">
-              Consultar una oportunidad
-            </Button>
+            <div className="investment-section__panel-footer">
+              <span>Madrid capital y alrededores</span>
+              <small>Estimaciones orientativas sujetas al análisis de cada operación.</small>
+            </div>
           </Reveal>
         </Container>
       </section>
