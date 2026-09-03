@@ -3255,7 +3255,7 @@ em {
   min-width: 0;
 }
 
-.investment-section__content h2 {
+.investment-section .investment-section__content h2 {
   max-width: 48rem;
   font-size: clamp(3.15rem, 4.8vw, 5.25rem);
   line-height: 0.92;
@@ -3433,7 +3433,7 @@ em {
 }
 
 @media (max-width: 640px) {
-  .investment-section__content h2 {
+  .investment-section .investment-section__content h2 {
     font-size: clamp(2.7rem, 12vw, 3.75rem);
   }
 
