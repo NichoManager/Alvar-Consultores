@@ -982,39 +982,173 @@ em {
 /* Quick search */
 .quick-search-wrap {
   position: relative;
-  z-index: 3;
-  margin-top: -1px;
-  background: var(--white);
+  z-index: 2;
+  padding: clamp(2.2rem, 4vw, 4rem) 0 clamp(4.5rem, 7vw, 7rem);
+  background:
+    linear-gradient(180deg, var(--forest) 0 34%, var(--ivory) 34% 100%);
   border-bottom: 1px solid var(--border);
 }
 
-.quick-search {
+.quick-search-console {
+  position: relative;
   display: grid;
-  grid-template-columns: 1.35fr repeat(5, 1fr) auto;
-  gap: 0;
-  align-items: end;
-  padding-block: 1.35rem;
+  grid-template-columns: minmax(18rem, 0.72fr) minmax(0, 1.28fr);
+  gap: clamp(2rem, 4vw, 4.5rem);
+  align-items: stretch;
+  padding: clamp(1.5rem, 3vw, 2.7rem);
+  overflow: hidden;
+  background: rgba(248, 246, 240, 0.97);
+  border: 1px solid rgba(184, 148, 77, 0.24);
+  box-shadow: 0 26px 70px rgba(17, 24, 50, 0.14);
 }
 
-.quick-search__title {
+.quick-search-console::before {
+  content: '02';
+  position: absolute;
+  right: clamp(1.5rem, 4vw, 3.5rem);
+  top: -0.3rem;
+  color: rgba(184, 148, 77, 0.13);
+  font: 500 clamp(5rem, 10vw, 9rem) / 1 'Cormorant Garamond', serif;
+  pointer-events: none;
+}
+
+.quick-search-console::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--sand), rgba(184, 148, 77, 0));
+  pointer-events: none;
+}
+
+.quick-search-console__copy {
+  position: relative;
   display: flex;
-  gap: 1rem;
-  padding-right: 2rem;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: clamp(1.5rem, 3vw, 3rem);
 }
 
-.quick-search__title span {
+.quick-search-console__copy::after {
+  content: '';
+  position: absolute;
+  top: 0.35rem;
+  right: 0;
+  bottom: 0.35rem;
+  width: 1px;
+  background: var(--border);
+}
+
+.quick-search-console__copy .eyebrow {
   color: var(--sand-dark);
-  font-size: 0.64rem;
 }
 
-.quick-search__title h2 {
-  max-width: 12rem;
+.quick-search-console__copy h2 {
+  max-width: 31rem;
   margin: 0;
   color: var(--forest);
-  font: 500 1.55rem / 1.05 'Cormorant Garamond', serif;
+  font: 500 clamp(2.35rem, 3.35vw, 3.65rem) / 0.96 'Cormorant Garamond', serif;
+  letter-spacing: -0.038em;
 }
 
-.quick-search label,
+.quick-search-console__copy h2 em {
+  color: var(--sand-dark);
+}
+
+.quick-search-console__copy p:not(.eyebrow) {
+  max-width: 31rem;
+  margin: 1.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.72;
+}
+
+.quick-search-console__advisor {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1.6rem;
+  padding-bottom: 0.42rem;
+  border-bottom: 1px solid rgba(17, 24, 50, 0.24);
+  color: var(--forest);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.quick-search-console__advisor span {
+  color: var(--sand-dark);
+  transition: transform 0.25s var(--ease);
+}
+
+.quick-search-console__advisor:hover span {
+  transform: translate(3px, -3px);
+}
+
+.quick-search-console__form {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.85rem;
+  align-content: center;
+}
+
+.quick-search-console__field {
+  display: grid;
+  gap: 0.55rem;
+  min-height: 5.2rem;
+  padding: 0.88rem 1rem;
+  background: var(--white);
+  border: 1px solid rgba(17, 24, 50, 0.12);
+  transition:
+    border-color 0.22s var(--ease),
+    box-shadow 0.22s var(--ease),
+    background 0.22s var(--ease);
+}
+
+.quick-search-console__field--wide {
+  grid-column: span 2;
+}
+
+.quick-search-console__field:focus-within {
+  background: #ffffff;
+  border-color: rgba(184, 148, 77, 0.72);
+  box-shadow: 0 0 0 3px rgba(184, 148, 77, 0.12);
+}
+
+.quick-search-console__field label {
+  color: var(--muted);
+  font-size: 0.61rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.quick-search-console__field select {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--graphite);
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+.quick-search-console__actions {
+  grid-column: span 2;
+  display: grid;
+}
+
+.quick-search-console__actions .button {
+  width: 100%;
+  min-height: 5.2rem;
+  padding-inline: 1rem;
+}
+
+/* Mantiene vivos los estilos de filtros del catálogo */
 .property-filters label {
   display: grid;
   gap: 0.5rem;
@@ -1027,7 +1161,6 @@ em {
   letter-spacing: 0.08em;
 }
 
-.quick-search select,
 .property-filters select {
   width: 100%;
   border: 0;
@@ -1038,10 +1171,81 @@ em {
   text-transform: none;
 }
 
-.quick-search .button {
-  margin-left: 1rem;
+@media (max-width: 1180px) {
+  .quick-search-console {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .quick-search-console__copy {
+    max-width: 44rem;
+    padding-right: 0;
+  }
+
+  .quick-search-console__copy::after {
+    display: none;
+  }
 }
 
+@media (max-width: 900px) {
+  .quick-search-wrap {
+    padding-top: 2rem;
+  }
+
+  .quick-search-console__form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quick-search-console__field--wide,
+  .quick-search-console__actions {
+    grid-column: span 1;
+  }
+
+  .quick-search-console__actions .button {
+    min-height: 5.2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .quick-search-wrap {
+    padding: 1.6rem 0 4.5rem;
+    background:
+      linear-gradient(180deg, var(--forest) 0 18%, var(--ivory) 18% 100%);
+  }
+
+  .quick-search-console {
+    padding: 1.25rem;
+  }
+
+  .quick-search-console::before {
+    right: 1rem;
+    top: 0.2rem;
+    font-size: 5rem;
+  }
+
+  .quick-search-console__copy h2 {
+    font-size: clamp(2.2rem, 10vw, 3rem);
+  }
+
+  .quick-search-console__copy p:not(.eyebrow) {
+    font-size: 0.9rem;
+  }
+
+  .quick-search-console__form {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .quick-search-console__field--wide,
+  .quick-search-console__actions {
+    grid-column: 1 / -1;
+  }
+
+  .quick-search-console__field,
+  .quick-search-console__actions .button {
+    min-height: 4.85rem;
+  }
+}
 /* Property cards */
 .property-grid {
   display: grid;
