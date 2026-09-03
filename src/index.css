@@ -1425,14 +1425,23 @@ em {
 
 .property-card__number {
   position: absolute;
+  top: 1rem;
   right: 1rem;
-  bottom: 0.85rem;
   z-index: 2;
-  color: rgba(248, 246, 240, 0.82);
-  font: 500 clamp(2.4rem, 4vw, 4.8rem) / 0.8 'Cormorant Garamond', serif;
-  letter-spacing: -0.06em;
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border: 1px solid rgba(248, 246, 240, 0.42);
+  border-radius: 50%;
+  background: rgba(17, 24, 50, 0.34);
+  color: var(--ivory);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(8px);
   opacity: 0;
-  transform: translateY(0.5rem);
+  transform: translateY(-0.25rem);
   transition:
     opacity 0.35s var(--ease),
     transform 0.35s var(--ease);
@@ -1442,7 +1451,6 @@ em {
   opacity: 1;
   transform: translateY(0);
 }
-
 .property-card__body {
   position: relative;
   padding: 1.3rem 0.1rem 0;
@@ -1797,11 +1805,11 @@ em {
     gap: 0.25rem;
   }
 
-  .property-card__number {
-    opacity: 1;
-    transform: none;
-    font-size: 3rem;
-  }
+.property-card__number {
+  opacity: 1;
+  transform: none;
+  font-size: 0.62rem;
+}
 }
 
 
