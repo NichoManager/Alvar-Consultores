@@ -5,8 +5,13 @@ import { Container } from '../ui/Container';
 import { MobileNavigation } from './MobileNavigation';
 
 const links = [
-  ['Inicio', '/'], ['Inmuebles', '/inmuebles'], ['Servicios', '/servicios'], ['Nosotros', '/nosotros'],
-  ['Opiniones', '/opiniones'], ['Blog', '/blog'], ['Contacto', '/contacto'],
+  ['Inicio', '/'],
+  ['Inmuebles', '/inmuebles'],
+  ['Servicios', '/servicios'],
+  ['Nosotros', '/nosotros'],
+  ['Opiniones', '/opiniones'],
+  ['Blog', '/blog'],
+  ['Contacto', '/contacto'],
 ];
 
 export function Header() {
@@ -17,8 +22,10 @@ export function Header() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
+
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
+
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
@@ -28,18 +35,45 @@ export function Header() {
     <>
       <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
         <Container className="site-header__inner">
-          <Link to="/" className="brand-mark">
-            <strong>ALVAR</strong><small>CONSULTORES INMOBILIARIOS</small>
+          <Link
+            to="/"
+            className="brand-mark brand-mark--image"
+            aria-label="Alvar Consultores Inmobiliarios"
+          >
+            <img
+              src="/images/alvar/logo-alvar-consultores-inmobiliarios.webp"
+              alt="Alvar Consultores Inmobiliarios"
+              width="197"
+              height="155"
+            />
           </Link>
+
           <nav className="desktop-nav" aria-label="Navegación principal">
-            {links.map(([label, to]) => <NavLink key={to} to={to} end={to === '/'}>{label}</NavLink>)}
+            {links.map(([label, to]) => (
+              <NavLink key={to} to={to} end={to === '/'}>
+                {label}
+              </NavLink>
+            ))}
           </nav>
-          <Button to="/#valoracion" className="header-cta">Valora tu inmueble</Button>
-          <button className="menu-button" onClick={() => setMenuOpen(true)} aria-label="Abrir menú" aria-controls="mobile-navigation" aria-expanded={menuOpen}>
-            <span /><span />
+
+          <Button to="/#valoracion" className="header-cta">
+            Valora tu inmueble
+          </Button>
+
+          <button
+            className="menu-button"
+            type="button"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Abrir menú"
+            aria-controls="mobile-navigation"
+            aria-expanded={menuOpen}
+          >
+            <span />
+            <span />
           </button>
         </Container>
       </header>
+
       <MobileNavigation open={menuOpen} onClose={closeMenu} />
     </>
   );
