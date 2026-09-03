@@ -927,36 +927,55 @@ em {
 /* Trust bar */
 .trust-bar {
   overflow: hidden;
+  border-block: 1px solid rgba(184, 148, 77, 0.18);
   background: var(--forest);
   color: var(--ivory);
 }
 
-.trust-bar > div {
+.trust-bar__track {
   width: max-content;
   display: flex;
   align-items: center;
   min-height: 4.4rem;
-  animation: marquee 34s linear infinite;
+  will-change: transform;
+  animation: trust-marquee 44s linear infinite;
 }
 
-.trust-bar span {
-  display: inline-flex;
+.trust-bar__group {
+  display: flex;
+  flex-shrink: 0;
   align-items: center;
-  gap: 3rem;
-  padding-left: 3rem;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
+}
+
+.trust-bar__item {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: clamp(1.8rem, 2.6vw, 2.8rem);
+  padding-left: clamp(1.8rem, 2.6vw, 2.8rem);
+  font-size: clamp(0.7rem, 0.76vw, 0.76rem);
+  font-weight: 700;
+  letter-spacing: 0.105em;
+  line-height: 1.3;
+  white-space: nowrap;
   text-transform: uppercase;
 }
 
-.trust-bar i {
+.trust-bar__item i {
   color: var(--sand);
+  font-size: 0.58rem;
+  font-style: normal;
 }
 
-@keyframes marquee {
+@keyframes trust-marquee {
   to {
-    transform: translateX(-10%);
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trust-bar:hover .trust-bar__track {
+    animation-play-state: paused;
   }
 }
 
@@ -2281,9 +2300,14 @@ em {
     font-size: 1.7rem;
   }
 
-  .trust-bar span {
-    gap: 1.5rem;
-    padding-left: 1.5rem;
+  .trust-bar__track {
+    min-height: 4rem;
+  }
+
+  .trust-bar__item {
+    gap: 1.45rem;
+    padding-left: 1.45rem;
+    font-size: 0.64rem;
   }
 
   .quick-search {
@@ -2502,7 +2526,33 @@ em {
     transform: none;
   }
 
-  .trust-bar > div {
+  .trust-bar__track {
+    width: 100%;
     animation: none;
+    transform: none;
+    will-change: auto;
+  }
+
+  .trust-bar__group {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem 1.3rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .trust-bar__group[aria-hidden='true'] {
+    display: none;
+  }
+
+  .trust-bar__item {
+    gap: 1.3rem;
+    padding-left: 0;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .trust-bar__item:last-child i {
+    display: none;
   }
 }
