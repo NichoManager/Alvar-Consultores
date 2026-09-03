@@ -202,37 +202,72 @@ export function HomePage() {
 
       <section className="seller-section section-pad">
         <Container className="seller-section__grid">
-          <Reveal>
+          <Reveal className="seller-section__content">
             <SectionHeading
               inverse
               eyebrow="¿ESTÁS PENSANDO EN VENDER?"
               title={
                 <>
-                  Descubre cuánto puede valer hoy <em>tu propiedad.</em>
+                  Vender tu propiedad exige algo más que <em>publicarla.</em>
                 </>
               }
-              text="Realizamos una valoración profesional teniendo en cuenta ubicación, características, estado del inmueble y operaciones comparables de la zona."
+              text="Definimos una estrategia de venta con valoración profesional, posicionamiento, gestión de visitas, negociación y acompañamiento documental hasta la firma."
             />
 
-            <ul className="check-list">
+            <ul className="check-list seller-section__check-list">
               <li>Valoración personalizada</li>
-              <li>Estrategia de venta</li>
-              <li>Acompañamiento integral</li>
-              <li>Sin compromiso inicial</li>
+              <li>Estrategia de precio</li>
+              <li>Gestión de visitas</li>
+              <li>Negociación y cierre</li>
+              <li>Documentación coordinada</li>
+              <li>Acompañamiento hasta la firma</li>
             </ul>
 
-            <div className="button-row">
+            <div className="seller-section__actions">
               <Button to="/#valoracion" variant="light">
                 Solicitar valoración
               </Button>
-              <a href={`tel:${business.phoneMobileHref}`} className="text-link text-link--light">
-                {business.phoneMobile} ↗
+              <a
+                href={`tel:${business.phoneMobileHref}`}
+                className="seller-section__phone"
+                aria-label={`Hablar con Alvar en el ${business.phoneMobile}`}
+              >
+                <span>Hablar con Alvar</span>
+                <small>{business.phoneMobile}</small>
               </a>
             </div>
           </Reveal>
 
-          <Reveal>
-            <ArchitecturalVisual variant="courtyard" label="Composición editorial para propietarios" />
+          <Reveal className="seller-section__visual">
+            <div className="seller-section__media-card">
+              <ArchitecturalVisual
+                variant="courtyard"
+                label="Composición arquitectónica editorial para propietarios"
+              />
+
+              <div className="seller-section__panel">
+                <span>Servicio a propietarios</span>
+                <p>Estrategia, negociación y firma.</p>
+
+                <div
+                  className="seller-section__stats"
+                  aria-label="Experiencia y ámbito del servicio de venta"
+                >
+                  <div>
+                    <strong>18+</strong>
+                    <small>años de experiencia</small>
+                  </div>
+                  <div>
+                    <strong>Madrid</strong>
+                    <small>capital y alrededores</small>
+                  </div>
+                  <div>
+                    <strong>Valoración</strong>
+                    <small>profesional</small>
+                  </div>
+                </div>
+              </div>
+            </div>
           </Reveal>
         </Container>
       </section>
