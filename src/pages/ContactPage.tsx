@@ -1,0 +1,9 @@
+import { ContactForm } from '../components/forms/ContactForm';
+import { SeoHead } from '../components/seo/SeoHead';
+import { Container } from '../components/ui/Container';
+import { InternalHero } from '../components/ui/InternalHero';
+import { business } from '../data/business';
+
+export function ContactPage() {
+  return <><SeoHead title="Contacto | Alvar Consultores Inmobiliarios Madrid" description="Habla con Alvar Consultores Inmobiliarios sobre compra, venta, alquiler o inversión en Madrid y su zona sur." path="/contacto" /><InternalHero eyebrow="CONTACTO" title={<>Hablemos de<br /><em>tu próximo paso.</em></>} text="Una primera conversación para entender qué necesitas y cómo podemos ayudarte." aside={<span className="internal-hero__quote">Madrid · Pinto · Móstoles</span>} /><section className="contact-page section-pad"><Container className="contact-page__grid"><div className="contact-data"><p className="eyebrow">DATOS DE CONTACTO</p><h2>{business.name}</h2><address><p>{business.addressLine1}<br />{business.addressLine2}<br />{business.postalAddress}</p></address><div><span>Oficina</span><a href={`tel:${business.phoneOfficeHref}`}>{business.phoneOffice}</a></div><div><span>Móvil comercial</span><a href={`tel:${business.phoneMobileHref}`}>{business.phoneMobile}</a></div><div><span>Redes</span><a href={business.instagramUrl} target="_blank" rel="noreferrer">{business.instagram} ↗</a><a href={business.tiktokUrl} target="_blank" rel="noreferrer">{business.tiktok} ↗</a></div><small>Horario pendiente de confirmación.</small><div className="map-placeholder"><span className="map-placeholder__road map-placeholder__road--one" /><span className="map-placeholder__road map-placeholder__road--two" /><span className="map-placeholder__pin">42</span><p>Google Maps pendiente de configuración</p></div></div><div className="contact-page__form"><p className="eyebrow">ENVÍANOS UNA CONSULTA</p><ContactForm /></div></Container></section></>;
+}
