@@ -18,6 +18,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const isHome = location.pathname === '/';
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export function Header() {
 
   return (
     <>
-      <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
+      <header className={`site-header ${isHome ? 'is-over-hero' : ''} ${scrolled ? 'is-scrolled' : ''}`}>
         <Container className="site-header__inner">
           <Link
             to="/"
