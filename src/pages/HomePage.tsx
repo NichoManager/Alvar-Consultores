@@ -395,36 +395,75 @@ export function HomePage() {
 
       <section id="zonas" className="areas-section section-pad">
         <Container className="areas-section__grid">
-          <Reveal>
-            <SectionHeading
-              eyebrow="CONOCIMIENTO LOCAL"
-              title={
-                <>
-                  Especialistas en Madrid
-                  <br />y <em>sus alrededores.</em>
-                </>
-              }
-              text="Trabajamos con especial conocimiento de Madrid capital y municipios próximos, analizando cada zona desde una perspectiva residencial, patrimonial y de inversión."
-            />
+          <Reveal className="areas-section__content">
+            <p className="eyebrow">CONOCIMIENTO LOCAL</p>
+            <h2>
+              Madrid capital y alrededores, <em>analizados con criterio.</em>
+            </h2>
+            <p className="areas-section__lead">
+              Cada zona tiene una lógica distinta: demanda, precio, tiempos de venta,
+              perfil comprador, comunicaciones y potencial de revalorización. Por eso
+              no trabajamos con respuestas genéricas.
+            </p>
+
+            <div className="areas-section__coverage" aria-label="Ámbito geográfico de trabajo">
+              <span>Madrid capital</span>
+              <i aria-hidden="true" />
+              <span>Área metropolitana</span>
+              <i aria-hidden="true" />
+              <span>Municipios próximos</span>
+            </div>
+
+            <p className="areas-section__map-note">
+              Lectura residencial, patrimonial y de inversión para cada ubicación.
+            </p>
+
             <Button to="/contacto" variant="secondary">
               Cuéntanos qué zona buscas
             </Button>
+
+            <span className="areas-section__index">05 / ZONAS</span>
           </Reveal>
 
-          <div className="area-list">
+          <ol className="area-list" aria-label="Zonas de conocimiento inmobiliario">
             {[
-              ['Madrid', 'Capital'],
-              ['Pinto', 'Buenos Aires · Tenería'],
-              ['Móstoles', 'Sur · Este'],
-              ['Alrededores', 'Zonas próximas'],
-            ].map(([place, detail], index) => (
-              <Reveal className="area-list__item" key={place}>
-                <span>0{index + 1}</span>
-                <h3>{place}</h3>
-                <p>{detail}</p>
-              </Reveal>
+              [
+                '01',
+                'Madrid capital',
+                'Barrios consolidados, demanda activa y operaciones con lectura patrimonial.',
+              ],
+              [
+                '02',
+                'Norte de Madrid',
+                'Zonas residenciales, familias, comunicación y búsqueda de vivienda principal.',
+              ],
+              [
+                '03',
+                'Sur de Madrid',
+                'Municipios próximos, vivienda habitual, rotación y oportunidades de precio.',
+              ],
+              [
+                '04',
+                'Este y oeste',
+                'Áreas metropolitanas con perfiles diversos y potencial según ubicación concreta.',
+              ],
+              [
+                '05',
+                'Pinto y Móstoles',
+                'Conocimiento cercano de municipios donde cada barrio marca diferencias.',
+              ],
+            ].map(([number, place, detail]) => (
+              <li className="area-list__item" key={number}>
+                <Reveal className="area-list__item-inner">
+                  <span>{number}</span>
+                  <div>
+                    <h3>{place}</h3>
+                    <p>{detail}</p>
+                  </div>
+                </Reveal>
+              </li>
             ))}
-          </div>
+          </ol>
         </Container>
       </section>
 
