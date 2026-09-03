@@ -4,11 +4,13 @@ import { Button } from '../ui/Button';
 import { Container } from '../ui/Container';
 import { MobileNavigation } from './MobileNavigation';
 
-const links = [
-  ['Inicio', '/'],
+const leftLinks = [
   ['Inmuebles', '/inmuebles'],
   ['Servicios', '/servicios'],
   ['Nosotros', '/nosotros'],
+];
+
+const rightLinks = [
   ['Opiniones', '/opiniones'],
   ['Blog', '/blog'],
   ['Contacto', '/contacto'],
@@ -36,22 +38,30 @@ export function Header() {
     <>
       <header className={`site-header ${isHome ? 'is-over-hero' : ''} ${scrolled ? 'is-scrolled' : ''}`}>
         <Container className="site-header__inner">
+          <nav className="desktop-nav desktop-nav--left" aria-label="Navegación principal">
+            {leftLinks.map(([label, to]) => (
+              <NavLink key={to} to={to}>
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+
           <Link
             to="/"
-            className="brand-mark brand-mark--image"
-            aria-label="Alvar Consultores Inmobiliarios"
+            className="brand-mark brand-mark--image brand-mark--circular"
+            aria-label="Ir a la página de inicio de Alvar Consultores Inmobiliarios"
           >
             <img
-              src="/images/alvar/logo-alvar-consultores-inmobiliarios.png"
+              src="/images/alvar/logo-alvar-circular.png"
               alt="Alvar Consultores Inmobiliarios"
-              width="197"
-              height="155"
+              width="1024"
+              height="1024"
             />
           </Link>
 
-          <nav className="desktop-nav" aria-label="Navegación principal">
-            {links.map(([label, to]) => (
-              <NavLink key={to} to={to} end={to === '/'}>
+          <nav className="desktop-nav desktop-nav--right" aria-label="Navegación complementaria">
+            {rightLinks.map(([label, to]) => (
+              <NavLink key={to} to={to}>
                 {label}
               </NavLink>
             ))}
