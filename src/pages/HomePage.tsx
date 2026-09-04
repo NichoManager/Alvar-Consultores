@@ -78,8 +78,8 @@ export function HomePage() {
               </p>
 
               <div className="featured-properties__actions">
-                <Button to="/inmuebles" variant="secondary">
-                  Ver inmuebles
+                <Button to="/inmuebles?operation=venta" variant="secondary">
+                  Ver inmuebles en venta
                 </Button>
                 <a href="/contacto" className="featured-properties__link">
                   Busco algo concreto <span aria-hidden="true">↗</span>
