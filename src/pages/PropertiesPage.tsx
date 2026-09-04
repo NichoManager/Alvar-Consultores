@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import { PropertyFilters, type FilterState } from '../components/properties/PropertyFilters';
 import { PropertyGrid } from '../components/properties/PropertyGrid';
 import { SeoHead } from '../components/seo/SeoHead';
@@ -25,8 +25,16 @@ function normalizeOperation(value: string): NormalizedOperation {
 
 export function PropertiesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const operationParam = searchParams.get('operation');
+  if (!operationParam) {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('operation', 'venta');
+    return <Navigate to={`/inmuebles?${nextParams.toString()}`} replace />;
+  }
+
   const filters: FilterState = useMemo(() => ({
-    operation: searchParams.get('operation') ?? '',
+    operation: searchParams.get('operation') ?? 'venta',
     city: searchParams.get('city') ?? '',
     type: searchParams.get('type') ?? '',
     bedrooms: searchParams.get('bedrooms') ?? '',
@@ -70,30 +78,36 @@ export function PropertiesPage() {
           : Number(b.featured) - Number(a.featured));
   }, [activeOperation, filters]);
 
-  const hero = activeOperation === 'venta'
+  const hero = activeOperation === 'alquiler'
     ? {
+        eyebrow: 'ALQUILAR',
+        title: <>Inmuebles en alquiler<br /><em>en Madrid y alrededores.</em></>,
+        text: 'Consulta viviendas y activos disponibles en alquiler. También podemos ayudarte si quieres alquilar tu propiedad.',
+      }
+    : {
         eyebrow: 'COMPRAR',
         title: <>Inmuebles en venta<br /><em>en Madrid y alrededores.</em></>,
         text: 'Explora propiedades disponibles para compra. Si no encuentras lo que buscas, podemos ayudarte a definir tu búsqueda.',
+      };
+
+  const seo = activeOperation === 'alquiler'
+    ? {
+        title: 'Inmuebles en alquiler en Madrid | Alvar Consultores',
+        description: 'Consulta viviendas y propiedades disponibles en alquiler en Madrid, Pinto y alrededores con Alvar Consultores Inmobiliarios.',
+        path: '/inmuebles?operation=alquiler',
       }
-    : activeOperation === 'alquiler'
-      ? {
-          eyebrow: 'ALQUILAR',
-          title: <>Inmuebles en alquiler<br /><em>en Madrid y alrededores.</em></>,
-          text: 'Consulta viviendas y activos disponibles en alquiler. También podemos ayudarte si quieres alquilar tu propiedad.',
-        }
-      : {
-          eyebrow: 'INMUEBLES',
-          title: <>Propiedades seleccionadas<br /><em>en Madrid y alrededores.</em></>,
-          text: 'Explora viviendas y oportunidades disponibles para compra o alquiler.',
-        };
+    : {
+        title: 'Inmuebles en venta en Madrid | Alvar Consultores',
+        description: 'Explora propiedades disponibles para comprar en Madrid, Pinto y alrededores con Alvar Consultores Inmobiliarios.',
+        path: '/inmuebles?operation=venta',
+      };
 
   return (
     <>
       <SeoHead
-        title="Inmuebles en Madrid y zona sur | Alvar Consultores"
-        description="Consulta una selección orientativa de inmuebles y cuéntanos qué vivienda buscas en Madrid, Pinto o Móstoles."
-        path="/inmuebles"
+        title={seo.title}
+        description={seo.description}
+        path={seo.path}
       />
       <InternalHero
         eyebrow={hero.eyebrow}
