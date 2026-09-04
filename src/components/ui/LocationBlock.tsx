@@ -33,23 +33,23 @@ export function LocationBlock() {
           </div>
         </div>
 
-        <div
-          className="location-block__area"
-          role="img"
-          aria-label="Área de trabajo: Madrid capital, área metropolitana y municipios próximos"
-        >
-          <div className="location-block__area-copy">
-            <span>Área de trabajo</span>
-            <strong>Madrid capital</strong>
-            <p>Área metropolitana · Municipios próximos</p>
-          </div>
-          <div className="location-block__area-lines" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
-          <small>Lectura local · Acompañamiento personalizado</small>
-        </div>
+       <div className="location-block__area">
+  <div className="location-block__area-copy">
+    <span>Área de trabajo</span>
+    <strong>Madrid capital</strong>
+    <p>Área metropolitana · Municipios próximos</p>
+  </div>
+
+  <div className="location-block__area-lines" aria-hidden="true">
+    <span />
+    <span />
+    <span />
+  </div>
+
+  <small>
+    Lectura local · Acompañamiento personalizado
+  </small>
+</div>
       </Container>
     </section>
   );
