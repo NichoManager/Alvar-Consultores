@@ -26,13 +26,6 @@ function normalizeOperation(value: string): NormalizedOperation {
 export function PropertiesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const operationParam = searchParams.get('operation');
-  if (!operationParam) {
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.set('operation', 'venta');
-    return <Navigate to={`/inmuebles?${nextParams.toString()}`} replace />;
-  }
-
   const filters: FilterState = useMemo(() => ({
     operation: searchParams.get('operation') ?? 'venta',
     city: searchParams.get('city') ?? '',
@@ -77,6 +70,13 @@ export function PropertiesPage() {
           ? (b.price ?? 0) - (a.price ?? 0)
           : Number(b.featured) - Number(a.featured));
   }, [activeOperation, filters]);
+
+  const operationParam = searchParams.get('operation');
+  if (!operationParam) {
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('operation', 'venta');
+    return <Navigate to={`/inmuebles?${nextParams.toString()}`} replace />;
+  }
 
   const hero = activeOperation === 'alquiler'
     ? {
