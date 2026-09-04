@@ -58,12 +58,13 @@ export function BlogPostPage() {
 
   return (
     <>
-      <SeoHead
-        title={`${article.title} | Alvar Consultores`}
-        description={article.excerpt}
-        path={`/blog/${article.slug}`}
-        type="article"
-      />
+    <SeoHead
+  title={`${article.title} | Alvar Consultores`}
+  description={article.excerpt}
+  path={`/blog/${article.slug}`}
+  type="article"
+  noIndex
+/>
 
       <JsonLd data={breadcrumbSchema} />
       <JsonLd data={articleSchema} />
