@@ -10,6 +10,7 @@ import { NotFoundPage } from '../pages/NotFoundPage';
 import { PropertiesPage } from '../pages/PropertiesPage';
 import { PropertyDetailPage } from '../pages/PropertyDetailPage';
 import { ReviewsPage } from '../pages/ReviewsPage';
+import { SellPage } from '../pages/SellPage';
 import { ServicesPage } from '../pages/ServicesPage';
 
 const router = createBrowserRouter([
@@ -19,6 +20,7 @@ const router = createBrowserRouter([
       { path: '/', element: <HomePage /> },
       { path: '/inmuebles', element: <PropertiesPage /> },
       { path: '/inmuebles/:slug', element: <PropertyDetailPage /> },
+      { path: '/vender', element: <SellPage /> },
       { path: '/servicios', element: <ServicesPage /> },
       { path: '/nosotros', element: <AboutPage /> },
       { path: '/opiniones', element: <ReviewsPage /> },

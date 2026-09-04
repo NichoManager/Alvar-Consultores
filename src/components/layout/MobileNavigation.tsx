@@ -11,7 +11,7 @@ interface MobileNavigationProps {
 
 const links = [
   ['Comprar', '/inmuebles?operation=venta'],
-  ['Vender', '/#valoracion'],
+  ['Vender', '/vender'],
   ['Alquilar', '/inmuebles?operation=alquiler'],
   ['Servicios', '/servicios'],
   ['Blog', '/blog'],
@@ -48,7 +48,7 @@ export function MobileNavigation({ open, onClose }: MobileNavigationProps) {
         ))}
       </nav>
       <div className="mobile-nav__bottom">
-        <Button to="/#valoracion" onClick={onClose}>Solicitar valoración</Button>
+        <Button to="/vender#valoracion" onClick={onClose}>Solicitar valoración</Button>
         <a className="mobile-nav__phone" href={`tel:${business.phoneMobileHref}`}>{business.phoneMobile}</a>
         <div className="mobile-nav__social"><a href={business.instagramUrl} target="_blank" rel="noreferrer">Instagram ↗</a><a href={business.tiktokUrl} target="_blank" rel="noreferrer">TikTok ↗</a></div>
       </div>

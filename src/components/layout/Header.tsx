@@ -6,7 +6,7 @@ import { MobileNavigation } from './MobileNavigation';
 
 const leftLinks = [
   ['Comprar', '/inmuebles?operation=venta'],
-  ['Vender', '/#valoracion'],
+  ['Vender', '/vender'],
   ['Alquilar', '/inmuebles?operation=alquiler'],
 ];
 
@@ -74,7 +74,7 @@ export function Header() {
             ))}
           </nav>
 
-          <Button to="/#valoracion" className="header-cta">
+          <Button to="/vender#valoracion" className="header-cta">
             Valora tu inmueble
           </Button>
 

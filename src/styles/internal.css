@@ -477,3 +477,429 @@
     padding: 3rem 0 4rem;
   }
 }
+
+/* Sell page */
+.sell-intro {
+  background: var(--white);
+}
+
+.sell-intro__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(28rem, 1.15fr);
+  gap: clamp(3.5rem, 8vw, 8rem);
+  align-items: start;
+}
+
+.sell-intro h2,
+.sell-method h2,
+.sell-valuation h2 {
+  margin: 0;
+  color: var(--forest);
+  font: 500 clamp(3rem, 5vw, 5.2rem) / 0.94 'Cormorant Garamond', serif;
+  letter-spacing: -0.045em;
+}
+
+.sell-intro__copy {
+  padding: 1.75rem 0 0 2rem;
+  border-top: 1px solid rgba(17, 24, 50, 0.16);
+  border-left: 1px solid rgba(184, 148, 77, 0.5);
+}
+
+.sell-intro__copy > p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.sell-intro__copy > p + p {
+  margin-top: 1rem;
+}
+
+.sell-intro__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 2rem;
+}
+
+.sell-page__phone {
+  display: inline-flex;
+  min-width: 12rem;
+  min-height: 3.35rem;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid rgba(17, 24, 50, 0.22);
+  color: var(--forest);
+}
+
+.sell-page__phone span {
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.sell-page__phone small {
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.58rem;
+}
+
+.sell-method {
+  position: relative;
+  background: var(--ivory);
+}
+
+.sell-method::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 148, 77, 0.55), transparent);
+}
+
+.sell-method__intro {
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  gap: 2rem 5rem;
+  align-items: end;
+}
+
+.sell-method__intro .eyebrow {
+  grid-column: 1 / -1;
+}
+
+.sell-method__intro > p:last-child {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.sell-method__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: clamp(3rem, 5vw, 5rem) 0 0;
+  padding: 0;
+  border-top: 1px solid rgba(17, 24, 50, 0.15);
+  border-left: 1px solid rgba(17, 24, 50, 0.15);
+  list-style: none;
+}
+
+.sell-method__grid li {
+  min-height: 16rem;
+  padding: clamp(1.5rem, 2.5vw, 2.5rem);
+  border-right: 1px solid rgba(17, 24, 50, 0.15);
+  border-bottom: 1px solid rgba(17, 24, 50, 0.15);
+}
+
+.sell-method__grid li > span {
+  color: var(--sand-dark);
+  font: 500 1.35rem 'Cormorant Garamond', serif;
+}
+
+.sell-method__grid h3 {
+  margin: 2.75rem 0 0;
+  color: var(--forest);
+  font: 500 clamp(1.65rem, 2.2vw, 2.2rem) / 1 'Cormorant Garamond', serif;
+}
+
+.sell-method__grid p {
+  margin: 0.85rem 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.7;
+}
+
+.sell-trust {
+  border-block: 1px solid rgba(184, 148, 77, 0.42);
+  background: var(--forest);
+  color: var(--ivory);
+}
+
+.sell-trust__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sell-trust__grid > div {
+  display: grid;
+  min-height: 11rem;
+  align-content: center;
+  padding: 2rem clamp(1.5rem, 3vw, 3rem);
+}
+
+.sell-trust__grid > div + div {
+  border-left: 1px solid rgba(248, 246, 240, 0.14);
+}
+
+.sell-trust strong {
+  color: var(--ivory);
+  font: 500 clamp(2rem, 3vw, 3rem) / 1 'Cormorant Garamond', serif;
+}
+
+.sell-trust span {
+  margin-top: 0.65rem;
+  color: rgba(248, 246, 240, 0.6);
+  font-size: 0.61rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sell-valuation {
+  position: relative;
+  background: var(--stone);
+}
+
+.sell-valuation__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(31rem, 1.22fr);
+  gap: clamp(3.5rem, 7vw, 7rem);
+  align-items: start;
+}
+
+.sell-valuation__content {
+  padding-top: 1.25rem;
+}
+
+.sell-valuation__content > p:not(.eyebrow) {
+  margin: 1.75rem 0 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.sell-valuation__content > span {
+  display: block;
+  margin-top: 2rem;
+  padding: 1rem 0 0 1.25rem;
+  border-top: 1px solid rgba(17, 24, 50, 0.15);
+  border-left: 1px solid var(--sand);
+  color: var(--sand-dark);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.sell-valuation__panel {
+  padding: clamp(1.5rem, 3vw, 3rem);
+  border: 1px solid rgba(184, 148, 77, 0.42);
+  background: var(--white);
+  box-shadow: 0 24px 70px rgba(17, 24, 50, 0.09);
+}
+
+.sell-valuation__heading {
+  margin-bottom: 2rem;
+  padding: 0 0 1.75rem 1.25rem;
+  border-bottom: 1px solid rgba(17, 24, 50, 0.12);
+  border-left: 1px solid var(--sand);
+}
+
+.sell-valuation__heading > span {
+  color: var(--sand-dark);
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.sell-valuation__heading h3 {
+  margin: 0.7rem 0 0;
+  color: var(--forest);
+  font: 500 clamp(2rem, 3vw, 2.8rem) / 1 'Cormorant Garamond', serif;
+}
+
+.sell-valuation__heading p {
+  margin: 0.7rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.65;
+}
+
+.sell-valuation__panel > .premium-form {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.sell-valuation__panel > .premium-form > .button {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+/* Rental owner capture */
+.rental-owner-cta {
+  position: relative;
+  display: grid;
+  grid-template-columns: 0.45fr 1.3fr 0.75fr;
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: end;
+  margin-top: clamp(4rem, 7vw, 7rem);
+  padding: clamp(2rem, 4vw, 4rem);
+  overflow: hidden;
+  border: 1px solid rgba(184, 148, 77, 0.55);
+  background: var(--forest);
+  color: var(--ivory);
+}
+
+.rental-owner-cta::after {
+  content: '';
+  position: absolute;
+  top: -9rem;
+  right: -7rem;
+  width: 22rem;
+  height: 22rem;
+  border: 1px solid rgba(184, 148, 77, 0.16);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.rental-owner-cta__eyebrow,
+.rental-owner-cta__content,
+.rental-owner-cta__actions {
+  position: relative;
+  z-index: 1;
+}
+
+.rental-owner-cta__eyebrow {
+  align-self: start;
+  color: var(--sand);
+  font-size: 0.6rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+
+.rental-owner-cta h2 {
+  margin: 0;
+  color: var(--ivory);
+  font: 500 clamp(2.8rem, 4.5vw, 4.8rem) / 0.94 'Cormorant Garamond', serif;
+  letter-spacing: -0.045em;
+}
+
+.rental-owner-cta__content p {
+  max-width: 42rem;
+  margin: 1.2rem 0 0;
+  color: rgba(248, 246, 240, 0.68);
+  font-size: 0.82rem;
+  line-height: 1.75;
+}
+
+.rental-owner-cta__actions {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.rental-owner-cta__actions .button {
+  width: 100%;
+}
+
+.rental-owner-cta__actions .button--secondary {
+  border-color: rgba(248, 246, 240, 0.34);
+  color: var(--ivory);
+}
+
+.rental-owner-cta__actions small {
+  color: rgba(248, 246, 240, 0.55);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .sell-intro__grid,
+  .sell-valuation__grid {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+  }
+
+  .sell-method__intro {
+    grid-template-columns: 1fr;
+  }
+
+  .sell-method__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sell-valuation__content {
+    max-width: 46rem;
+    padding-top: 0;
+  }
+
+  .sell-valuation__panel {
+    width: min(100%, 50rem);
+  }
+
+  .rental-owner-cta {
+    grid-template-columns: 1fr 0.6fr;
+  }
+
+  .rental-owner-cta__eyebrow {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .sell-intro h2,
+  .sell-method h2,
+  .sell-valuation h2 {
+    font-size: clamp(2.65rem, 12vw, 3.75rem);
+  }
+
+  .sell-intro__copy {
+    padding: 1.4rem 0 0 1rem;
+  }
+
+  .sell-intro__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .sell-intro__actions .button,
+  .sell-page__phone {
+    width: 100%;
+  }
+
+  .sell-page__phone {
+    align-items: center;
+    text-align: center;
+  }
+
+  .sell-method__grid,
+  .sell-trust__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sell-method__grid li {
+    min-height: 13rem;
+  }
+
+  .sell-trust__grid > div {
+    min-height: 8.5rem;
+    padding-inline: 0;
+  }
+
+  .sell-trust__grid > div + div {
+    border-top: 1px solid rgba(248, 246, 240, 0.14);
+    border-left: 0;
+  }
+
+  .sell-valuation__panel {
+    padding: 1.25rem;
+  }
+
+  .sell-valuation__heading {
+    margin-bottom: 1.5rem;
+    padding: 0 0 1.4rem 1rem;
+  }
+
+  .rental-owner-cta {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 1.5rem;
+  }
+
+  .rental-owner-cta h2 {
+    font-size: clamp(2.65rem, 12vw, 3.65rem);
+  }
+}
