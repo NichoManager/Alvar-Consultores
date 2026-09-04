@@ -456,7 +456,7 @@
   gap: 0.5rem;
 }
 
-.property-hero__summary > span {
+.property-hero__summary>span {
   color: var(--sand);
   font-size: 0.58rem;
   font-weight: 850;
@@ -466,8 +466,7 @@
 
 .property-hero__summary strong {
   color: var(--ivory);
-  font: 500 clamp(1.9rem, 3vw, 2.8rem) / 1
-    'Cormorant Garamond', serif;
+  font: 500 clamp(1.9rem, 3vw, 2.8rem) / 1 'Cormorant Garamond', serif;
 }
 
 .property-hero__summary small {
@@ -492,7 +491,7 @@
   border-bottom: 1px solid rgba(17, 24, 50, 0.14);
 }
 
-.property-detail-gallery__heading > div {
+.property-detail-gallery__heading>div {
   display: grid;
   gap: 0.35rem;
 }
@@ -598,11 +597,9 @@
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(
-      circle at 8% 10%,
+    radial-gradient(circle at 8% 10%,
       rgba(184, 148, 77, 0.09),
-      transparent 28rem
-    ),
+      transparent 28rem),
     var(--white);
 }
 
@@ -620,8 +617,7 @@
   max-width: 58rem;
   margin: 0;
   color: var(--forest);
-  font: 500 clamp(3.4rem, 5.5vw, 6rem) / 0.9
-    'Cormorant Garamond', serif;
+  font: 500 clamp(3.4rem, 5.5vw, 6rem) / 0.9 'Cormorant Garamond', serif;
   letter-spacing: -0.055em;
 }
 
@@ -639,7 +635,7 @@
   text-align: right;
 }
 
-.property-content__intro-meta > span {
+.property-content__intro-meta>span {
   color: var(--sand-dark);
   font-size: 0.56rem;
   font-weight: 850;
@@ -650,8 +646,7 @@
 .property-content__intro-meta strong {
   margin-top: 0.45rem;
   color: var(--forest);
-  font: 500 clamp(1.9rem, 3vw, 2.7rem) / 1
-    'Cormorant Garamond', serif;
+  font: 500 clamp(1.9rem, 3vw, 2.7rem) / 1 'Cormorant Garamond', serif;
 }
 
 .property-content__intro-meta p {
@@ -679,9 +674,9 @@
   border-bottom: 1px solid rgba(17, 24, 50, 0.14);
 }
 
-.property-description > span,
-.property-features__heading > span,
-.property-location__heading > span {
+.property-description>span,
+.property-features__heading>span,
+.property-location__heading>span {
   color: var(--sand-dark);
   font: 500 2rem / 1 'Cormorant Garamond', serif;
 }
@@ -700,8 +695,7 @@
   max-width: 48rem;
   margin: 0;
   color: var(--forest);
-  font: 500 clamp(1.35rem, 2.2vw, 1.8rem) / 1.48
-    'Cormorant Garamond', serif;
+  font: 500 clamp(1.35rem, 2.2vw, 1.8rem) / 1.48 'Cormorant Garamond', serif;
 }
 
 .property-features,
@@ -722,8 +716,7 @@
 .property-location__heading h3 {
   margin: 0;
   color: var(--forest);
-  font: 500 clamp(2rem, 3.5vw, 3rem) / 1
-    'Cormorant Garamond', serif;
+  font: 500 clamp(2rem, 3.5vw, 3rem) / 1 'Cormorant Garamond', serif;
   letter-spacing: -0.035em;
 }
 
@@ -751,7 +744,7 @@
   line-height: 1.45;
 }
 
-.feature-grid li > span {
+.feature-grid li>span {
   color: var(--sand-dark);
   font-size: 0.55rem;
   font-weight: 850;
@@ -765,16 +758,12 @@
   overflow: hidden;
   border: 1px solid rgba(184, 148, 77, 0.26);
   background:
-    radial-gradient(
-      circle at 72% 20%,
+    radial-gradient(circle at 72% 20%,
       rgba(184, 148, 77, 0.18),
-      transparent 14rem
-    ),
-    linear-gradient(
-      135deg,
+      transparent 14rem),
+    linear-gradient(135deg,
       rgba(17, 24, 50, 0.96),
-      rgba(15, 76, 132, 0.82)
-    );
+      rgba(15, 76, 132, 0.82));
 }
 
 .map-placeholder__property-caption {
@@ -828,7 +817,7 @@
   border-left: 1px solid var(--sand);
 }
 
-.property-contact__heading > span {
+.property-contact__heading>span {
   color: var(--sand-dark);
   font-size: 0.55rem;
   font-weight: 850;
@@ -838,8 +827,7 @@
 .property-contact__heading h2 {
   margin: 0.65rem 0 0;
   color: var(--forest);
-  font: 500 clamp(2rem, 3vw, 2.7rem) / 0.98
-    'Cormorant Garamond', serif;
+  font: 500 clamp(2rem, 3vw, 2.7rem) / 0.98 'Cormorant Garamond', serif;
 }
 
 .property-contact__heading p {
@@ -849,7 +837,7 @@
   line-height: 1.65;
 }
 
-.property-contact > .property-lead-form {
+.property-contact>.property-lead-form {
   padding: 0;
   border: 0;
   background: transparent;
@@ -866,7 +854,7 @@
   font-size: 2.2rem;
 }
 
-.property-lead-form > p {
+.property-lead-form>p {
   margin: -0.5rem 0 0.5rem;
   color: var(--muted);
   font-size: 0.75rem;
@@ -959,7 +947,7 @@
   }
 
   .property-lead-form h2,
-  .property-lead-form > p,
+  .property-lead-form>p,
   .property-lead-form .privacy-field,
   .property-lead-form .button,
   .property-lead-form .form-note {
@@ -1028,7 +1016,7 @@
     grid-template-columns: 1fr;
   }
 
-  .property-lead-form > * {
+  .property-lead-form>* {
     grid-column: auto !important;
   }
 
@@ -2493,98 +2481,351 @@
   color: var(--forest);
 }
 
-.blog-post header {
-  padding: 9rem 0 5rem;
-  background: var(--stone);
+/* Blog article */
+.post-meta--hero {
+  display: grid;
+  gap: 1.1rem;
+  margin: 0;
 }
 
-.blog-post header .eyebrow {
-  margin-top: 3rem;
+.post-meta--hero>div {
+  display: grid;
+  gap: 0.35rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(248, 246, 240, 0.16);
 }
 
-.blog-post header h1 {
-  max-width: 64rem;
-  font-size: clamp(3.5rem, 6vw, 6rem);
+.post-meta--hero>div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 
-.post-meta {
-  display: flex;
-  gap: 2rem;
-  margin-top: 2rem;
-  color: var(--muted);
-  font-size: .67rem;
+.post-meta--hero span {
+  color: var(--sand);
+  font-size: 0.54rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.post-meta--hero strong {
+  color: var(--ivory);
+  font: 500 1.35rem / 1.1 'Cormorant Garamond', serif;
+}
+
+.blog-post__body {
+  position: relative;
+  background:
+    radial-gradient(circle at 10% 8%,
+      rgba(184, 148, 77, 0.09),
+      transparent 28rem),
+    linear-gradient(180deg, var(--ivory), var(--white));
 }
 
 .blog-post__layout {
   display: grid;
-  grid-template-columns: 15rem minmax(0, 45rem);
+  grid-template-columns: minmax(12rem, 15rem) minmax(0, 48rem);
   gap: clamp(3rem, 8vw, 8rem);
   justify-content: center;
-  padding-block: 6rem;
+  align-items: start;
 }
 
-.blog-post__layout>aside {
+.blog-post__toc {
   position: sticky;
   top: 7rem;
-  align-self: start;
+  min-width: 0;
+}
+
+.blog-post__toc-heading {
   display: grid;
-  gap: .8rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
+  gap: 0.4rem;
+  padding: 0 0 1rem 1rem;
+  border-bottom: 1px solid rgba(17, 24, 50, 0.14);
+  border-left: 1px solid var(--sand);
 }
 
-.blog-post__layout>aside strong {
-  margin-bottom: .5rem;
+.blog-post__toc-heading span {
+  color: var(--sand-dark);
+  font-size: 0.54rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.blog-post__toc-heading strong {
   color: var(--forest);
-  font-size: .72rem;
+  font: 500 1.45rem / 1.1 'Cormorant Garamond', serif;
 }
 
-.blog-post__layout>aside a {
+.blog-post__toc-links {
+  display: grid;
+}
+
+.blog-post__toc-links a {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.55rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(17, 24, 50, 0.1);
   color: var(--muted);
-  font-size: .66rem;
-  line-height: 1.4;
+  font-size: 0.67rem;
+  line-height: 1.45;
+  transition:
+    color 0.2s var(--ease),
+    padding-left 0.2s var(--ease);
+}
+
+.blog-post__toc-links a span {
+  color: var(--sand-dark);
+  font-size: 0.54rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .blog-post__toc-links a:hover {
+    padding-left: 0.3rem;
+    color: var(--forest);
+  }
+}
+
+.blog-post__content {
+  min-width: 0;
+}
+
+.blog-post__content-intro {
+  margin: 0;
+  padding: 0 0 clamp(3rem, 5vw, 4.5rem);
+  border-bottom: 1px solid rgba(17, 24, 50, 0.14);
+  background: transparent;
+}
+
+.blog-post__content-intro .eyebrow {
+  margin: 0 0 1.2rem;
 }
 
 .blog-post__content .lead-copy {
-  margin-top: 0;
-  font: 500 1.65rem/1.45 'Cormorant Garamond', serif;
+  max-width: 46rem;
+  margin: 0;
   color: var(--forest);
+  font: 500 clamp(1.55rem, 2.6vw, 2rem) / 1.48 'Cormorant Garamond', serif;
 }
 
-.blog-post__content section {
-  padding-top: 3rem;
-}
-
-.blog-post__content h2 {
-  margin: 0 0 1rem;
-  font: 500 2.4rem 'Cormorant Garamond', serif;
-  color: var(--forest);
-}
-
-.blog-post__content p {
+.blog-post__content-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 1.7rem;
   color: var(--muted);
-  line-height: 1.85;
+  font-size: 0.58rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.blog-post__content-meta i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--sand);
+}
+
+.blog-post__sections {
+  counter-reset: article-section;
+}
+
+.blog-post__section {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding: clamp(3rem, 6vw, 5rem) 0;
+  scroll-margin-top: 8rem;
+  border-bottom: 1px solid rgba(17, 24, 50, 0.14);
+}
+
+.blog-post__section-number {
+  color: var(--sand-dark);
+  font: 500 2rem / 1 'Cormorant Garamond', serif;
+}
+
+.blog-post__section h2 {
+  max-width: 42rem;
+  margin: 0 0 1.4rem;
+  color: var(--forest);
+  font: 500 clamp(2.3rem, 4vw, 3.5rem) / 1 'Cormorant Garamond', serif;
+  letter-spacing: -0.035em;
+}
+
+.blog-post__section p {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.9;
+}
+
+.blog-post__section p:last-child {
+  margin-bottom: 0;
 }
 
 .article-cta {
-  margin-top: 4rem;
-  padding: 2.2rem;
-  background: var(--forest);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: end;
+  margin-top: clamp(4rem, 7vw, 6rem);
+  padding: clamp(2rem, 4vw, 3.5rem);
+  overflow: hidden;
+  border: 1px solid rgba(184, 148, 77, 0.34);
+  background:
+    radial-gradient(circle at 93% 12%,
+      rgba(184, 148, 77, 0.22),
+      transparent 20rem),
+    var(--forest);
   color: var(--ivory);
+  box-shadow: 0 25px 70px rgba(17, 24, 50, 0.16);
 }
 
-.article-cta p {
-  margin-top: 0;
+.article-cta::after {
+  content: '';
+  position: absolute;
+  top: -10rem;
+  right: -8rem;
+  width: 24rem;
+  height: 24rem;
+  border: 1px solid rgba(184, 148, 77, 0.15);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.article-cta__content,
+.article-cta__actions {
+  position: relative;
+  z-index: 1;
+}
+
+.article-cta__content>span {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: var(--sand);
+  font-size: 0.55rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.article-cta h2 {
+  max-width: 38rem;
+  margin: 0;
   color: var(--ivory);
-  font: 500 1.6rem 'Cormorant Garamond', serif;
+  font: 500 clamp(2.7rem, 4.7vw, 4.7rem) / 0.9 'Cormorant Garamond', serif;
+  letter-spacing: -0.05em;
+}
+
+.article-cta h2 em {
+  color: var(--sand);
+}
+
+.article-cta__content>p {
+  max-width: 37rem;
+  margin: 1.2rem 0 0;
+  color: rgba(248, 246, 240, 0.7);
+  font-size: 0.84rem;
+  line-height: 1.75;
+}
+
+.article-cta__actions {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 13rem;
+}
+
+.article-cta__actions .button {
+  width: 100%;
+}
+
+.article-cta__actions .button--secondary {
+  border-color: rgba(248, 246, 240, 0.28);
+  color: var(--ivory);
 }
 
 .back-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
   margin-top: 2rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(17, 24, 50, 0.18);
   color: var(--forest);
-  font-size: .72rem;
-  font-weight: 700;
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
+.back-link span {
+  color: var(--sand-dark);
+}
+
+@media (max-width: 900px) {
+  .blog-post__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-post__toc {
+    position: static;
+    width: min(100%, 42rem);
+  }
+
+  .blog-post__toc-links {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .article-cta {
+    grid-template-columns: 1fr;
+  }
+
+  .article-cta__actions {
+    width: min(100%, 20rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .post-meta--hero {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .post-meta--hero>div {
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .blog-post__toc-links {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-post__section {
+    grid-template-columns: 2.4rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 3rem 0;
+  }
+
+  .blog-post__section h2 {
+    font-size: clamp(2rem, 9vw, 2.8rem);
+  }
+
+  .blog-post__section p {
+    font-size: 0.9rem;
+  }
+
+  .article-cta {
+    padding: 1.5rem;
+  }
+
+  .article-cta h2 {
+    font-size: clamp(2.5rem, 11vw, 3.8rem);
+  }
+
+  .article-cta__actions {
+    width: 100%;
+  }
 }
 
 .legal-hero {
