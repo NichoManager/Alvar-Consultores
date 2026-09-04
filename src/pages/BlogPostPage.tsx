@@ -8,6 +8,8 @@ import { InternalHero } from '../components/ui/InternalHero';
 import { getArticleBySlug } from '../data/articles';
 import { formatDate } from '../utils/contact';
 
+const SITE_URL = 'https://www.alvarconsultoresinmobiliarios.es';
+
 export function BlogPostPage() {
   const { slug = '' } = useParams();
   const article = getArticleBySlug(slug);
@@ -16,7 +18,14 @@ export function BlogPostPage() {
     return <Navigate to="/blog" replace />;
   }
 
-  const articleUrl = `https://www.alvarconsultoresinmobiliarios.es/blog/${article.slug}`;
+  const articlePath = `/blog/${article.slug}`;
+  const articleUrl = `${SITE_URL}${articlePath}`;
+
+  const seoTitle =
+    article.seoTitle ?? `${article.title} | Alvar Consultores`;
+
+  const seoDescription =
+    article.seoDescription ?? article.excerpt;
 
   const breadcrumbs = [
     { label: 'Inicio', to: '/' },
@@ -31,11 +40,9 @@ export function BlogPostPage() {
       '@type': 'ListItem',
       position: index + 1,
       name: item.label,
-      ...(item.to
-        ? {
-            item: `https://www.alvarconsultoresinmobiliarios.es${item.to}`,
-          }
-        : {}),
+      item: item.to
+        ? `${SITE_URL}${item.to}`
+        : articleUrl,
     })),
   };
 
@@ -43,28 +50,40 @@ export function BlogPostPage() {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,
+    description: seoDescription,
     datePublished: article.date,
-    description: article.excerpt,
-    mainEntityOfPage: articleUrl,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': articleUrl,
+    },
+    url: articleUrl,
+    articleSection: article.category,
+    inLanguage: 'es-ES',
     author: {
       '@type': 'Organization',
       name: 'Alvar Consultores Inmobiliarios',
+      url: SITE_URL,
     },
     publisher: {
       '@type': 'Organization',
       name: 'Alvar Consultores Inmobiliarios',
+      url: SITE_URL,
     },
+    ...(article.image
+      ? {
+          image: `${SITE_URL}${article.image}`,
+        }
+      : {}),
   };
 
   return (
     <>
-  <SeoHead
-  title={article.seoTitle ?? `${article.title} | Alvar Consultores`}
-  description={article.seoDescription ?? article.excerpt}
-  path={`/blog/${article.slug}`}
-  type="article"
-  noIndex
-/>
+      <SeoHead
+        title={seoTitle}
+        description={seoDescription}
+        path={articlePath}
+        type="article"
+      />
 
       <JsonLd data={breadcrumbSchema} />
       <JsonLd data={articleSchema} />
@@ -74,7 +93,10 @@ export function BlogPostPage() {
           eyebrow={article.category}
           title={article.title}
           text={article.excerpt}
-          image="/images/alvar/heroes/hero-blog-inmobiliario.webp"
+          image={
+            article.image ??
+            '/images/alvar/heroes/hero-blog-inmobiliario.webp'
+          }
           meta={<Breadcrumbs items={breadcrumbs} />}
           aside={
             <div className="post-meta post-meta--hero">
@@ -126,9 +148,13 @@ export function BlogPostPage() {
 
                 <div className="blog-post__content-meta">
                   <span>{article.category}</span>
+
                   <i aria-hidden="true" />
+
                   <span>{formatDate(article.date)}</span>
+
                   <i aria-hidden="true" />
+
                   <span>{article.readingTime} de lectura</span>
                 </div>
               </header>
@@ -148,7 +174,9 @@ export function BlogPostPage() {
                       <h2>{section.title}</h2>
 
                       {section.paragraphs.map((paragraph) => (
-                        <p key={paragraph}>{paragraph}</p>
+                        <p key={paragraph}>
+                          {paragraph}
+                        </p>
                       ))}
                     </div>
                   </section>

@@ -17,7 +17,6 @@ export function BlogPage() {
         title="Blog inmobiliario en Madrid | Alvar Consultores"
         description="Guías sobre compra, venta, alquiler, valoración e inversión inmobiliaria en Madrid capital y alrededores."
         path="/blog"
-        noIndex
       />
 
       <InternalHero
