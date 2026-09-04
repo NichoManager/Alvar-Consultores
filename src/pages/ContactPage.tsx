@@ -85,18 +85,9 @@ export function ContactPage() {
                   href={`tel:${business.phoneMobileHref}`}
                   className="contact-channel contact-channel--primary"
                 >
-                  <span>Móvil comercial</span>
+                  <span>Contacto directo</span>
                   <strong>{business.phoneMobile}</strong>
                   <small>Hablar directamente con Alvar ↗</small>
-                </a>
-
-                <a
-                  href={`tel:${business.phoneOfficeHref}`}
-                  className="contact-channel"
-                >
-                  <span>Oficina</span>
-                  <strong>{business.phoneOffice}</strong>
-                  <small>Llamar a la oficina ↗</small>
                 </a>
               </div>
 

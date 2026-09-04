@@ -49,7 +49,7 @@ export function HomePage() {
             addressLocality: 'Madrid',
             addressCountry: 'ES',
           },
-          telephone: business.phoneOfficeHref,
+          telephone: business.phoneMobileHref,
           areaServed: business.areas,
         }}
       />

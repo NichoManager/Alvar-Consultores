@@ -1,8 +1,8 @@
 export const business = {
   name: 'Alvar Consultores Inmobiliarios',
   legalName: 'Alvar Consultores Inmobiliarios, S.L.',
-  phoneOffice: '910 06 29 44',
-  phoneOfficeHref: '+34910062944',
+  phone: '632 97 16 74',
+  phoneHref: '+34632971674',
   phoneMobile: '632 97 16 74',
   phoneMobileHref: '+34632971674',
   addressLine1: 'Calle Ríos Rosas 42',

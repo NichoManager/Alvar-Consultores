@@ -25,13 +25,9 @@ export function LocationBlock() {
 
             <div className="location-block__contact">
               <span className="location-block__label">Contacto directo</span>
-              <a href={`tel:${business.phoneOfficeHref}`} aria-label={`Llamar al teléfono de oficina ${business.phoneOffice}`}>
-                <span>{business.phoneOffice}</span>
-                <small>Oficina</small>
-              </a>
-              <a href={`tel:${business.phoneMobileHref}`} aria-label={`Llamar al teléfono móvil ${business.phoneMobile}`}>
+              <a href={`tel:${business.phoneMobileHref}`} aria-label={`Llamar al teléfono ${business.phoneMobile}`}>
                 <span>{business.phoneMobile}</span>
-                <small>Móvil</small>
+                <small>Llamar directamente</small>
               </a>
             </div>
           </div>
