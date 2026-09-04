@@ -1,5 +1,6 @@
 import { SeoHead } from '../components/seo/SeoHead';
 import { Container } from '../components/ui/Container';
+import { InternalHero } from '../components/ui/InternalHero';
 
 type LegalKind = 'legal' | 'privacy' | 'cookies';
 
@@ -12,5 +13,5 @@ const content: Record<LegalKind, { title: string; intro: string; sections: Array
 export function LegalPage({ kind }: { kind: LegalKind }) {
   const page = content[kind];
   const path = kind === 'legal' ? '/aviso-legal' : `/${kind === 'privacy' ? 'privacidad' : 'cookies'}`;
-  return <><SeoHead title={`${page.title} | Alvar Consultores Inmobiliarios`} description={page.intro} path={path} /><header className="legal-hero"><Container><p className="eyebrow">INFORMACIÓN LEGAL</p><h1>{page.title}</h1><p>{page.intro}</p></Container></header><section className="legal-content section-pad"><Container><div className="legal-warning">Documento provisional · pendiente de revisión legal y datos definitivos.</div>{page.sections.map(([title,text]) => <section key={title}><h2>{title}</h2><p>{text}</p></section>)}</Container></section></>;
+  return <><SeoHead title={`${page.title} | Alvar Consultores Inmobiliarios`} description={page.intro} path={path} /><InternalHero eyebrow="INFORMACIÓN LEGAL" title={page.title} text={page.intro} image="/images/alvar/heroes/hero-legal-alvar.webp" compact aside={<span className="internal-hero__quote">Información corporativa</span>} /><section className="legal-content section-pad"><Container><div className="legal-warning">Documento provisional · pendiente de revisión legal y datos definitivos.</div>{page.sections.map(([title,text]) => <section key={title}><h2>{title}</h2><p>{text}</p></section>)}</Container></section></>;
 }
