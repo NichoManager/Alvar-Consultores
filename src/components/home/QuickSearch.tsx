@@ -19,7 +19,7 @@ export function QuickSearch() {
     }
 
     const query = params.toString();
-    navigate(query ? `/inmuebles?${query}` : '/inmuebles');
+    navigate(query ? `/inmuebles?${query}` : '/inmuebles?operation=venta');
   };
 
   return (
