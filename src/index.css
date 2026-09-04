@@ -4359,6 +4359,396 @@ em {
   box-shadow: none;
 }
 
+/* Additional services */
+.additional-services {
+  position: relative;
+  overflow: hidden;
+  border-block: 1px solid rgba(17, 24, 50, 0.1);
+  background: var(--white);
+}
+
+.additional-services::before {
+  content: '';
+  position: absolute;
+  top: -12rem;
+  right: -12rem;
+  width: 28rem;
+  height: 28rem;
+  border: 1px solid rgba(184, 148, 77, 0.14);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.additional-services__intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(20rem, 0.75fr);
+  gap: clamp(3rem, 7vw, 7rem);
+  align-items: end;
+}
+
+.additional-services__intro h2 {
+  max-width: 56rem;
+  margin: 0;
+  color: var(--forest);
+  font: 500 clamp(3.2rem, 5.4vw, 5.8rem) / 0.94 'Cormorant Garamond', serif;
+  letter-spacing: -0.045em;
+}
+
+.additional-services__intro h2 em {
+  color: var(--sand-dark);
+}
+
+.additional-services__intro > p {
+  margin: 0;
+  padding: 1.5rem 0 0 1.75rem;
+  border-top: 1px solid rgba(17, 24, 50, 0.16);
+  border-left: 1px solid rgba(184, 148, 77, 0.48);
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.additional-services__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: clamp(3.5rem, 6vw, 6rem);
+  border-block: 1px solid rgba(17, 24, 50, 0.15);
+}
+
+.additional-service-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 29rem;
+  flex-direction: column;
+  padding: clamp(2rem, 3.5vw, 3.5rem);
+  overflow: hidden;
+  background: transparent;
+  transition: background-color 0.35s var(--ease);
+}
+
+.additional-service-card + .additional-service-card {
+  border-left: 1px solid rgba(17, 24, 50, 0.15);
+}
+
+.additional-service-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 0;
+  height: 2px;
+  background: var(--sand);
+  transition: width 0.4s var(--ease);
+}
+
+.additional-service-card:hover {
+  background: rgba(248, 246, 240, 0.72);
+}
+
+.additional-service-card:hover::before {
+  width: 100%;
+}
+
+.additional-service-card__number {
+  color: rgba(17, 24, 50, 0.2);
+  font: 500 clamp(4.5rem, 7vw, 7rem) / 0.8 'Cormorant Garamond', serif;
+  letter-spacing: -0.07em;
+  transition: color 0.35s var(--ease);
+}
+
+.additional-service-card:hover .additional-service-card__number {
+  color: rgba(124, 93, 41, 0.52);
+}
+
+.additional-service-card__content {
+  margin-top: auto;
+  padding-top: 3rem;
+}
+
+.additional-service-card h3 {
+  margin: 0;
+  color: var(--forest);
+  font: 500 clamp(2.25rem, 3vw, 3.25rem) / 0.95 'Cormorant Garamond', serif;
+  letter-spacing: -0.035em;
+}
+
+.additional-service-card p {
+  margin: 1.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.75;
+}
+
+.additional-service-card__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 3.25rem;
+  margin-top: 2rem;
+  padding: 0.75rem 0;
+  border: 0;
+  border-top: 1px solid rgba(17, 24, 50, 0.2);
+  background: transparent;
+  color: var(--forest);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.additional-service-card__cta span:last-child {
+  color: var(--sand-dark);
+  font-size: 1rem;
+  transition: transform 0.25s var(--ease);
+}
+
+.additional-service-card__cta:hover span:last-child {
+  transform: translate(0.2rem, -0.2rem);
+}
+
+/* Accessible service modal */
+.service-modal {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-overlay) + 10);
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  overflow: hidden;
+  background: rgba(16, 20, 38, 0.78);
+  backdrop-filter: blur(4px);
+}
+
+.service-modal__panel {
+  width: min(100%, 66rem);
+  max-height: calc(100dvh - clamp(2rem, 6vw, 5rem));
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid rgba(184, 148, 77, 0.75);
+  outline: none;
+  background: var(--ivory);
+  box-shadow: 0 30px 90px rgba(7, 10, 22, 0.36);
+}
+
+.service-modal__header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: clamp(1.5rem, 3vw, 2.75rem);
+  border-bottom: 1px solid rgba(184, 148, 77, 0.4);
+  background: var(--forest);
+}
+
+.service-modal__header .eyebrow {
+  margin-bottom: 0.65rem;
+  color: var(--sand);
+}
+
+.service-modal__header h2 {
+  margin: 0;
+  color: var(--ivory);
+  font: 500 clamp(2.35rem, 4vw, 3.8rem) / 0.95 'Cormorant Garamond', serif;
+  letter-spacing: -0.04em;
+}
+
+.service-modal__close {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid rgba(248, 246, 240, 0.28);
+  background: transparent;
+  color: var(--ivory);
+  cursor: pointer;
+  transition:
+    border-color 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+
+.service-modal__close:hover {
+  border-color: var(--sand);
+  background: rgba(248, 246, 240, 0.08);
+}
+
+.service-modal__close span {
+  font: 300 1.8rem / 1 'Manrope', sans-serif;
+}
+
+.service-modal__body {
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+}
+
+.service-request-form {
+  background: transparent;
+}
+
+.service-request-form__intro {
+  grid-column: 1 / -1;
+  max-width: 45rem;
+  margin: 0 0 0.75rem;
+  padding: 0 0 1.5rem 1.25rem;
+  border-bottom: 1px solid rgba(17, 24, 50, 0.12);
+  border-left: 1px solid var(--sand);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.service-request-form__address {
+  grid-column: 1 / -1;
+  min-width: 0;
+  margin: 0.5rem 0;
+  padding: 1.6rem 0 0;
+  border: 0;
+  border-top: 1px solid rgba(17, 24, 50, 0.14);
+}
+
+.service-request-form__address legend {
+  padding: 0 1rem 0 0;
+  color: var(--sand-dark);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.service-request-form__address-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 0.55fr 1fr;
+  gap: 1.1rem;
+}
+
+.service-request-form .form-field input,
+.service-request-form .form-field select,
+.service-request-form .form-field textarea {
+  background: var(--white);
+}
+
+.service-request-form > .button {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 0.35rem;
+}
+
+.service-request-form .form-note {
+  text-align: center;
+}
+
+.service-modal .success-message {
+  min-height: 20rem;
+  padding: 1rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .additional-services__intro {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .additional-services__intro > p {
+    max-width: 45rem;
+  }
+
+  .additional-services__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .additional-service-card {
+    min-height: 25rem;
+  }
+
+  .additional-service-card:nth-child(3) {
+    grid-column: 1 / -1;
+    min-height: 20rem;
+    border-top: 1px solid rgba(17, 24, 50, 0.15);
+    border-left: 0;
+  }
+
+  .service-request-form__address-grid {
+    grid-template-columns: 1fr 0.55fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .additional-services__intro h2 {
+    font-size: clamp(2.65rem, 12vw, 3.8rem);
+  }
+
+  .additional-services__intro > p {
+    padding-left: 1rem;
+  }
+
+  .additional-services__grid {
+    grid-template-columns: 1fr;
+    margin-top: 3rem;
+  }
+
+  .additional-service-card,
+  .additional-service-card:nth-child(3) {
+    grid-column: auto;
+    min-height: 23rem;
+    padding: 1.75rem 0.5rem;
+    border-left: 0;
+  }
+
+  .additional-service-card + .additional-service-card,
+  .additional-service-card:nth-child(3) {
+    border-top: 1px solid rgba(17, 24, 50, 0.15);
+  }
+
+  .additional-service-card__cta {
+    min-height: 3.5rem;
+  }
+
+  .service-modal {
+    place-items: stretch;
+    padding: 0.6rem;
+  }
+
+  .service-modal__panel {
+    width: 100%;
+    max-height: calc(100dvh - 1.2rem);
+  }
+
+  .service-modal__header {
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .service-modal__header h2 {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+
+  .service-modal__close {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .service-modal__body {
+    padding: 1.25rem;
+  }
+
+  .service-request-form__intro {
+    padding: 0 0 1.25rem 1rem;
+  }
+
+  .service-request-form__address-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Forms */
 .premium-form {
   padding: clamp(1.5rem, 3vw, 3rem);
