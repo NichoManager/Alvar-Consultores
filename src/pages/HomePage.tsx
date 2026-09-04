@@ -1,5 +1,6 @@
 import { ContactForm } from '../components/forms/ContactForm';
 import { ValuationForm } from '../components/forms/ValuationForm';
+import { AdditionalServices } from '../components/home/AdditionalServices';
 import { Hero } from '../components/home/Hero';
 import { QuickSearch } from '../components/home/QuickSearch';
 import { ReviewCard } from '../components/home/ReviewCard';
@@ -96,107 +97,6 @@ export function HomePage() {
           </Reveal>
 
           <PropertyGrid properties={featuredProperties} editorial />
-        </Container>
-      </section>
-
-      <section className="about-home section-pad">
-        <Container className="about-home__grid">
-          <Reveal className="about-home__visual">
-            <div className="about-home__media-card">
-              <ArchitecturalVisual
-                variant="facade"
-                label="Composición editorial inspirada en arquitectura residencial"
-              />
-
-              <div className="about-home__seal" aria-hidden="true">
-                <strong>18+</strong>
-                <span>años</span>
-              </div>
-
-              <div className="about-home__caption">
-                <span>Madrid capital y alrededores</span>
-                <p>Valoración, estrategia, negociación y firma.</p>
-              </div>
-            </div>
-
-            <div className="about-home__note">
-              <span>ALVAR CONSULTORES</span>
-              <p>Criterio inmobiliario, trato directo y acompañamiento real.</p>
-            </div>
-          </Reveal>
-
-          <Reveal className="about-home__content">
-            <SectionHeading
-              eyebrow="ALVAR CONSULTORES"
-              title={
-                <>
-                  Experiencia inmobiliaria.
-                  <br />
-                  <em>Trato personal.</em>
-                </>
-              }
-            />
-
-            <p>
-              Comprar, vender o alquilar una propiedad no debería sentirse como una
-              sucesión de dudas. En Alvar Consultores Inmobiliarios ordenamos el
-              proceso desde el primer contacto: valoración, estrategia, visitas,
-              negociación, documentación y firma.
-            </p>
-
-            <p>
-              Más de 18 años de experiencia nos permiten combinar conocimiento del
-              mercado con una forma de trabajar cercana, transparente y centrada en
-              proteger cada decisión importante.
-            </p>
-
-            <div className="about-home__facts" aria-label="Datos destacados de Alvar Consultores">
-              <div>
-                <strong>18+</strong>
-                <span>años de experiencia</span>
-              </div>
-              <div>
-                <strong>5,0</strong>
-                <span>valoración en Google</span>
-              </div>
-              <div>
-                <strong>1</strong>
-                <span>interlocutor de confianza</span>
-              </div>
-            </div>
-
-            <div className="about-home__actions">
-              <Button to="/nosotros" variant="secondary">
-                Conoce nuestro enfoque
-              </Button>
-              <a href={`tel:${business.phoneMobileHref}`} className="text-link">
-                Hablar con Alvar ↗
-              </a>
-            </div>
-          </Reveal>
-        </Container>
-      </section>
-
-      <section id="servicios" className="services-home section-pad">
-        <Container>
-          <Reveal>
-            <SectionHeading
-              eyebrow="SERVICIOS"
-              title={
-                <>
-                  Una operación.
-                  <br />
-                  <em>Cada decisión coordinada.</em>
-                </>
-              }
-            />
-          </Reveal>
-
-          <div className="services-list">
-            {services.map(([number, title, text]) => (
-              <ServiceBlock key={number} number={number} title={title} text={text} />
-            ))}
-          </div>
         </Container>
       </section>
 
@@ -326,6 +226,31 @@ export function HomePage() {
           </Reveal>
         </Container>
       </section>
+
+      <section id="servicios" className="services-home section-pad">
+        <Container>
+          <Reveal>
+            <SectionHeading
+              eyebrow="SERVICIOS"
+              title={
+                <>
+                  Una operación.
+                  <br />
+                  <em>Cada decisión coordinada.</em>
+                </>
+              }
+            />
+          </Reveal>
+
+          <div className="services-list">
+            {services.map(([number, title, text]) => (
+              <ServiceBlock key={number} number={number} title={title} text={text} />
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      <AdditionalServices />
 
       <section id="proceso" className="process-section section-pad">
         <Container>
