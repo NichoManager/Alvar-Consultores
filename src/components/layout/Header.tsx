@@ -22,9 +22,10 @@ export function Header() {
   const location = useLocation();
   const closeMenu = useCallback(() => setMenuOpen(false), []);
   const isCurrent = (to: string) => {
-    const target = new URL(to, window.location.origin);
+    const target = new URL(to, 'https://alvar.local');
     if (location.pathname !== target.pathname) return false;
-    if (target.search && location.search !== target.search) return false;
+    const currentSearch = new URLSearchParams(location.search);
+    if ([...target.searchParams].some(([key, value]) => currentSearch.get(key) !== value)) return false;
     if (target.hash && location.hash !== target.hash) return false;
     return true;
   };
