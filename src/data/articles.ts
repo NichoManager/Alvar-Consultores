@@ -136,7 +136,7 @@ export const articles: Article[] = [
     excerpt:
       'Presupuesto, zona, estado de la vivienda y documentación: las decisiones que conviene ordenar antes de comprar un piso en Móstoles.',
 
-    date: '2026-08-20',
+    date: '2026-09-04',
 
     readingTime: '8 min',
 
