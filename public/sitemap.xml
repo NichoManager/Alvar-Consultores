@@ -1,10 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.alvarconsultoresinmobiliarios.es/</loc></url>
-  <url><loc>https://www.alvarconsultoresinmobiliarios.es/inmuebles?operation=venta</loc></url>
-  <url><loc>https://www.alvarconsultoresinmobiliarios.es/vender</loc></url>
-  <url><loc>https://www.alvarconsultoresinmobiliarios.es/inmuebles?operation=alquiler</loc></url>
-  <url><loc>https://www.alvarconsultoresinmobiliarios.es/servicios</loc></url>
-  <url><loc>https://www.alvarconsultoresinmobiliarios.es/nosotros</loc></url>
-  <url><loc>https://www.alvarconsultoresinmobiliarios.es/contacto</loc></url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/inmuebles?operation=venta</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/vender</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/inmuebles?operation=alquiler</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/servicios</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/nosotros</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/opiniones</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/contacto</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/blog</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/blog/como-vender-vivienda-pinto</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/blog/comprar-piso-mostoles</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/blog/calcular-precio-venta-vivienda</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/blog/documentos-vender-vivienda</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/blog/invertir-vivienda-alquiler</loc>
+  </url>
+
+  <url>
+    <loc>https://www.alvarconsultoresinmobiliarios.es/blog/mercado-inmobiliario-sur-madrid</loc>
+  </url>
+
 </urlset>
