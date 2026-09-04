@@ -8,49 +8,107 @@ const leftLinks = [
   ['Comprar', '/inmuebles?operation=venta'],
   ['Vender', '/vender'],
   ['Alquilar', '/inmuebles?operation=alquiler'],
-];
+] as const;
 
 const rightLinks = [
   ['Servicios', '/servicios'],
   ['Blog', '/blog'],
   ['Contacto', '/contacto'],
-];
+] as const;
+
+function isNavigationLinkCurrent(
+  pathname: string,
+  search: string,
+  hash: string,
+  to: string,
+) {
+  const target = new URL(to, 'https://alvar.local');
+
+  if (pathname !== target.pathname) {
+    return false;
+  }
+
+  const currentSearch = new URLSearchParams(search);
+
+  const matchesSearch = [...target.searchParams].every(
+    ([key, value]) => currentSearch.get(key) === value,
+  );
+
+  if (!matchesSearch) {
+    return false;
+  }
+
+  if (target.hash && hash !== target.hash) {
+    return false;
+  }
+
+  return true;
+}
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
   const location = useLocation();
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
-  const isCurrent = (to: string) => {
-    const target = new URL(to, 'https://alvar.local');
-    if (location.pathname !== target.pathname) return false;
-    const currentSearch = new URLSearchParams(location.search);
-    if ([...target.searchParams].some(([key, value]) => currentSearch.get(key) !== value)) return false;
-    if (target.hash && location.hash !== target.hash) return false;
-    return true;
-  };
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => window.removeEventListener('scroll', onScroll);
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
   }, []);
 
-  useEffect(() => setMenuOpen(false), [location.pathname]);
+  const isCurrent = (to: string) =>
+    isNavigationLinkCurrent(
+      location.pathname,
+      location.search,
+      location.hash,
+      to,
+    );
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 24);
+    };
+
+    onScroll();
+
+    window.addEventListener('scroll', onScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname, location.search, location.hash]);
 
   return (
     <>
-      <header className={`site-header is-over-hero ${scrolled ? 'is-scrolled' : ''}`}>
+      <header
+        className={`site-header is-over-hero ${
+          scrolled ? 'is-scrolled' : ''
+        }`}
+      >
         <Container className="site-header__inner">
-          <nav className="desktop-nav desktop-nav--left" aria-label="Navegación principal">
-            {leftLinks.map(([label, to]) => (
-              <Link key={to} to={to} className={isCurrent(to) ? 'active' : undefined} aria-current={isCurrent(to) ? 'page' : undefined}>
-                {label}
-              </Link>
-            ))}
+          <nav
+            className="desktop-nav desktop-nav--left"
+            aria-label="Navegación principal"
+          >
+            {leftLinks.map(([label, to]) => {
+              const active = isCurrent(to);
+
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className={active ? 'active' : undefined}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
 
           <Link
@@ -66,15 +124,30 @@ export function Header() {
             />
           </Link>
 
-          <nav className="desktop-nav desktop-nav--right" aria-label="Navegación complementaria">
-            {rightLinks.map(([label, to]) => (
-              <Link key={to} to={to} className={isCurrent(to) ? 'active' : undefined} aria-current={isCurrent(to) ? 'page' : undefined}>
-                {label}
-              </Link>
-            ))}
+          <nav
+            className="desktop-nav desktop-nav--right"
+            aria-label="Navegación complementaria"
+          >
+            {rightLinks.map(([label, to]) => {
+              const active = isCurrent(to);
+
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className={active ? 'active' : undefined}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
 
-          <Button to="/vender#valoracion" className="header-cta">
+          <Button
+            to="/vender#valoracion"
+            className="header-cta"
+          >
             Valora tu inmueble
           </Button>
 
@@ -82,17 +155,20 @@ export function Header() {
             className="menu-button"
             type="button"
             onClick={() => setMenuOpen(true)}
-            aria-label="Abrir menú"
+            aria-label="Abrir menú de navegación"
             aria-controls="mobile-navigation"
             aria-expanded={menuOpen}
           >
-            <span />
-            <span />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
           </button>
         </Container>
       </header>
 
-      <MobileNavigation open={menuOpen} onClose={closeMenu} />
+      <MobileNavigation
+        open={menuOpen}
+        onClose={closeMenu}
+      />
     </>
   );
 }
