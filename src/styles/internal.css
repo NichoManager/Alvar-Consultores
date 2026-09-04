@@ -1320,6 +1320,8 @@
   .services-page__closing-actions .button {
     width: 100%;
   }
+}
+
 /* Services page correction */
 .services-page {
   position: relative;
