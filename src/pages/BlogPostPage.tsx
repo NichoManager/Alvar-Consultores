@@ -58,9 +58,9 @@ export function BlogPostPage() {
 
   return (
     <>
-    <SeoHead
-  title={`${article.title} | Alvar Consultores`}
-  description={article.excerpt}
+  <SeoHead
+  title={article.seoTitle ?? `${article.title} | Alvar Consultores`}
+  description={article.seoDescription ?? article.excerpt}
   path={`/blog/${article.slug}`}
   type="article"
   noIndex
