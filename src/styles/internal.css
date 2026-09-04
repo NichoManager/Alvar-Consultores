@@ -1104,7 +1104,87 @@
 .review-grid--page .review-card {
   min-height: 25rem;
 }
+.reviews-page__google {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  margin-top: clamp(2.5rem, 4vw, 4rem);
+  padding: clamp(1.4rem, 2.5vw, 2rem) 0;
+  border-top: 1px solid rgba(17, 24, 50, 0.14);
+  border-bottom: 1px solid rgba(17, 24, 50, 0.14);
+}
 
+.reviews-page__google > div {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.reviews-page__google > div > span {
+  color: var(--sand-dark);
+  font-size: 0.56rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.reviews-page__google strong {
+  color: var(--forest);
+  font: 500 clamp(1.8rem, 2.8vw, 2.5rem) / 1
+    'Cormorant Garamond', serif;
+}
+
+.reviews-page__google p {
+  max-width: 38rem;
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.65;
+}
+
+.reviews-page__google-link {
+  display: inline-flex;
+  min-height: 3.4rem;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 0.85rem 1.35rem;
+  border: 1px solid var(--forest);
+  background: transparent;
+  color: var(--forest);
+  font-size: 0.7rem;
+  font-weight: 800;
+  transition:
+    background 0.25s var(--ease),
+    color 0.25s var(--ease);
+}
+
+.reviews-page__google-link span {
+  color: var(--sand-dark);
+  transition: transform 0.25s var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .reviews-page__google-link:hover {
+    background: var(--forest);
+    color: var(--ivory);
+  }
+
+  .reviews-page__google-link:hover span {
+    color: var(--sand);
+    transform: translate(0.15rem, -0.15rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .reviews-page__google {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
+  .reviews-page__google-link {
+    width: 100%;
+  }
+}
 .reviews-page__closing {
   position: relative;
   display: grid;

@@ -111,6 +111,30 @@ export function ReviewsPage() {
             ))}
           </div>
 
+          <div className="reviews-page__google">
+            <div>
+              <span>RESEÑAS VERIFICABLES</span>
+
+              <strong>¿Quieres leer más experiencias?</strong>
+
+              <p>
+                Consulta las opiniones publicadas directamente por clientes en
+                nuestro perfil de Google.
+              </p>
+            </div>
+
+            <a
+              href="https://www.google.com/search?sca_esv=f47b73689c376517&rlz=1C1FKPE_esES1220ES1220&sxsrf=APpeQnuVt3iqVFO2ql-DXS4vvhxMM1x4ww:1788520072271&q=Alvar+Consultores+Inmobiliarios&si=APenkKm7iecQ4G6P-TsbSMFKIQtv3EFIqRAFw-i8uEbk55Z-_2I5QN3hduKrdma8usSFv6bK9rfywQNbVTnlf-Dx6BqPH_ZfOmH1WSEUX_fiiBcTa9o2Fuw%3D&uds=AJ5uw1_PlqngxRz_qZNSnVfaVEidrbql-Z0kHx4qSPmXO7rrECf9QA6SFL2ZJ_RVeamYXZI393NBBlHlK4nwVFH6KR_D3kwFbGvRz-IQjqgLK365PO5hvgKe3fYo2gTyxKwHCmFgBAFN&sa=X&sqi=2&ved=2ahUKEwiL9tK85NSWAxUlK_sDHYbQN78Q3PALegQINhAF&biw=1920&bih=989&dpr=1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="reviews-page__google-link"
+              aria-label="Ver más opiniones de Alvar Consultores Inmobiliarios en Google"
+            >
+              Ver más opiniones en Google
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+
           <aside
             className="reviews-page__closing"
             aria-label="Contacto con Alvar Consultores"
