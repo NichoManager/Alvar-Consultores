@@ -13,12 +13,16 @@ import { whatsappUrl } from '../utils/contact';
 export function PropertyDetailPage() {
   const { slug = '' } = useParams();
   const property = getPropertyBySlug(slug);
-  if (!property) return <Navigate to="/inmuebles" replace />;
+  if (!property) return <Navigate to="/inmuebles?operation=venta" replace />;
+
+  const isRent = property.operation?.toLowerCase().includes('alquiler');
+  const operationLabel = isRent ? 'Alquilar' : 'Comprar';
+  const operationTo = isRent ? '/inmuebles?operation=alquiler' : '/inmuebles?operation=venta';
 
   const message = `Hola, estoy interesado/a en el inmueble ${property.title}. ¿Podéis darme más información?`;
   const breadcrumbs = [
     { label: 'Inicio', to: '/' },
-    { label: 'Inmuebles', to: '/inmuebles' },
+    { label: operationLabel, to: operationTo },
     { label: property.title },
   ];
   const breadcrumbSchema = {
