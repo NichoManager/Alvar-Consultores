@@ -37,8 +37,8 @@ export function Hero() {
 
           <div className="button-row hero-animate hero-animate--4">
             <Button to="/#valoracion">Solicitar valoración</Button>
-            <Button to="/inmuebles" variant="secondary">
-              Ver inmuebles
+            <Button to="/inmuebles?operation=venta" variant="secondary">
+              Ver inmuebles en venta
             </Button>
           </div>
 
