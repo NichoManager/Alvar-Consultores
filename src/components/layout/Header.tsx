@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Container';
 import { MobileNavigation } from './MobileNavigation';
 
 const leftLinks = [
-  ['Inmuebles', '/inmuebles'],
-  ['Servicios', '/servicios'],
-  ['Nosotros', '/nosotros'],
+  ['Comprar', '/inmuebles?operation=venta'],
+  ['Vender', '/#valoracion'],
+  ['Alquilar', '/inmuebles?operation=alquiler'],
 ];
 
 const rightLinks = [
-  ['Opiniones', '/opiniones'],
+  ['Servicios', '/servicios'],
   ['Blog', '/blog'],
   ['Contacto', '/contacto'],
 ];
@@ -20,8 +20,14 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
-  const isHome = location.pathname === '/';
   const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const isCurrent = (to: string) => {
+    const target = new URL(to, window.location.origin);
+    if (location.pathname !== target.pathname) return false;
+    if (target.search && location.search !== target.search) return false;
+    if (target.hash && location.hash !== target.hash) return false;
+    return true;
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -36,13 +42,13 @@ export function Header() {
 
   return (
     <>
-      <header className={`site-header ${isHome ? 'is-over-hero' : ''} ${scrolled ? 'is-scrolled' : ''}`}>
+      <header className={`site-header is-over-hero ${scrolled ? 'is-scrolled' : ''}`}>
         <Container className="site-header__inner">
           <nav className="desktop-nav desktop-nav--left" aria-label="Navegación principal">
             {leftLinks.map(([label, to]) => (
-              <NavLink key={to} to={to}>
+              <Link key={to} to={to} className={isCurrent(to) ? 'active' : undefined} aria-current={isCurrent(to) ? 'page' : undefined}>
                 {label}
-              </NavLink>
+              </Link>
             ))}
           </nav>
 
@@ -61,9 +67,9 @@ export function Header() {
 
           <nav className="desktop-nav desktop-nav--right" aria-label="Navegación complementaria">
             {rightLinks.map(([label, to]) => (
-              <NavLink key={to} to={to}>
+              <Link key={to} to={to} className={isCurrent(to) ? 'active' : undefined} aria-current={isCurrent(to) ? 'page' : undefined}>
                 {label}
-              </NavLink>
+              </Link>
             ))}
           </nav>
 
