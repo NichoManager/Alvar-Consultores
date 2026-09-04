@@ -1,5 +1,10 @@
 export type PropertyOperation = 'Comprar' | 'Alquilar';
-export type PropertyStatus = 'Disponible' | 'Reservado' | 'Vendido' | 'Alquilado';
+
+export type PropertyStatus =
+  | 'Disponible'
+  | 'Reservado'
+  | 'Vendido'
+  | 'Alquilado';
 
 export interface Property {
   id: string;
@@ -37,7 +42,16 @@ export interface Article {
   date: string;
   readingTime: string;
   intro: string;
-  sections: Array<{ title: string; paragraphs: string[] }>;
+
+  seoTitle?: string;
+  seoDescription?: string;
+  image?: string;
+  imageAlt?: string;
+
+  sections: Array<{
+    title: string;
+    paragraphs: string[];
+  }>;
 }
 
 export interface Review {
