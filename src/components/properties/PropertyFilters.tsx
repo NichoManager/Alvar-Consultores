@@ -19,7 +19,7 @@ export function PropertyFilters({ value, onChange }: { value: FilterState; onCha
   };
   return (
     <div className="property-filters" aria-label="Filtros de inmuebles">
-      <label>Operación<select name="operation" value={value.operation} onChange={update}><option value="">Todas</option><option value="venta">Comprar</option><option value="alquiler">Alquilar</option></select></label>
+      <label>Operación<select name="operation" value={value.operation || 'venta'} onChange={update}><option value="venta">Comprar</option><option value="alquiler">Alquilar</option></select></label>
       <label>Zona<select name="city" value={value.city} onChange={update}><option value="">Todas</option><option>Madrid</option><option>Pinto</option><option>Móstoles</option></select></label>
       <label>Tipo<select name="type" value={value.type} onChange={update}><option value="">Todos</option><option value="piso">Piso</option><option value="casa">Casa</option><option value="atico">Ático</option><option value="estudio">Estudio</option><option value="local">Local</option></select></label>
       <label>Dormitorios<select name="bedrooms" value={value.bedrooms} onChange={update}><option value="">Cualquiera</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option></select></label>
