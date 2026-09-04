@@ -1011,7 +1011,9 @@
   .rental-owner-cta h2 {
     font-size: clamp(2.65rem, 12vw, 3.65rem);
   }
-  /* Services page final polish */
+}
+
+/* Services page final polish */
 .services-page {
   position: relative;
   overflow: hidden;
@@ -1660,5 +1662,4 @@
   .services-page__final-actions .button {
     width: 100%;
   }
-}
 }
