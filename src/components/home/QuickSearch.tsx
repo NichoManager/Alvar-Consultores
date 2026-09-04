@@ -88,15 +88,15 @@ export function QuickSearch() {
             </div>
 
             <div className="quick-search-console__field quick-search-console__field--wide">
-              <label htmlFor="quick-min-price">Precio mínimo</label>
-              <select id="quick-min-price" name="minPrice" defaultValue="0">
-                <option value="0">Sin mínimo</option>
-                <option value="150000">150.000 €</option>
-                <option value="250000">250.000 €</option>
-                <option value="400000">400.000 €</option>
-                <option value="600000">600.000 €</option>
-              </select>
-            </div>
+  <label htmlFor="quick-min-price">Precio mínimo</label>
+  <select id="quick-min-price" name="minPrice" defaultValue="">
+    <option value="">Sin mínimo</option>
+    <option value="150000">150.000 €</option>
+    <option value="250000">250.000 €</option>
+    <option value="400000">400.000 €</option>
+    <option value="600000">600.000 €</option>
+  </select>
+</div>
 
             <div className="quick-search-console__field quick-search-console__field--wide">
               <label htmlFor="quick-max-price">Precio máximo</label>
