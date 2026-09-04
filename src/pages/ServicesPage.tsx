@@ -1,5 +1,4 @@
 import { SeoHead } from '../components/seo/SeoHead';
-import { CTASection } from '../components/ui/CTASection';
 import { Button } from '../components/ui/Button';
 import { Container } from '../components/ui/Container';
 import { InternalHero } from '../components/ui/InternalHero';
@@ -9,17 +8,17 @@ const services = [
   {
     number: '01',
     title: 'Compra',
-    text: 'Definimos contigo las necesidades reales, filtramos oportunidades y revisamos cada decisión antes de avanzar.',
-    items: ['Selección y análisis', 'Negociación', 'Coordinación bancaria', 'Documentación y notaría'],
+    text: 'Te ayudamos a comprar con una búsqueda filtrada, análisis de mercado y revisión de cada decisión antes de avanzar.',
+    items: ['Búsqueda y selección', 'Análisis de zona', 'Negociación', 'Documentación y firma'],
     cta: 'Ver inmuebles en venta',
     to: '/inmuebles?operation=venta',
-    note: 'Para compradores que quieren decidir con datos, no por impulso.',
+    note: 'Para compradores que quieren decidir con calma, datos y acompañamiento.',
   },
   {
     number: '02',
     title: 'Venta',
-    text: 'Construimos una estrategia de comercialización coherente con el inmueble, su zona y el momento real del mercado.',
-    items: ['Valoración profesional', 'Estrategia de precio', 'Gestión de visitas', 'Negociación y firma'],
+    text: 'Definimos una estrategia de venta adaptada al inmueble, al momento del mercado y al perfil comprador adecuado.',
+    items: ['Valoración profesional', 'Estrategia de precio', 'Gestión de visitas', 'Negociación y cierre'],
     cta: 'Planificar la venta',
     to: '/vender',
     note: 'Para propietarios que quieren vender bien, no solo publicar un anuncio.',
@@ -27,20 +26,20 @@ const services = [
   {
     number: '03',
     title: 'Alquiler',
-    text: 'Acompañamos el proceso desde la valoración hasta la selección del inquilino y la formalización del contrato.',
-    items: ['Posicionamiento', 'Búsqueda de inquilinos', 'Evaluación de solvencia', 'Contrato y formalización'],
-    cta: 'Consultar un alquiler',
+    text: 'Acompañamos la operación desde la valoración hasta la selección del inquilino y la formalización del contrato.',
+    items: ['Precio de alquiler', 'Selección de inquilino', 'Solvencia', 'Contrato'],
+    cta: 'Consultar alquileres',
     to: '/inmuebles?operation=alquiler',
     note: 'Para alquilar con seguridad, documentación clara y seguimiento profesional.',
   },
   {
     number: '04',
     title: 'Consultoría',
-    text: 'Analizamos situaciones que necesitan criterio inmobiliario, documental, patrimonial o de inversión.',
-    items: ['Inversiones y herencias', 'Documentación registral', 'Valoración de activos', 'Análisis de oportunidad'],
+    text: 'Analizamos operaciones que requieren criterio inmobiliario, documental, patrimonial o de inversión.',
+    items: ['Herencias', 'VPO', 'Valoraciones', 'Inversión'],
     cta: 'Consultar una operación',
     to: '/contacto',
-    note: 'Para operaciones con más contexto, dudas legales o decisiones patrimoniales.',
+    note: 'Para situaciones con más contexto, dudas legales o decisiones patrimoniales.',
   },
 ] as const;
 
@@ -83,28 +82,28 @@ export function ServicesPage() {
 
             <p>
               Compra, venta, alquiler y consultoría abordados con el mismo método:
-              análisis, coordinación y acompañamiento hasta que cada decisión queda
-              resuelta.
+              escuchar, analizar, definir una estrategia y acompañar cada decisión
+              hasta que la operación queda resuelta.
             </p>
           </header>
 
-          <div className="services-page__promise" aria-label="Enfoque de trabajo">
+          <div className="services-page__method" aria-label="Método de trabajo">
             <div>
               <span>01</span>
-              <strong>Análisis previo</strong>
-              <p>Entendemos el inmueble, la zona, la situación y el objetivo real.</p>
+              <strong>Escuchamos</strong>
+              <p>Entendemos tu situación, el inmueble, la zona y el objetivo real.</p>
             </div>
 
             <div>
               <span>02</span>
-              <strong>Estrategia clara</strong>
-              <p>Definimos precio, tiempos, posicionamiento y próximos pasos.</p>
+              <strong>Analizamos</strong>
+              <p>Revisamos mercado, precio, demanda, documentación y oportunidades.</p>
             </div>
 
             <div>
               <span>03</span>
-              <strong>Acompañamiento</strong>
-              <p>Coordinamos visitas, negociación, documentación y firma.</p>
+              <strong>Acompañamos</strong>
+              <p>Coordinamos visitas, negociación, contrato, notaría y firma.</p>
             </div>
           </div>
 
@@ -123,11 +122,9 @@ export function ServicesPage() {
                     <h3 id={headingId}>{title}</h3>
                     <p>{text}</p>
 
-                    <div className="service-chapter__actions">
-                      <Button to={to} variant="text">
-                        {cta}
-                      </Button>
-                    </div>
+                    <Button to={to} variant="text">
+                      {cta}
+                    </Button>
                   </div>
 
                   <div className="service-chapter__side">
@@ -147,17 +144,21 @@ export function ServicesPage() {
             })}
           </div>
 
-          <aside className="services-page__closing" aria-label="Contacto para servicios inmobiliarios">
+          <aside className="services-page__final-cta" aria-label="Contacto para servicios inmobiliarios">
             <div>
-              <p className="eyebrow">¿No sabes por dónde empezar?</p>
-              <h2>Cuéntanos tu caso y ordenamos contigo la operación.</h2>
+              <p className="eyebrow">Hablemos de tu operación</p>
+              <h2>
+                Cuéntanos qué necesitas resolver
+                <br />
+                <em>y ordenamos los próximos pasos.</em>
+              </h2>
               <p>
-                Compra, venta, alquiler, herencia, valoración o inversión. Revisamos
+                Compra, venta, alquiler, valoración, herencia o inversión. Revisamos
                 tu situación y te indicamos el camino más razonable para avanzar.
               </p>
             </div>
 
-            <div className="services-page__closing-actions">
+            <div className="services-page__final-actions">
               <a href={`tel:${business.phoneMobileHref}`} className="services-page__phone">
                 {business.phoneMobile}
               </a>
@@ -169,8 +170,6 @@ export function ServicesPage() {
           </aside>
         </Container>
       </section>
-
-      <CTASection />
     </>
   );
 }
