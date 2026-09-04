@@ -3,26 +3,56 @@ import { Container } from './Container';
 
 export function LocationBlock() {
   return (
-    <section id="contacto" className="location-block section-pad">
-      <Container className="location-block__grid">
-        <div>
-          <p className="eyebrow">MADRID · RÍOS ROSAS</p>
-          <h2>Ríos Rosas, Madrid.<br />Hablemos de tu operación.</h2>
+    <section id="contacto" className="location-block section-pad" aria-labelledby="location-title">
+      <Container>
+        <div className="location-block__grid">
+          <div className="location-block__content">
+            <p className="eyebrow">PRESENCIA Y ÁREA DE TRABAJO</p>
+            <h2 id="location-title">Madrid como punto de partida. Alrededores como terreno de trabajo.</h2>
+            <p className="location-block__lead">
+              Trabajamos con clientes en Madrid capital, área metropolitana y municipios próximos, combinando lectura
+              local y acompañamiento personalizado.
+            </p>
+          </div>
+
+          <div className="location-block__meta">
+            <address className="location-block__address">
+              <span className="location-block__label">Oficina</span>
+              <strong>{business.addressLine1}</strong>
+              <span>{business.addressLine2}</span>
+              <span>{business.postalAddress}</span>
+            </address>
+
+            <div className="location-block__contact">
+              <span className="location-block__label">Contacto directo</span>
+              <a href={`tel:${business.phoneOfficeHref}`} aria-label={`Llamar al teléfono de oficina ${business.phoneOffice}`}>
+                <span>{business.phoneOffice}</span>
+                <small>Oficina</small>
+              </a>
+              <a href={`tel:${business.phoneMobileHref}`} aria-label={`Llamar al teléfono móvil ${business.phoneMobile}`}>
+                <span>{business.phoneMobile}</span>
+                <small>Móvil</small>
+              </a>
+            </div>
+          </div>
         </div>
-        <address>
-          <p>{business.addressLine1}</p>
-          <p>{business.addressLine2}</p>
-          <p>{business.postalAddress}</p>
-        </address>
-        <div className="location-block__contact">
-          <a href={`tel:${business.phoneOfficeHref}`}>{business.phoneOffice}</a>
-          <a href={`tel:${business.phoneMobileHref}`}>{business.phoneMobile}</a>
-        </div>
-        <div className="map-placeholder" role="img" aria-label="Ubicación aproximada de la oficina en Ríos Rosas, Madrid">
-          <span className="map-placeholder__road map-placeholder__road--one" />
-          <span className="map-placeholder__road map-placeholder__road--two" />
-          <span className="map-placeholder__pin">42</span>
-          <p>Ríos Rosas · Madrid</p>
+
+        <div
+          className="location-block__area"
+          role="img"
+          aria-label="Área de trabajo: Madrid capital, área metropolitana y municipios próximos"
+        >
+          <div className="location-block__area-copy">
+            <span>Área de trabajo</span>
+            <strong>Madrid capital</strong>
+            <p>Área metropolitana · Municipios próximos</p>
+          </div>
+          <div className="location-block__area-lines" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <small>Lectura local · Acompañamiento personalizado</small>
         </div>
       </Container>
     </section>

@@ -571,23 +571,45 @@ export function HomePage() {
         </Container>
       </section>
 
-      <CTASection />
+      <CTASection variant="home" />
       <LocationBlock />
 
-      <section className="home-contact-form section-pad">
+      <section className="home-contact-form section-pad" aria-labelledby="home-contact-title">
         <Container className="home-contact-form__grid">
-          <SectionHeading
-            eyebrow="CONTACTO"
-            title={
-              <>
-                ¿Qué necesitas resolver
-                <br />
-                <em>con tu inmueble?</em>
-              </>
-            }
-            text="Compra, venta, alquiler o inversión. Explícanos tu situación y ordenaremos contigo las decisiones importantes."
-          />
-          <ContactForm />
+          <Reveal className="home-contact-form__content">
+            <p className="eyebrow">CONTACTO</p>
+            <h2 id="home-contact-title">Explícanos tu caso y te orientamos.</h2>
+            <p className="home-contact-form__lead">
+              Cuanto más contexto nos des, mejor podremos ayudarte: tipo de operación, zona, situación del inmueble y
+              objetivo.
+            </p>
+
+            <div className="home-contact-form__details">
+              <div>
+                <span>Habla con nosotros</span>
+                <a href={`tel:${business.phoneMobileHref}`}>{business.phoneMobile}</a>
+                <small>Contacto móvil</small>
+              </div>
+              <div>
+                <span>Área de trabajo</span>
+                <strong>Madrid capital y alrededores</strong>
+                <small>Compra · Venta · Alquiler · Inversión</small>
+              </div>
+            </div>
+
+            <p className="home-contact-form__note">
+              Trato directo, información clara y próximos pasos adaptados a tu operación.
+            </p>
+          </Reveal>
+
+          <Reveal className="home-contact-form__panel">
+            <div className="home-contact-form__panel-heading">
+              <p className="eyebrow">CONTACTO DIRECTO</p>
+              <h3>Cuéntanos qué necesitas.</h3>
+              <p>Responderemos para ordenar contigo los próximos pasos.</p>
+            </div>
+            <ContactForm />
+          </Reveal>
         </Container>
       </section>
     </>
