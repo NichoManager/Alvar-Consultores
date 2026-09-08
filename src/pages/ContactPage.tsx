@@ -13,6 +13,16 @@ const contactReasons = [
   'VPO o herencias',
 ];
 
+const officeAddress = `${business.addressLine1}, ${business.postalAddress}`;
+
+const googleMapsEmbedUrl = `https://www.google.com/maps?q=${encodeURIComponent(
+  officeAddress,
+)}&output=embed`;
+
+const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  officeAddress,
+)}`;
+
 export function ContactPage() {
   return (
     <>
@@ -67,6 +77,7 @@ export function ContactPage() {
             <div className="contact-data">
               <div className="contact-data__heading">
                 <p className="eyebrow">DATOS DE CONTACTO</p>
+
                 <h3>{business.name}</h3>
 
                 <address>
@@ -84,6 +95,7 @@ export function ContactPage() {
                 <a
                   href={`tel:${business.phoneMobileHref}`}
                   className="contact-channel contact-channel--primary"
+                  aria-label={`Llamar a Alvar Consultores Inmobiliarios al ${business.phoneMobile}`}
                 >
                   <span>Contacto directo</span>
                   <strong>{business.phoneMobile}</strong>
@@ -102,6 +114,7 @@ export function ContactPage() {
                       <span aria-hidden="true">
                         {String(index + 1).padStart(2, '0')}
                       </span>
+
                       {reason}
                     </li>
                   ))}
@@ -109,13 +122,15 @@ export function ContactPage() {
               </div>
 
               <div className="contact-data__social">
-                <span className="contact-data__label">Redes sociales</span>
+                <span className="contact-data__label">
+                  Redes sociales
+                </span>
 
                 <div>
                   <a
                     href={business.instagramUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     {business.instagram} ↗
                   </a>
@@ -123,26 +138,42 @@ export function ContactPage() {
                   <a
                     href={business.tiktokUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     {business.tiktok} ↗
                   </a>
                 </div>
               </div>
 
-              <div
-                className="map-placeholder map-placeholder--contact"
-                role="img"
-                aria-label="Referencia territorial de la oficina de Alvar Consultores Inmobiliarios en Ríos Rosas, Madrid"
-              >
-                <span className="map-placeholder__road map-placeholder__road--one" />
-                <span className="map-placeholder__road map-placeholder__road--two" />
+              <div className="contact-map">
+                <div className="contact-map__frame">
+                  <iframe
+                    src={googleMapsEmbedUrl}
+                    title={`Ubicación de ${business.name} en ${business.addressLine1}, Madrid`}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
+                </div>
 
-                <span className="map-placeholder__pin">42</span>
+                <div className="contact-map__caption">
+                  <div>
+                    <span>OFICINA</span>
 
-                <div className="map-placeholder__caption">
-                  <span>OFICINA</span>
-                  <p>Ríos Rosas · Madrid</p>
+                    <strong>
+                      Ríos Rosas · Madrid
+                    </strong>
+                  </div>
+
+                  <a
+                    href={googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Abrir la ubicación de Alvar Consultores Inmobiliarios en Google Maps"
+                  >
+                    Abrir en Google Maps
+                    <span aria-hidden="true">↗</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -162,7 +193,9 @@ export function ContactPage() {
               <ContactForm />
 
               <div className="contact-page__form-note">
-                <span aria-hidden="true">01</span>
+                <span aria-hidden="true">
+                  01
+                </span>
 
                 <p>
                   Revisamos personalmente cada consulta antes de proponerte los
