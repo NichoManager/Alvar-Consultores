@@ -214,7 +214,6 @@ export function HomePage() {
               ))}
             </div>
 
-            <span className="section-index valuation-section__index">04 / VALORACIÓN</span>
           </Reveal>
 
           <Reveal className="valuation-section__form-panel">

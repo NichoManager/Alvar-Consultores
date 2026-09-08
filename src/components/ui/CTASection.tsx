@@ -13,7 +13,6 @@ export function CTASection({ variant = 'default' }: CTASectionProps) {
     return (
       <section className="cta-section cta-section--home section-pad" aria-labelledby="home-cta-title">
         <Container className="cta-section__inner">
-          <span className="cta-section__index" aria-hidden="true">07</span>
           <p className="eyebrow">HABLEMOS DE TU OPERACIÓN</p>
           <h2 id="home-cta-title">Cuéntanos qué necesitas resolver con tu inmueble.</h2>
           <p>
