@@ -4,6 +4,10 @@ export const articles: Article[] = [
   {
     slug: 'como-vender-vivienda-pinto',
 
+    image: '/images/alvar/blog/blog-vender-vivienda-pinto.webp',
+
+    imageAlt: 'Documentación y estrategia para vender una vivienda en Pinto',
+
     title: 'Cómo vender una vivienda en Pinto: pasos y documentación',
 
     seoTitle: 'Cómo vender una vivienda en Pinto | Guía práctica',
@@ -124,6 +128,10 @@ export const articles: Article[] = [
   {
     slug: 'comprar-piso-mostoles',
 
+    image: '/images/alvar/blog/blog-comprar-piso-mostoles.webp',
+
+    imageAlt: 'Análisis inmobiliario para comprar piso en Móstoles',
+
     title: 'Qué tener en cuenta antes de comprar piso en Móstoles',
 
     seoTitle: 'Comprar piso en Móstoles | Qué revisar antes de decidir',
@@ -240,6 +248,10 @@ export const articles: Article[] = [
   {
     slug: 'calcular-precio-venta-vivienda',
 
+    image: '/images/alvar/blog/blog-calcular-precio-venta-vivienda.webp',
+
+    imageAlt: 'Análisis y valoración para calcular el precio de venta de una vivienda',
+
     title: 'Cómo calcular el precio de venta de una vivienda',
 
     seoTitle: 'Cómo calcular el precio de venta de una vivienda',
@@ -355,6 +367,10 @@ export const articles: Article[] = [
 
   {
     slug: 'documentos-vender-vivienda',
+
+    image: '/images/alvar/blog/blog-documentos-vender-vivienda.webp',
+
+    imageAlt: 'Documentación necesaria para vender una vivienda',
 
     title: 'Documentos necesarios para vender una vivienda',
 
@@ -492,6 +508,10 @@ export const articles: Article[] = [
   {
     slug: 'invertir-vivienda-alquiler',
 
+    image: '/images/alvar/blog/blog-invertir-vivienda-alquiler.webp',
+
+    imageAlt: 'Análisis de inversión inmobiliaria para vivienda en alquiler',
+
     title: '¿Es buen momento para invertir en vivienda para alquiler?',
 
     seoTitle: 'Invertir en vivienda para alquiler | Qué analizar',
@@ -607,6 +627,10 @@ export const articles: Article[] = [
 
   {
     slug: 'mercado-inmobiliario-sur-madrid',
+
+    image: '/images/alvar/blog/blog-mercado-inmobiliario-sur-madrid.webp',
+
+    imageAlt: 'Mercado residencial y vivienda en el sur de Madrid',
 
     title: 'Mercado inmobiliario en el sur de Madrid',
 

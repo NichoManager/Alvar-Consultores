@@ -83,6 +83,7 @@ export function BlogPostPage() {
         description={seoDescription}
         path={articlePath}
         type="article"
+        image={article.image}
       />
 
       <JsonLd data={breadcrumbSchema} />

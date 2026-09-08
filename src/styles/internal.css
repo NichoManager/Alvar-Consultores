@@ -2527,6 +2527,29 @@
   min-height: 31rem;
 }
 
+.article-card__visual>img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.55s var(--ease);
+}
+
+.article-card__shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    145deg,
+    rgba(17, 24, 50, 0.3) 0%,
+    rgba(17, 24, 50, 0.06) 54%,
+    rgba(17, 24, 50, 0.28) 100%
+  );
+  pointer-events: none;
+}
+
 .article-card__visual::before {
   content: '';
   position: absolute;
@@ -2536,6 +2559,7 @@
   height: 82%;
   border: 1px solid rgba(248, 246, 240, 0.16);
   background: rgba(248, 246, 240, 0.035);
+  z-index: 1;
   clip-path: polygon(24% 0, 100% 8%, 100% 100%, 0 100%, 0 34%);
   transition:
     transform 0.45s var(--ease),
@@ -2551,6 +2575,7 @@
   aspect-ratio: 1;
   border: 1px solid rgba(184, 148, 77, 0.32);
   border-radius: 50%;
+  z-index: 1;
 }
 
 .article-card__visual i {
@@ -2563,6 +2588,7 @@
   background: rgba(184, 148, 77, 0.18);
   clip-path: polygon(0 25%, 100% 0, 82% 100%, 0 100%);
   transition: transform 0.45s var(--ease);
+  z-index: 1;
 }
 
 .article-card__index {
@@ -2642,6 +2668,10 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
+  .article-card a:hover .article-card__visual>img {
+    transform: scale(1.025);
+  }
+
   .article-card a:hover .article-card__visual::before {
     transform: translate(-0.6rem, -0.35rem);
     background: rgba(248, 246, 240, 0.06);

@@ -176,13 +176,22 @@ export function PropertiesPage() {
         title={seo.title}
         description={seo.description}
         path={seo.path}
+        image={
+          isRental
+            ? '/images/alvar/heroes/hero-alquilar-inmuebles-madrid.webp'
+            : '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp'
+        }
       />
 
       <InternalHero
         eyebrow={hero.eyebrow}
         title={hero.title}
         text={hero.text}
-        image="/images/alvar/heroes/hero-inmuebles-madrid.webp"
+        image={
+          isRental
+            ? '/images/alvar/heroes/hero-alquilar-inmuebles-madrid.webp'
+            : '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp'
+        }
         aside={
           <>
             <strong>{filtered.length.toString().padStart(2, '0')}</strong>

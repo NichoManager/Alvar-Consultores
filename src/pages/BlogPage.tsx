@@ -103,6 +103,16 @@ export function BlogPage() {
                   aria-label={`Leer: ${article.title}`}
                 >
                   <div className="article-card__visual">
+                    <img
+                      src={article.image}
+                      alt={article.imageAlt ?? article.title}
+                    />
+
+                    <span
+                      className="article-card__shade"
+                      aria-hidden="true"
+                    />
+
                     <span className="article-card__index">
                       {String(index + 1).padStart(2, '0')}
                     </span>
