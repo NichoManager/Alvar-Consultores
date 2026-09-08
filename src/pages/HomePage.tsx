@@ -138,37 +138,42 @@ export function HomePage() {
             </div>
           </Reveal>
 
-          <Reveal className="seller-section__visual">
-            <div className="seller-section__media-card">
-              <ArchitecturalVisual
-                variant="courtyard"
-                label="Composición arquitectónica editorial para propietarios"
-              />
+<Reveal className="seller-section__visual">
+  <div className="seller-section__media-card">
+    <img
+      className="seller-section__image"
+      src="/images/alvar/vender/vender-inmueble-estrategia-valoracion-madrid.webp"
+      alt="Estrategia de venta y valoración inmobiliaria en Madrid"
+      loading="lazy"
+      decoding="async"
+    />
 
-              <div className="seller-section__panel">
-                <span>Servicio a propietarios</span>
-                <p>Estrategia, negociación y firma.</p>
+    <div className="seller-section__panel">
+      <span>Servicio a propietarios</span>
+      <p>Estrategia, negociación y firma.</p>
 
-                <div
-                  className="seller-section__stats"
-                  aria-label="Experiencia y ámbito del servicio de venta"
-                >
-                  <div>
-                    <strong>18+</strong>
-                    <small>años de experiencia</small>
-                  </div>
-                  <div>
-                    <strong>Madrid</strong>
-                    <small>capital y alrededores</small>
-                  </div>
-                  <div>
-                    <strong>Valoración</strong>
-                    <small>profesional</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Reveal>
+      <div
+        className="seller-section__stats"
+        aria-label="Experiencia y ámbito del servicio de venta"
+      >
+        <div>
+          <strong>18+</strong>
+          <small>años de experiencia</small>
+        </div>
+
+        <div>
+          <strong>Madrid</strong>
+          <small>capital y alrededores</small>
+        </div>
+
+        <div>
+          <strong>Valoración</strong>
+          <small>profesional</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</Reveal>
         </Container>
       </section>
 
@@ -609,7 +614,7 @@ export function HomePage() {
             <div className="home-contact-form__panel-heading">
               <p className="eyebrow">CONTACTO DIRECTO</p>
               <h3>Cuéntanos qué necesitas.</h3>
-              <p>Responderemos para ordenar contigo los próximos pasos.</p>
+              <p>Responderemos para ordenar contigo los próximoEs pasos.</p>
             </div>
             <ContactForm />
           </Reveal>
