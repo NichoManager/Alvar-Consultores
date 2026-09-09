@@ -1602,6 +1602,12 @@ em {
   backdrop-filter: blur(8px);
 }
 
+.property-card__badge--reserved {
+  border-color: rgba(184, 148, 77, 0.72);
+  background: rgba(17, 24, 50, 0.92);
+  color: var(--sand);
+}
+
 .property-card__number {
   position: absolute;
   top: 1rem;

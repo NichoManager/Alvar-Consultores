@@ -117,7 +117,19 @@ export function PropertyDetailPage() {
     .filter(Boolean)
     .join(' · ');
 
-  const message = `Hola, estoy interesado/a en el inmueble ${property.title}. ¿Podéis darme más información?`;
+  const isReserved = property.status === 'Reservado';
+  const mapLocation =
+    property.mapLocation ||
+    [property.area, property.city, property.province]
+      .filter(Boolean)
+      .join(', ');
+  const encodedMapLocation = encodeURIComponent(mapLocation);
+  const googleMapsEmbedUrl = `https://www.google.com/maps?q=${encodedMapLocation}&output=embed`;
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedMapLocation}`;
+
+  const message = isReserved
+    ? `Hola, he visto el inmueble reservado ${property.title}. ¿Podéis informarme sobre inmuebles similares?`
+    : `Hola, estoy interesado/a en el inmueble ${property.title}. ¿Podéis darme más información?`;
 
   const breadcrumbs = [
     { label: 'Inicio', to: '/' },
@@ -163,6 +175,9 @@ export function PropertyDetailPage() {
         aside={
           <div className="property-hero__summary">
             <span>{property.operation}</span>
+            {isReserved ? (
+              <span className="property-status-badge">Reservado</span>
+            ) : null}
             <strong>{formattedPrice}</strong>
             <small>{locationLabel}</small>
           </div>
@@ -273,30 +288,24 @@ export function PropertyDetailPage() {
                   </div>
                 </div>
 
-                <div
-                  className="map-placeholder map-placeholder--property"
-                  role="img"
-                  aria-label={`Referencia territorial de ${property.city}`}
-                >
-                  <span className="map-placeholder__road map-placeholder__road--one" />
-                  <span className="map-placeholder__road map-placeholder__road--two" />
-
-                  <span className="map-placeholder__pin">
-                    {property.city.charAt(0)}
-                  </span>
-
-                  <div className="map-placeholder__property-caption">
-                    <span>ZONA</span>
-                    <p>
-                      {locationLabel}
-                    </p>
-                  </div>
+                <div className="property-map">
+                  <iframe
+                    src={googleMapsEmbedUrl}
+                    title={`Mapa de la zona de ${property.city}`}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    allowFullScreen
+                  />
                 </div>
 
-                <p className="demo-note">
-                  La ubicación mostrada es una referencia territorial.
-                  Disponibilidad y condiciones sujetas a confirmación.
-                </p>
+                <a
+                  className="property-map__link"
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ver en Google Maps <span aria-hidden="true">↗</span>
+                </a>
               </section>
             </article>
 
@@ -304,11 +313,16 @@ export function PropertyDetailPage() {
               <div className="property-contact__heading">
                 <span>INFORMACIÓN Y VISITAS</span>
 
-                <h2>¿Te interesa esta propiedad?</h2>
+                <h2>
+                  {isReserved
+                    ? '¿Buscas un inmueble similar?'
+                    : '¿Te interesa esta propiedad?'}
+                </h2>
 
                 <p>
-                  Déjanos tus datos y te contactamos para ampliar información,
-                  resolver dudas o coordinar una visita.
+                  {isReserved
+                    ? 'Este inmueble está reservado. Déjanos tus datos y te ayudaremos a encontrar alternativas similares.'
+                    : 'Déjanos tus datos y te contactamos para ampliar información, resolver dudas o coordinar una visita.'}
                 </p>
               </div>
 
@@ -336,8 +350,9 @@ export function PropertyDetailPage() {
               </div>
 
               <small className="property-contact__note">
-                Te atenderemos personalmente para confirmar disponibilidad y
-                condiciones de la propiedad.
+                {isReserved
+                  ? 'Te atenderemos personalmente para conocer qué buscas y proponerte otras oportunidades.'
+                  : 'Te atenderemos personalmente para confirmar disponibilidad y condiciones de la propiedad.'}
               </small>
             </aside>
           </div>
@@ -357,7 +372,7 @@ export function PropertyDetailPage() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Solicitar información
+          {isReserved ? 'Consultar inmuebles similares' : 'Solicitar información'}
         </a>
       </div>
     </>

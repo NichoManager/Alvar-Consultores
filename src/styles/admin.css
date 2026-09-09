@@ -1048,6 +1048,22 @@
   margin: 0.75rem 0 0;
 }
 
+.admin-property-form__privacy-check {
+  margin-top: 1.4rem;
+}
+
+.admin-property-form__privacy-check>span {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.admin-property-form__privacy-check small {
+  color: var(--admin-muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
 .admin-property-form__actions {
   display: flex;
   align-items: center;

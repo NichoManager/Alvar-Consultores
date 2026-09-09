@@ -1235,22 +1235,6 @@ export function AdminPropertyEditPage() {
             </label>
           </div>
 
-          <label className="admin-property-form__check admin-property-form__privacy-check">
-            <input
-              type="checkbox"
-              checked={form.showExactAddress}
-              onChange={(event) =>
-                updateForm('showExactAddress', event.target.checked)
-              }
-            />
-            <span>
-              Mostrar dirección exacta en la web
-              <small>
-                Actívalo solo si quieres que la ubicación exacta del inmueble
-                sea pública.
-              </small>
-            </span>
-          </label>
         </section>
 
         <section className="admin-property-form__section">
@@ -1321,6 +1305,23 @@ export function AdminPropertyEditPage() {
               />
             </label>
           </div>
+
+          <label className="admin-property-form__check admin-property-form__privacy-check">
+            <input
+              type="checkbox"
+              checked={form.showExactAddress}
+              onChange={(event) =>
+                updateForm('showExactAddress', event.target.checked)
+              }
+            />
+            <span>
+              Mostrar dirección exacta en la web
+              <small>
+                Actívalo solo si quieres que la ubicación exacta del inmueble
+                sea pública.
+              </small>
+            </span>
+          </label>
         </section>
 
         <section className="admin-property-form__section">
