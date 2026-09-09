@@ -548,3 +548,231 @@
     width: 100%;
   }
 }
+
+/* =========================================================
+   PROPERTY FORM
+   ========================================================= */
+
+.admin-property-form-page {
+  --admin-navy: #111832;
+  --admin-blue: #0f4c84;
+  --admin-gold: #b8944d;
+  --admin-ivory: #f8f6f0;
+  --admin-white: #ffffff;
+  --admin-text: #111832;
+  --admin-muted: #6f7280;
+  --admin-line: rgba(17, 24, 50, 0.12);
+
+  min-height: 100vh;
+  padding-bottom: clamp(3rem, 7vw, 6rem);
+  color: var(--admin-text);
+  background: var(--admin-ivory);
+}
+
+.admin-property-form__header {
+  padding: clamp(2rem, 5vw, 4rem) max(1.5rem, calc((100% - 74rem) / 2));
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+}
+
+.admin-property-form__header > span {
+  color: var(--admin-gold);
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.15em;
+}
+
+.admin-property-form__header h1 {
+  margin: 0.75rem 0 0;
+  color: var(--admin-ivory);
+  font: 500 clamp(2.8rem, 5vw, 4.8rem) / 0.95 'Cormorant Garamond', serif;
+}
+
+.admin-property-form__header p {
+  max-width: 46rem;
+  margin: 1rem 0 0;
+  color: rgba(248, 246, 240, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.admin-property-form {
+  display: grid;
+  gap: 1.5rem;
+  width: min(74rem, calc(100% - 3rem));
+  margin: clamp(2rem, 5vw, 4rem) auto 0;
+}
+
+.admin-property-form__section {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid var(--admin-line);
+  background: var(--admin-white);
+  box-shadow: 0 16px 45px rgba(17, 24, 50, 0.05);
+}
+
+.admin-property-form__section > div:first-child {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin-property-form__section > div:first-child > span {
+  color: var(--admin-gold);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+
+.admin-property-form__section h2 {
+  margin: 0;
+  color: var(--admin-navy);
+  font: 500 2rem / 1 'Cormorant Garamond', serif;
+}
+
+.admin-property-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.admin-property-form__field {
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.admin-property-form__field > span {
+  color: var(--admin-navy);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.admin-property-form__field input,
+.admin-property-form__field select,
+.admin-property-form__field textarea {
+  width: 100%;
+  min-height: 3.4rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(17, 24, 50, 0.18);
+  border-radius: 0;
+  outline: none;
+  color: var(--admin-navy);
+  background: var(--admin-white);
+  font: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-property-form__field textarea {
+  min-height: 11rem;
+  resize: vertical;
+}
+
+.admin-property-form__field input:focus,
+.admin-property-form__field select:focus,
+.admin-property-form__field textarea:focus {
+  border-color: var(--admin-gold);
+  box-shadow: 0 0 0 3px rgba(184, 148, 77, 0.1);
+}
+
+.admin-property-form__checks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.admin-property-form__checks label {
+  display: flex;
+  min-height: 3.4rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--admin-line);
+  cursor: pointer;
+  color: var(--admin-navy);
+  background: var(--admin-ivory);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.admin-property-form__checks input {
+  width: 1.1rem;
+  height: 1.1rem;
+  accent-color: var(--admin-blue);
+}
+
+.admin-property-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.admin-property-form__actions button {
+  min-height: 3.4rem;
+  padding: 0 1.6rem;
+  border: 1px solid var(--admin-navy);
+  cursor: pointer;
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+  font-size: 0.72rem;
+  font-weight: 800;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-property-form__actions button:hover:not(:disabled) {
+  border-color: var(--admin-blue);
+  background: var(--admin-blue);
+}
+
+.admin-property-form__actions button:last-child {
+  color: var(--admin-navy);
+  background: transparent;
+}
+
+.admin-property-form__actions button:last-child:hover:not(:disabled) {
+  border-color: var(--admin-gold);
+  background: rgba(184, 148, 77, 0.08);
+}
+
+.admin-property-form__actions button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.admin-property-form__error {
+  margin: 0;
+  padding: 1rem 1.2rem;
+  border-left: 2px solid #b65050;
+  color: #8a3030;
+  background: rgba(182, 80, 80, 0.08);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .admin-property-form {
+    width: min(100% - 2rem, 74rem);
+  }
+
+  .admin-property-form__grid,
+  .admin-property-form__checks {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-property-form__actions {
+    flex-direction: column;
+  }
+
+  .admin-property-form__actions button {
+    width: 100%;
+  }
+}

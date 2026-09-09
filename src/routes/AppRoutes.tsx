@@ -3,6 +3,7 @@ import { AdminProtectedRoute } from '../components/admin/AdminProtectedRoute';
 import { SiteLayout } from '../components/layout/SiteLayout';
 import { AboutPage } from '../pages/AboutPage';
 import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
+import { AdminPropertyCreatePage } from '../pages/admin/AdminPropertyCreatePage';
 import { AdminPropertiesPage } from '../pages/admin/AdminPropertiesPage';
 import { BlogPage } from '../pages/BlogPage';
 import { BlogPostPage } from '../pages/BlogPostPage';
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: '/admin/inmuebles',
         element: <AdminPropertiesPage />,
+      },
+      {
+        path: '/admin/inmuebles/nuevo',
+        element: <AdminPropertyCreatePage />,
       },
     ],
   },

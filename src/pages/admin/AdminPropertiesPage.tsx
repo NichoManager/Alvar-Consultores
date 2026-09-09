@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 
@@ -16,6 +17,7 @@ type Property = {
 };
 
 export function AdminPropertiesPage() {
+  const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -60,7 +62,10 @@ export function AdminPropertiesPage() {
         </div>
 
         <div>
-          <button type="button">
+          <button
+            type="button"
+            onClick={() => navigate('/admin/inmuebles/nuevo')}
+          >
             + Nuevo inmueble
           </button>
 
@@ -107,7 +112,10 @@ export function AdminPropertiesPage() {
               incorporar fotografías y decidir cuáles aparecen en la web.
             </p>
 
-            <button type="button">
+            <button
+              type="button"
+              onClick={() => navigate('/admin/inmuebles/nuevo')}
+            >
               Crear primer inmueble
             </button>
           </div>
