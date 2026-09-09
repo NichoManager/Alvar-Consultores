@@ -123,6 +123,8 @@ export function AdminPropertiesPage() {
     useState<Property[]>([]);
   const [isLoading, setIsLoading] =
     useState(true);
+  const [isSuperadmin, setIsSuperadmin] =
+    useState(false);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
 
@@ -194,6 +196,25 @@ export function AdminPropertiesPage() {
     };
 
     void loadProperties();
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkSuperadmin = async () => {
+      const { data, error: superadminError } =
+        await supabase.rpc('is_superadmin');
+
+      if (!superadminError && data === true && isMounted) {
+        setIsSuperadmin(true);
+      }
+    };
+
+    void checkSuperadmin();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const filteredProperties = useMemo(() => {
@@ -319,6 +340,22 @@ export function AdminPropertiesPage() {
           >
             + Nuevo inmueble
           </button>
+
+          <button
+            type="button"
+            onClick={() => navigate('/admin/contactos')}
+          >
+            Contactos
+          </button>
+
+          {isSuperadmin ? (
+            <button
+              type="button"
+              onClick={() => navigate('/admin/usuarios')}
+            >
+              Usuarios
+            </button>
+          ) : null}
 
           <button
             type="button"

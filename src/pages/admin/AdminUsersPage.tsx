@@ -470,6 +470,15 @@ export function AdminUsersPage() {
 
             <button
               type="button"
+              onClick={() =>
+                navigate('/admin/contactos')
+              }
+            >
+              Contactos
+            </button>
+
+            <button
+              type="button"
               onClick={handleLogout}
             >
               Cerrar sesión
@@ -548,6 +557,16 @@ export function AdminUsersPage() {
 
           <button
             type="button"
+            onClick={() =>
+              navigate('/admin/contactos')
+            }
+          >
+            Contactos
+          </button>
+
+          <button
+            type="button"
+            className="admin-users__create-toggle"
             onClick={() => {
               clearMessages();
 

@@ -3,6 +3,9 @@ import { AdminProtectedRoute } from '../components/admin/AdminProtectedRoute';
 import { SiteLayout } from '../components/layout/SiteLayout';
 import { AboutPage } from '../pages/AboutPage';
 import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
+import { AdminContactCreatePage } from '../pages/admin/AdminContactCreatePage';
+import { AdminContactDetailPage } from '../pages/admin/AdminContactDetailPage';
+import { AdminContactsPage } from '../pages/admin/AdminContactsPage';
 import { AdminPropertiesPage } from '../pages/admin/AdminPropertiesPage';
 import { AdminPropertyCreatePage } from '../pages/admin/AdminPropertyCreatePage';
 import { AdminPropertyEditPage } from '../pages/admin/AdminPropertyEditPage';
@@ -42,6 +45,18 @@ const router = createBrowserRouter([
       {
         path: '/admin/usuarios',
         element: <AdminUsersPage />,
+      },
+      {
+        path: '/admin/contactos',
+        element: <AdminContactsPage />,
+      },
+      {
+        path: '/admin/contactos/nuevo',
+        element: <AdminContactCreatePage />,
+      },
+      {
+        path: '/admin/contactos/:id',
+        element: <AdminContactDetailPage />,
       },
     ],
   },
