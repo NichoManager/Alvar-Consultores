@@ -19,15 +19,25 @@ export function PropertyCard({
 
   const featuredNumber = String(index + 1).padStart(2, '0');
   const visibleFeatures = property.features.slice(0, 3);
+  const location = [property.area, property.city].filter(Boolean).join(' · ');
 
   return (
     <article className="property-card">
       <Link
         to={`/inmuebles/${property.slug}`}
-        aria-label={`Ver inmueble: ${property.title} en ${property.area}, ${property.city}`}
+        aria-label={`Ver inmueble: ${property.title} en ${location}`}
       >
         <div className="property-card__media">
-          <ArchitecturalVisual variant={property.visual} decorative />
+          {property.coverImage ? (
+            <img
+              src={property.coverImage.url}
+              alt={property.coverImage.alt}
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <ArchitecturalVisual variant={property.visual} decorative />
+          )}
 
           <div className="property-card__media-layer" aria-hidden="true" />
 
@@ -41,7 +51,7 @@ export function PropertyCard({
         <div className="property-card__body">
           <div className="property-card__topline">
             <p className="property-card__location">
-              {property.area} · {property.city}
+              {location}
             </p>
             <span>{operation}</span>
           </div>

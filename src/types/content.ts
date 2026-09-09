@@ -6,8 +6,17 @@ export type PropertyStatus =
   | 'Vendido'
   | 'Alquilado';
 
+export interface PropertyImage {
+  id: string;
+  url: string;
+  alt: string;
+  position: number;
+  isCover: boolean;
+}
+
 export interface Property {
   id: string;
+  reference?: string;
   slug: string;
   title: string;
   operation: PropertyOperation;
@@ -16,20 +25,32 @@ export interface Property {
   price: number | null;
   city: string;
   area: string;
+  province?: string;
+  postalCode?: string;
   address?: string;
+  showExactAddress?: boolean;
   bedrooms?: number;
   bathrooms?: number;
   builtArea?: number;
+  usableArea?: number;
+  plotArea?: number;
+  floor?: string;
   elevator?: boolean;
   garage?: boolean;
   terrace?: boolean;
+  furnished?: boolean;
+  exterior?: boolean;
   pool?: boolean;
   description: string;
   features: string[];
   energyRating?: string;
   featured: boolean;
   published: boolean;
+  publishedAt?: string;
   createdAt: string;
+  currency?: string;
+  images?: PropertyImage[];
+  coverImage?: PropertyImage;
   visual: 'arch' | 'courtyard' | 'facade';
   isDemo: boolean;
 }

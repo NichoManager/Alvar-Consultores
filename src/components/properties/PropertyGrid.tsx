@@ -12,7 +12,7 @@ export function PropertyGrid({
   if (!properties.length) {
     return (
       <div className="empty-state" role="status">
-        <p>No encontramos propiedades con estos filtros.</p>
+        <p>No encontramos propiedades disponibles en este momento.</p>
         <span>
           Prueba a ampliar el rango o cuéntanos qué estás buscando para prepararte
           una selección personalizada.
