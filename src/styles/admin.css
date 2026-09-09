@@ -802,29 +802,31 @@
 
 .admin-property-form__back {
   display: inline-flex;
-  min-height: 2.5rem;
+  min-height: 2.85rem;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   margin: 0 0 1.35rem;
-  padding: 0 0.85rem;
-  border: 1px solid rgba(248, 246, 240, 0.28);
+  padding: 0 1rem;
+  border: 1px solid rgba(184, 148, 77, 0.52);
   cursor: pointer;
   color: var(--admin-ivory);
-  background: transparent;
+  background: rgba(248, 246, 240, 0.045);
   font: inherit;
-  font-size: 0.67rem;
+  font-size: 0.74rem;
   font-weight: 800;
   transition:
     border-color 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .admin-property-form__back:hover {
   border-color: var(--admin-gold);
-  background: rgba(248, 246, 240, 0.06);
+  color: var(--admin-gold);
+  background: rgba(184, 148, 77, 0.08);
 }
 
-.admin-property-form__header-inner > span {
+.admin-property-form__header-inner>span {
   display: block;
   color: var(--admin-gold);
   font-size: 0.68rem;
@@ -855,9 +857,10 @@
 
 .admin-property-form__required-note {
   margin: 0;
-  color: var(--admin-muted);
-  font-size: 0.75rem;
-  line-height: 1.5;
+  color: #5d6170;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.55;
 }
 
 .admin-property-form__section {
@@ -901,7 +904,7 @@
   min-width: 0;
 }
 
-.admin-property-form__field > span:not(.admin-property-form__input-suffix) {
+.admin-property-form__field>span:not(.admin-property-form__input-suffix) {
   color: var(--admin-navy);
   font-size: 0.74rem;
   font-weight: 800;
@@ -942,7 +945,7 @@
   padding-right: 3rem;
 }
 
-.admin-property-form__input-suffix > span {
+.admin-property-form__input-suffix>span {
   position: absolute;
   top: 50%;
   right: 1rem;
@@ -962,7 +965,7 @@
   background: rgba(184, 148, 77, 0.08);
 }
 
-.admin-property-form__status > span {
+.admin-property-form__status>span {
   color: var(--admin-gold);
   font-size: 0.64rem;
   font-weight: 850;
@@ -1045,22 +1048,30 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.85rem;
-  padding-top: 0.35rem;
+  gap: 1rem;
+  padding-top: 0.7rem;
 }
 
 .admin-property-form__actions button {
-  min-height: 3.75rem;
-  padding: 0 1.8rem;
+  min-height: 4.15rem;
+  padding: 0 2.15rem;
   border: 1px solid var(--admin-navy);
   cursor: pointer;
   color: var(--admin-ivory);
   background: var(--admin-navy);
-  font-size: 0.76rem;
+  font-size: 0.82rem;
   font-weight: 800;
   transition:
     background 0.2s ease,
     border-color 0.2s ease;
+}
+
+.admin-property-form__actions button[type='submit'] {
+  min-width: 13rem;
+}
+
+.admin-property-form__actions button[type='button'] {
+  min-width: 7.5rem;
 }
 
 .admin-property-form__actions button[type='submit']:hover:not(:disabled) {
@@ -1094,6 +1105,7 @@
 }
 
 @media (max-width: 700px) {
+
   .admin-property-form__header-inner,
   .admin-property-form {
     width: min(100% - 2rem, 88rem);
