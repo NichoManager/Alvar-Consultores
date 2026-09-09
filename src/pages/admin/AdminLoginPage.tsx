@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import '../../styles/admin.css';
 
 export function AdminLoginPage() {
   const navigate = useNavigate();

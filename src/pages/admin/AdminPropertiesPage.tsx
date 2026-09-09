@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import '../../styles/admin.css';
 
 type Property = {
   id: string;
