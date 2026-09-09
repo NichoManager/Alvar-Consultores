@@ -3,9 +3,10 @@ import { AdminProtectedRoute } from '../components/admin/AdminProtectedRoute';
 import { SiteLayout } from '../components/layout/SiteLayout';
 import { AboutPage } from '../pages/AboutPage';
 import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
+import { AdminPropertiesPage } from '../pages/admin/AdminPropertiesPage';
 import { AdminPropertyCreatePage } from '../pages/admin/AdminPropertyCreatePage';
 import { AdminPropertyEditPage } from '../pages/admin/AdminPropertyEditPage';
-import { AdminPropertiesPage } from '../pages/admin/AdminPropertiesPage';
+import { AdminUsersPage } from '../pages/admin/AdminUsersPage';
 import { BlogPage } from '../pages/BlogPage';
 import { BlogPostPage } from '../pages/BlogPostPage';
 import { ContactPage } from '../pages/ContactPage';
@@ -38,25 +39,71 @@ const router = createBrowserRouter([
         path: '/admin/inmuebles/:id/editar',
         element: <AdminPropertyEditPage />,
       },
+      {
+        path: '/admin/usuarios',
+        element: <AdminUsersPage />,
+      },
     ],
   },
   {
     element: <SiteLayout />,
     children: [
-      { path: '/', element: <HomePage /> },
-      { path: '/inmuebles', element: <PropertiesPage /> },
-      { path: '/inmuebles/:slug', element: <PropertyDetailPage /> },
-      { path: '/vender', element: <SellPage /> },
-      { path: '/servicios', element: <ServicesPage /> },
-      { path: '/nosotros', element: <AboutPage /> },
-      { path: '/opiniones', element: <ReviewsPage /> },
-      { path: '/contacto', element: <ContactPage /> },
-      { path: '/blog', element: <BlogPage /> },
-      { path: '/blog/:slug', element: <BlogPostPage /> },
-      { path: '/aviso-legal', element: <LegalPage kind="legal" /> },
-      { path: '/privacidad', element: <LegalPage kind="privacy" /> },
-      { path: '/cookies', element: <LegalPage kind="cookies" /> },
-      { path: '*', element: <NotFoundPage /> },
+      {
+        path: '/',
+        element: <HomePage />,
+      },
+      {
+        path: '/inmuebles',
+        element: <PropertiesPage />,
+      },
+      {
+        path: '/inmuebles/:slug',
+        element: <PropertyDetailPage />,
+      },
+      {
+        path: '/vender',
+        element: <SellPage />,
+      },
+      {
+        path: '/servicios',
+        element: <ServicesPage />,
+      },
+      {
+        path: '/nosotros',
+        element: <AboutPage />,
+      },
+      {
+        path: '/opiniones',
+        element: <ReviewsPage />,
+      },
+      {
+        path: '/contacto',
+        element: <ContactPage />,
+      },
+      {
+        path: '/blog',
+        element: <BlogPage />,
+      },
+      {
+        path: '/blog/:slug',
+        element: <BlogPostPage />,
+      },
+      {
+        path: '/aviso-legal',
+        element: <LegalPage kind="legal" />,
+      },
+      {
+        path: '/privacidad',
+        element: <LegalPage kind="privacy" />,
+      },
+      {
+        path: '/cookies',
+        element: <LegalPage kind="cookies" />,
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
+      },
     ],
   },
 ]);
