@@ -122,7 +122,15 @@ export function AdminPropertyCreatePage() {
             <span aria-hidden="true">←</span> Volver a inmuebles
           </button>
 
-          <span>ALVAR CONSULTORES</span>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="admin-site-link"
+            aria-label="Abrir la web pública de Alvar Consultores en una nueva pestaña"
+          >
+            ALVAR CONSULTORES <span aria-hidden="true">↗</span>
+          </a>
           <h1>Nuevo inmueble</h1>
           <p>
             Añade los datos principales de la propiedad. Después podrás

@@ -27,6 +27,25 @@
    LOGIN
    ========================================================= */
 
+.admin-site-link {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--admin-gold);
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.admin-site-link:hover {
+  color: var(--admin-ivory);
+}
+
 .admin-login {
   display: grid;
   place-items: center;
@@ -234,13 +253,6 @@
   display: flex;
   align-items: baseline;
   gap: 1.6rem;
-}
-
-.admin-properties__header>div:first-child>span {
-  color: var(--admin-gold);
-  font-size: 0.65rem;
-  font-weight: 850;
-  letter-spacing: 0.15em;
 }
 
 .admin-properties__header h1 {
@@ -826,14 +838,6 @@
   background: rgba(184, 148, 77, 0.08);
 }
 
-.admin-property-form__header-inner>span {
-  display: block;
-  color: var(--admin-gold);
-  font-size: 0.68rem;
-  font-weight: 850;
-  letter-spacing: 0.15em;
-}
-
 .admin-property-form__header h1 {
   margin: 0.6rem 0 0;
   color: var(--admin-ivory);
@@ -1182,13 +1186,6 @@
   padding: clamp(2rem, 5vw, 4rem) max(1.5rem, calc((100% - 88rem) / 2));
   color: var(--admin-ivory);
   background: var(--admin-navy);
-}
-
-.admin-property-edit__header>div:first-child>span {
-  color: var(--admin-gold);
-  font-size: 0.65rem;
-  font-weight: 850;
-  letter-spacing: 0.15em;
 }
 
 .admin-property-edit__header h1 {

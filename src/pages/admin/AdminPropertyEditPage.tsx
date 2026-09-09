@@ -1084,7 +1084,15 @@ export function AdminPropertyEditPage() {
     <main className="admin-property-edit">
       <header className="admin-property-edit__header">
         <div>
-          <span>ALVAR CONSULTORES</span>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="admin-site-link"
+            aria-label="Abrir la web pública de Alvar Consultores en una nueva pestaña"
+          >
+            ALVAR CONSULTORES <span aria-hidden="true">↗</span>
+          </a>
 
           <h1>Editar inmueble</h1>
 
