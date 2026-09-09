@@ -7,45 +7,6 @@ export const PUBLIC_PROPERTY_STATUSES = ['published', 'reserved'] as const;
 
 type PublicPropertyStatus = (typeof PUBLIC_PROPERTY_STATUSES)[number];
 
-const PUBLIC_PROPERTY_SELECT = `
-  id,
-  reference,
-  title,
-  slug,
-  operation,
-  property_type,
-  status,
-  price,
-  currency,
-  city,
-  area,
-  province,
-  show_exact_address,
-  bedrooms,
-  bathrooms,
-  built_area,
-  usable_area,
-  plot_area,
-  floor,
-  elevator,
-  parking,
-  terrace,
-  furnished,
-  exterior,
-  description,
-  features,
-  featured,
-  published_at,
-  created_at,
-  property_images (
-    id,
-    storage_path,
-    alt_text,
-    position,
-    is_cover
-  )
-`;
-
 type PropertyImageRow = {
   id: string;
   storage_path: string;
@@ -150,42 +111,6 @@ function getPublicImageUrl(storagePath: string) {
   return supabase.storage
     .from(STORAGE_BUCKET)
     .getPublicUrl(storagePath).data.publicUrl;
-}
-
-async function attachExactAddresses(rows: PublicPropertyRow[]) {
-  const publicAddressIds = rows
-    .filter((row) => row.show_exact_address)
-    .map((row) => row.id);
-
-  if (publicAddressIds.length === 0) {
-    return rows;
-  }
-
-  const { data, error } = await supabase
-    .from('properties')
-    .select('id, address, postal_code')
-    .in('id', publicAddressIds)
-    .in('status', [...PUBLIC_PROPERTY_STATUSES])
-    .eq('show_exact_address', true);
-
-  if (error) {
-    throw error;
-  }
-
-  const exactAddresses = new Map(
-    (data ?? []).map((row) => [
-      row.id,
-      {
-        address: row.address,
-        postal_code: row.postal_code,
-      },
-    ]),
-  );
-
-  return rows.map((row) => ({
-    ...row,
-    ...(exactAddresses.get(row.id) ?? {}),
-  }));
 }
 
 function mapImages(row: PublicPropertyRow): {
