@@ -60,7 +60,7 @@ export function AdminPropertyCreatePage() {
     setIsSubmitting(true);
 
     try {
-      const { error: insertError } = await supabase
+      const { data: createdProperty, error: insertError } = await supabase
         .from('properties')
         .insert({
           reference: nullableText(formData.get('reference')),
@@ -89,7 +89,9 @@ export function AdminPropertyCreatePage() {
           featured: formData.has('featured'),
           published_at:
             status === 'published' ? new Date().toISOString() : null,
-        });
+        })
+        .select('id')
+        .single();
 
       if (insertError) {
         console.error('Error creating property:', insertError);
@@ -99,7 +101,9 @@ export function AdminPropertyCreatePage() {
         return;
       }
 
-      navigate('/admin/inmuebles', { replace: true });
+      navigate(`/admin/inmuebles/${createdProperty.id}/editar`, {
+        replace: true,
+      });
     } catch (unexpectedError) {
       console.error('Unexpected property creation error:', unexpectedError);
       setError(

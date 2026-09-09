@@ -154,6 +154,15 @@ export function AdminPropertiesPage() {
                   </strong>
 
                   <span>{property.status}</span>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate(`/admin/inmuebles/${property.id}/editar`)
+                    }
+                  >
+                    Editar
+                  </button>
                 </div>
               </article>
             ))}

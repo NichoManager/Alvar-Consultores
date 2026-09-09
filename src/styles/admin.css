@@ -776,3 +776,380 @@
     width: 100%;
   }
 }
+
+/* =========================================================
+   PROPERTY IMAGE MANAGEMENT
+   ========================================================= */
+
+.admin-property-edit {
+  --admin-navy: #111832;
+  --admin-blue: #0f4c84;
+  --admin-gold: #b8944d;
+  --admin-ivory: #f8f6f0;
+  --admin-white: #ffffff;
+  --admin-text: #111832;
+  --admin-muted: #6f7280;
+  --admin-line: rgba(17, 24, 50, 0.12);
+
+  min-height: 100vh;
+  padding-bottom: clamp(3rem, 7vw, 6rem);
+  color: var(--admin-text);
+  background: var(--admin-ivory);
+}
+
+.admin-property-edit--loading {
+  display: grid;
+  place-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.admin-property-edit--loading p {
+  margin: 0;
+  color: var(--admin-navy);
+  font: 500 1.8rem / 1.2 'Cormorant Garamond', serif;
+}
+
+.admin-property-edit--loading a {
+  color: var(--admin-blue);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.admin-property-edit__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 3rem;
+  padding: clamp(2rem, 5vw, 4rem) max(1.5rem, calc((100% - 88rem) / 2));
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+}
+
+.admin-property-edit__header > div:first-child > span {
+  color: var(--admin-gold);
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.15em;
+}
+
+.admin-property-edit__header h1 {
+  margin: 0.75rem 0 0;
+  color: var(--admin-ivory);
+  font: 500 clamp(2.8rem, 5vw, 4.8rem) / 0.95 'Cormorant Garamond', serif;
+}
+
+.admin-property-edit__header > div:first-child > p {
+  margin: 0.85rem 0 0;
+  color: rgba(248, 246, 240, 0.72);
+  font-size: 0.9rem;
+}
+
+.admin-property-edit__meta {
+  display: grid;
+  justify-items: end;
+  gap: 1rem;
+}
+
+.admin-property-edit__meta > span {
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(184, 148, 77, 0.45);
+  color: var(--admin-gold);
+  font-size: 0.6rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-property-edit__meta > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.admin-property-edit__meta a {
+  display: inline-flex;
+  min-height: 2.8rem;
+  align-items: center;
+  padding: 0 1rem;
+  border: 1px solid rgba(248, 246, 240, 0.28);
+  color: var(--admin-ivory);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.admin-property-edit__meta a:last-child:not(:first-child) {
+  border-color: var(--admin-gold);
+  color: var(--admin-navy);
+  background: var(--admin-gold);
+}
+
+.admin-images {
+  width: min(88rem, calc(100% - 3rem));
+  margin: clamp(2rem, 5vw, 4rem) auto 0;
+}
+
+.admin-images__upload {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 0.52fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: end;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border: 1px solid var(--admin-line);
+  background: var(--admin-white);
+  box-shadow: 0 16px 45px rgba(17, 24, 50, 0.05);
+}
+
+.admin-images__upload > div > span {
+  color: var(--admin-gold);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+
+.admin-images__upload h2 {
+  margin: 0.65rem 0 0;
+  color: var(--admin-navy);
+  font: 500 clamp(2.3rem, 4vw, 3.8rem) / 0.96 'Cormorant Garamond', serif;
+}
+
+.admin-images__upload p {
+  max-width: 42rem;
+  margin: 1rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.admin-images__upload > label {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-images__upload > label > span {
+  color: var(--admin-navy);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.admin-images__upload input {
+  width: 100%;
+  padding: 0.65rem;
+  border: 1px solid rgba(17, 24, 50, 0.18);
+  color: var(--admin-muted);
+  background: var(--admin-ivory);
+  font: inherit;
+}
+
+.admin-images__upload input::file-selector-button {
+  min-height: 2.8rem;
+  margin-right: 0.8rem;
+  padding: 0 1rem;
+  border: 0;
+  cursor: pointer;
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.admin-images__upload input:disabled,
+.admin-images__upload input:disabled::file-selector-button {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.admin-images__upload small {
+  color: var(--admin-muted);
+  font-size: 0.61rem;
+  line-height: 1.5;
+}
+
+.admin-images__status,
+.admin-images__error {
+  margin: 1rem 0 0;
+  padding: 0.9rem 1rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.admin-images__status {
+  border-left: 2px solid var(--admin-blue);
+  color: var(--admin-blue);
+  background: rgba(15, 76, 132, 0.07);
+}
+
+.admin-images__error {
+  border-left: 2px solid #b65050;
+  color: #8a3030;
+  background: rgba(182, 80, 80, 0.08);
+}
+
+.admin-images__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.admin-image-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--admin-line);
+  background: var(--admin-white);
+  box-shadow: 0 14px 38px rgba(17, 24, 50, 0.06);
+}
+
+.admin-image-card__media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--admin-navy);
+}
+
+.admin-image-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-image-card__cover {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  padding: 0.45rem 0.65rem;
+  color: var(--admin-navy);
+  background: var(--admin-gold);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+}
+
+.admin-image-card__actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 1rem;
+}
+
+.admin-image-card__actions > span {
+  color: var(--admin-muted);
+  font-size: 0.65rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.admin-image-card__actions > div {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.admin-image-card__actions button {
+  min-height: 2.45rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--admin-line);
+  cursor: pointer;
+  color: var(--admin-navy);
+  background: var(--admin-white);
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.admin-image-card__actions > button {
+  grid-column: span 1;
+}
+
+.admin-image-card__actions > button:last-child {
+  color: #8a3030;
+}
+
+.admin-image-card__actions button:hover:not(:disabled) {
+  border-color: var(--admin-gold);
+  background: rgba(184, 148, 77, 0.08);
+}
+
+.admin-image-card__actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.admin-images__empty {
+  margin: 2rem 0 0;
+  padding: 3rem 1.5rem;
+  border: 1px dashed rgba(17, 24, 50, 0.22);
+  color: var(--admin-muted);
+  background: rgba(255, 255, 255, 0.45);
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.admin-property-card > div:last-child button {
+  min-height: 2.3rem;
+  margin-top: 0.35rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--admin-navy);
+  cursor: pointer;
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+  font-size: 0.63rem;
+  font-weight: 800;
+}
+
+.admin-property-card > div:last-child button:hover {
+  border-color: var(--admin-blue);
+  background: var(--admin-blue);
+}
+
+@media (max-width: 980px) {
+  .admin-property-edit__header,
+  .admin-images__upload {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-property-edit__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-property-edit__meta {
+    justify-items: start;
+  }
+
+  .admin-property-edit__meta > div {
+    justify-content: flex-start;
+  }
+
+  .admin-images__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-property-edit__header {
+    gap: 2rem;
+  }
+
+  .admin-property-edit__meta,
+  .admin-property-edit__meta > div,
+  .admin-property-edit__meta a {
+    width: 100%;
+  }
+
+  .admin-property-edit__meta a {
+    justify-content: center;
+  }
+
+  .admin-images {
+    width: min(100% - 2rem, 88rem);
+  }
+
+  .admin-images__grid {
+    grid-template-columns: 1fr;
+  }
+}
