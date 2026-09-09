@@ -17,8 +17,9 @@ import { Reveal } from '../components/ui/Reveal';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { ServiceBlock } from '../components/ui/ServiceBlock';
 import { business } from '../data/business';
-import { properties } from '../data/properties';
 import { reviews } from '../data/reviews';
+import { getFeaturedProperties } from '../lib/properties';
+import type { Property } from '../types/content';
 
 const services = [
   ['01', 'Comprar', 'Búsqueda, análisis de mercado, negociación y acompañamiento hasta la firma.'],
@@ -27,9 +28,36 @@ const services = [
   ['04', 'Consultoría', 'Trámites, inversión inmobiliaria, herencias, documentación y análisis de oportunidades.'],
 ];
 
-const featuredProperties = properties.filter((property) => property.featured);
-
 export function HomePage() {
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
+  const [isLoadingFeatured, setIsLoadingFeatured] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadFeaturedProperties = async () => {
+      try {
+        const publishedFeatured = await getFeaturedProperties(3);
+
+        if (isMounted) {
+          setFeaturedProperties(publishedFeatured);
+        }
+      } catch (error) {
+        console.error('Error loading featured properties:', error);
+      } finally {
+        if (isMounted) {
+          setIsLoadingFeatured(false);
+        }
+      }
+    };
+
+    void loadFeaturedProperties();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <>
       <SeoHead
@@ -93,10 +121,16 @@ export function HomePage() {
             <i aria-hidden="true" />
             <span>Compra · venta · alquiler</span>
             <i aria-hidden="true" />
-            <span>Selección orientativa hasta incorporar inventario real</span>
+            <span>Selección actualizada de nuestro catálogo</span>
           </Reveal>
 
-          <PropertyGrid properties={featuredProperties} editorial />
+          {isLoadingFeatured ? (
+            <p className="selection-note" role="status">
+              Cargando propiedades seleccionadas...
+            </p>
+          ) : featuredProperties.length > 0 ? (
+            <PropertyGrid properties={featuredProperties} editorial />
+          ) : null}
         </Container>
       </section>
 
@@ -622,3 +656,4 @@ export function HomePage() {
     </>
   );
 }
+import { useEffect, useState } from 'react';

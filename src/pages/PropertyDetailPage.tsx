@@ -164,7 +164,7 @@ export function PropertyDetailPage() {
           <div className="property-hero__summary">
             <span>{property.operation}</span>
             <strong>{formattedPrice}</strong>
-            <small>{property.area} · {property.city}</small>
+            <small>{locationLabel}</small>
           </div>
         }
       />
@@ -181,7 +181,7 @@ export function PropertyDetailPage() {
             </div>
 
             <small>
-              {property.area} · {property.city}
+              {locationLabel}
             </small>
           </div>
 
@@ -209,7 +209,7 @@ export function PropertyDetailPage() {
               <span>{property.operation}</span>
               <strong>{formattedPrice}</strong>
               <p>
-                {property.area} · {property.city}
+                {locationLabel}
               </p>
             </div>
           </header>
@@ -268,7 +268,7 @@ export function PropertyDetailPage() {
                   <div>
                     <p>UBICACIÓN</p>
                     <h3 id="property-location-title">
-                      {property.area} · {property.city}
+                      {locationLabel}
                     </h3>
                   </div>
                 </div>
@@ -288,7 +288,7 @@ export function PropertyDetailPage() {
                   <div className="map-placeholder__property-caption">
                     <span>ZONA</span>
                     <p>
-                      {property.area} · {property.city}
+                      {locationLabel}
                     </p>
                   </div>
                 </div>
