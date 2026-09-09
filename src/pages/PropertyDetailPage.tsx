@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { PropertyLeadForm } from '../components/forms/PropertyLeadForm';
 import { PropertyGallery } from '../components/properties/PropertyGallery';
@@ -7,7 +8,8 @@ import { SeoHead } from '../components/seo/SeoHead';
 import { Container } from '../components/ui/Container';
 import { InternalHero } from '../components/ui/InternalHero';
 import { business } from '../data/business';
-import { getPropertyBySlug } from '../data/properties';
+import { getPublishedPropertyBySlug } from '../lib/properties';
+import type { Property } from '../types/content';
 import { whatsappUrl } from '../utils/contact';
 
 function isRentalOperation(value: string) {
@@ -20,9 +22,82 @@ function isRentalOperation(value: string) {
   return ['alquiler', 'alquilar', 'renta', 'arrendamiento', 'en alquiler'].includes(normalized);
 }
 
+function getSeoDescription(description: string) {
+  if (description.length <= 160) {
+    return description;
+  }
+
+  return `${description.slice(0, 157).trimEnd()}...`;
+}
+
 export function PropertyDetailPage() {
   const { slug = '' } = useParams();
-  const property = getPropertyBySlug(slug);
+  const [property, setProperty] = useState<Property | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProperty = async () => {
+      setIsLoading(true);
+      setLoadError(false);
+
+      try {
+        const publishedProperty = await getPublishedPropertyBySlug(slug);
+
+        if (isMounted) {
+          setProperty(publishedProperty);
+        }
+      } catch (error) {
+        console.error('Error loading public property:', error);
+
+        if (isMounted) {
+          setProperty(null);
+          setLoadError(true);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadProperty();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [slug]);
+
+  if (isLoading) {
+    return (
+      <main className="section-pad">
+        <Container>
+          <div className="empty-state" role="status">
+            <p>Cargando inmueble...</p>
+            <span>Estamos preparando todos los detalles de la propiedad.</span>
+          </div>
+        </Container>
+      </main>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <main className="section-pad">
+        <Container>
+          <div className="empty-state" role="alert">
+            <p>No hemos podido cargar el inmueble.</p>
+            <span>
+              Inténtalo de nuevo en unos minutos o contacta con nosotros para
+              ampliar información.
+            </span>
+          </div>
+        </Container>
+      </main>
+    );
+  }
 
   if (!property) {
     return <Navigate to="/inmuebles?operation=venta" replace />;
@@ -37,6 +112,10 @@ export function PropertyDetailPage() {
   const formattedPrice = property.price
     ? `${property.price.toLocaleString('es-ES')} €`
     : 'Consultar precio';
+
+  const locationLabel = [property.area, property.city]
+    .filter(Boolean)
+    .join(' · ');
 
   const message = `Hola, estoy interesado/a en el inmueble ${property.title}. ¿Podéis darme más información?`;
 
@@ -65,18 +144,21 @@ export function PropertyDetailPage() {
     <>
       <SeoHead
         title={`${property.title} en ${property.city} | Alvar Consultores`}
-        description={property.description}
+        description={getSeoDescription(property.description)}
         path={`/inmuebles/${property.slug}`}
-        noIndex={property.isDemo}
+        image={property.coverImage?.url}
       />
 
       <JsonLd data={breadcrumbSchema} />
 
       <InternalHero
-        eyebrow={`${property.operation.toUpperCase()} · ${property.area} · ${property.city}`}
+        eyebrow={`${property.operation.toUpperCase()} · ${locationLabel}`}
         title={property.title}
         text={property.description}
-        image="/images/alvar/heroes/hero-inmuebles-madrid.webp"
+        image={
+          property.coverImage?.url ??
+          '/images/alvar/heroes/hero-inmuebles-madrid.webp'
+        }
         meta={<Breadcrumbs items={breadcrumbs} />}
         aside={
           <div className="property-hero__summary">
