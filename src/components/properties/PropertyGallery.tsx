@@ -1,17 +1,26 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { Property } from '../../types/content';
+import type { Property, PropertyImage } from '../../types/content';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { trackEvent } from '../../utils/analytics';
 import { ArchitecturalVisual } from '../ui/ArchitecturalVisual';
 
 export function PropertyGallery({ property }: { property: Property }) {
+  const images = property.images ?? [];
   const [open, setOpen] = useState(false);
-  const [activeView, setActiveView] = useState(property.visual);
+  const [activeImageId, setActiveImageId] = useState(images[0]?.id ?? '');
   const lightboxRef = useRef<HTMLDivElement>(null);
+
+  const activeImage =
+    images.find((image) => image.id === activeImageId) ?? images[0];
 
   const close = useCallback(() => setOpen(false), []);
 
   useFocusTrap(lightboxRef, open, close);
+
+  useEffect(() => {
+    setActiveImageId(images[0]?.id ?? '');
+    setOpen(false);
+  }, [property.id]);
 
   useEffect(() => {
     if (!open) return;
@@ -24,56 +33,66 @@ export function PropertyGallery({ property }: { property: Property }) {
     };
   }, [open]);
 
-  const show = (view: Property['visual']) => {
-    setActiveView(view);
+  const showImage = (image: PropertyImage) => {
+    setActiveImageId(image.id);
     setOpen(true);
 
     trackEvent('property_gallery_open', {
       property: property.slug,
-      view,
+      view: image.id,
     });
   };
+
+  if (!images.length) {
+    return (
+      <div className="property-gallery">
+        <div className="property-gallery__main">
+          <ArchitecturalVisual variant={property.visual} decorative />
+        </div>
+
+        <div>
+          <ArchitecturalVisual variant="courtyard" decorative />
+        </div>
+
+        <div>
+          <ArchitecturalVisual variant="facade" decorative />
+        </div>
+
+        <div className="gallery-open">
+          Sin fotografías disponibles
+          <span>00</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="property-gallery">
-        <button
-          type="button"
-          className="property-gallery__main"
-          onClick={() => show(property.visual)}
-          aria-label={`Abrir vista principal de ${property.title}`}
-        >
-          <ArchitecturalVisual variant={property.visual} decorative />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => show('courtyard')}
-          aria-label={`Abrir segunda vista de ${property.title}`}
-        >
-          <ArchitecturalVisual variant="courtyard" decorative />
-        </button>
-
-        <button
-          type="button"
-          onClick={() => show('facade')}
-          aria-label={`Abrir tercera vista de ${property.title}`}
-        >
-          <ArchitecturalVisual variant="facade" decorative />
-        </button>
+        {images.slice(0, 3).map((image, index) => (
+          <button
+            type="button"
+            className={index === 0 ? 'property-gallery__main' : undefined}
+            onClick={() => showImage(image)}
+            aria-label={`Abrir fotografía ${index + 1} de ${property.title}`}
+            key={image.id}
+          >
+            <img src={image.url} alt={image.alt} decoding="async" />
+          </button>
+        ))}
 
         <button
           type="button"
           className="gallery-open"
-          onClick={() => show(property.visual)}
+          onClick={() => showImage(images[0])}
           aria-label={`Abrir galería de ${property.title}`}
         >
           Ver todas las imágenes
-          <span>03</span>
+          <span>{String(images.length).padStart(2, '0')}</span>
         </button>
       </div>
 
-      {open && (
+      {open && activeImage ? (
         <div
           ref={lightboxRef}
           className="lightbox"
@@ -90,9 +109,9 @@ export function PropertyGallery({ property }: { property: Property }) {
             ×
           </button>
 
-          <ArchitecturalVisual variant={activeView} decorative />
+          <img src={activeImage.url} alt={activeImage.alt} />
         </div>
-      )}
+      ) : null}
     </>
   );
 }
