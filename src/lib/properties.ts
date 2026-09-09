@@ -209,61 +209,47 @@ function mapPublicProperty(row: PublicPropertyRow): Property {
 
 export async function getPublishedProperties() {
   const { data, error } = await supabase
-    .from('properties')
-    .select(PUBLIC_PROPERTY_SELECT)
-    .in('status', [...PUBLIC_PROPERTY_STATUSES])
-    .order('published_at', { ascending: false, nullsFirst: false })
-    .order('created_at', { ascending: false });
+    .rpc('get_public_properties', {
+      p_slug: null,
+      p_featured: null,
+      p_limit: null,
+    });
 
   if (error) {
     throw error;
   }
 
-  const rows = await attachExactAddresses(
-    (data ?? []) as PublicPropertyRow[],
-  );
-
-  return rows.map(mapPublicProperty);
+  return ((data ?? []) as PublicPropertyRow[]).map(mapPublicProperty);
 }
 
 export async function getPublishedPropertyBySlug(slug: string) {
   const { data, error } = await supabase
-    .from('properties')
-    .select(PUBLIC_PROPERTY_SELECT)
-    .eq('slug', slug)
-    .in('status', [...PUBLIC_PROPERTY_STATUSES])
-    .maybeSingle();
+    .rpc('get_public_properties', {
+      p_slug: slug,
+      p_featured: null,
+      p_limit: 1,
+    });
 
   if (error) {
     throw error;
   }
 
-  if (!data) {
-    return null;
-  }
+  const [row] = (data ?? []) as PublicPropertyRow[];
 
-  const [row] = await attachExactAddresses([data as PublicPropertyRow]);
-
-  return mapPublicProperty(row);
+  return row ? mapPublicProperty(row) : null;
 }
 
 export async function getFeaturedProperties(limit = 3) {
   const { data, error } = await supabase
-    .from('properties')
-    .select(PUBLIC_PROPERTY_SELECT)
-    .in('status', [...PUBLIC_PROPERTY_STATUSES])
-    .eq('featured', true)
-    .order('published_at', { ascending: false, nullsFirst: false })
-    .order('created_at', { ascending: false })
-    .limit(limit);
+    .rpc('get_public_properties', {
+      p_slug: null,
+      p_featured: true,
+      p_limit: limit,
+    });
 
   if (error) {
     throw error;
   }
 
-  const rows = await attachExactAddresses(
-    (data ?? []) as PublicPropertyRow[],
-  );
-
-  return rows.map(mapPublicProperty);
+  return ((data ?? []) as PublicPropertyRow[]).map(mapPublicProperty);
 }
