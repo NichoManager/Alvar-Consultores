@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 
-type PropertyStatus = 'draft' | 'published';
-
 function createSlug(value: string) {
   return value
     .normalize('NFD')
@@ -48,7 +46,6 @@ export function AdminPropertyCreatePage() {
     const formData = new FormData(event.currentTarget);
     const title = String(formData.get('title') ?? '').trim();
     const slug = createSlug(title);
-    const status = String(formData.get('status')) as PropertyStatus;
     const price = nullableNumber(formData.get('price'));
 
     if (!slug || price === null) {
@@ -68,7 +65,7 @@ export function AdminPropertyCreatePage() {
           slug,
           operation: String(formData.get('operation')),
           property_type: String(formData.get('property_type')),
-          status,
+          status: 'draft',
           price,
           currency: 'EUR',
           city: String(formData.get('city') ?? '').trim(),
@@ -87,8 +84,7 @@ export function AdminPropertyCreatePage() {
           exterior: formData.has('exterior'),
           description: String(formData.get('description') ?? '').trim(),
           featured: formData.has('featured'),
-          published_at:
-            status === 'published' ? new Date().toISOString() : null,
+          published_at: null,
         })
         .select('id')
         .single();
@@ -117,15 +113,29 @@ export function AdminPropertyCreatePage() {
   return (
     <main className="admin-property-form-page">
       <header className="admin-property-form__header">
-        <span>ALVAR CONSULTORES</span>
-        <h1>Nuevo inmueble</h1>
-        <p>
-          Añade los datos principales de la propiedad. Las fotografías se
-          incorporarán en el siguiente paso.
-        </p>
+        <div className="admin-property-form__header-inner">
+          <button
+            type="button"
+            className="admin-property-form__back"
+            onClick={() => navigate('/admin/inmuebles')}
+          >
+            <span aria-hidden="true">←</span> Volver a inmuebles
+          </button>
+
+          <span>ALVAR CONSULTORES</span>
+          <h1>Nuevo inmueble</h1>
+          <p>
+            Añade los datos principales de la propiedad. Después podrás
+            incorporar fotografías y revisar el inmueble antes de publicarlo.
+          </p>
+        </div>
       </header>
 
       <form className="admin-property-form" onSubmit={handleSubmit}>
+        <p className="admin-property-form__required-note">
+          Los campos marcados con * son obligatorios.
+        </p>
+
         <section className="admin-property-form__section">
           <div>
             <span>01</span>
@@ -134,7 +144,7 @@ export function AdminPropertyCreatePage() {
 
           <div className="admin-property-form__grid">
             <label className="admin-property-form__field">
-              <span>Operación</span>
+              <span>Operación *</span>
               <select name="operation" defaultValue="venta" required>
                 <option value="venta">Venta</option>
                 <option value="alquiler">Alquiler</option>
@@ -142,7 +152,7 @@ export function AdminPropertyCreatePage() {
             </label>
 
             <label className="admin-property-form__field">
-              <span>Tipo de inmueble</span>
+              <span>Tipo de inmueble *</span>
               <select name="property_type" defaultValue="Piso" required>
                 <option value="Piso">Piso</option>
                 <option value="Casa">Casa</option>
@@ -158,32 +168,42 @@ export function AdminPropertyCreatePage() {
             </label>
 
             <label className="admin-property-form__field">
-              <span>Título</span>
+              <span>Título *</span>
               <input
                 type="text"
                 name="title"
-                placeholder="Piso luminoso con terraza en Pinto"
+                placeholder="Ej. Piso luminoso con terraza en Pinto"
                 required
               />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Referencia (opcional)</span>
-              <input type="text" name="reference" />
+              <span>Referencia</span>
+              <input type="text" name="reference" placeholder="Ej. ALV-001" />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Precio</span>
-              <input type="number" name="price" min="0" step="0.01" required />
+              <span>Precio *</span>
+              <span className="admin-property-form__input-suffix">
+                <input
+                  type="number"
+                  name="price"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+                <span aria-hidden="true">€</span>
+              </span>
             </label>
 
-            <label className="admin-property-form__field">
+            <div className="admin-property-form__status" aria-label="Estado: Borrador">
               <span>Estado</span>
-              <select name="status" defaultValue="draft" required>
-                <option value="draft">Borrador</option>
-                <option value="published">Publicado</option>
-              </select>
-            </label>
+              <strong>Borrador</strong>
+              <small>
+                No aparecerá en la web hasta que lo publiques desde la edición
+                del inmueble.
+              </small>
+            </div>
           </div>
         </section>
 
@@ -195,23 +215,28 @@ export function AdminPropertyCreatePage() {
 
           <div className="admin-property-form__grid">
             <label className="admin-property-form__field">
-              <span>Ciudad</span>
-              <input type="text" name="city" required />
+              <span>Ciudad *</span>
+              <input type="text" name="city" placeholder="Madrid" required />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Zona / barrio (opcional)</span>
-              <input type="text" name="area" />
+              <span>Zona / barrio</span>
+              <input type="text" name="area" placeholder="Ej. Ríos Rosas" />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Dirección (opcional)</span>
-              <input type="text" name="address" />
+              <span>Dirección</span>
+              <input type="text" name="address" placeholder="Ej. Calle ..." />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Código postal (opcional)</span>
-              <input type="text" name="postal_code" inputMode="numeric" />
+              <span>Código postal</span>
+              <input
+                type="text"
+                name="postal_code"
+                inputMode="numeric"
+                placeholder="Ej. 28003"
+              />
             </label>
           </div>
         </section>
@@ -224,57 +249,62 @@ export function AdminPropertyCreatePage() {
 
           <div className="admin-property-form__grid">
             <label className="admin-property-form__field">
-              <span>Dormitorios (opcional)</span>
+              <span>Dormitorios</span>
               <input type="number" name="bedrooms" min="0" step="1" />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Baños (opcional)</span>
+              <span>Baños</span>
               <input type="number" name="bathrooms" min="0" step="1" />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Superficie construida (m², opcional)</span>
+              <span>Superficie construida (m²)</span>
               <input type="number" name="built_area" min="0" step="0.01" />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Superficie útil (m², opcional)</span>
+              <span>Superficie útil (m²)</span>
               <input type="number" name="usable_area" min="0" step="0.01" />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Planta (opcional)</span>
+              <span>Planta</span>
               <input type="text" name="floor" />
             </label>
           </div>
 
           <div className="admin-property-form__checks">
-            <label>
+            <label className="admin-property-form__check">
               <input type="checkbox" name="elevator" />
               <span>Ascensor</span>
             </label>
-            <label>
+            <label className="admin-property-form__check">
               <input type="checkbox" name="parking" />
               <span>Garaje</span>
             </label>
-            <label>
+            <label className="admin-property-form__check">
               <input type="checkbox" name="terrace" />
               <span>Terraza</span>
             </label>
-            <label>
+            <label className="admin-property-form__check">
               <input type="checkbox" name="furnished" />
               <span>Amueblado</span>
             </label>
-            <label>
+            <label className="admin-property-form__check">
               <input type="checkbox" name="exterior" />
               <span>Exterior</span>
             </label>
-            <label>
+            <label className="admin-property-form__check">
               <input type="checkbox" name="featured" />
               <span>Destacado</span>
             </label>
           </div>
+
+          <p className="admin-property-form__check-help">
+            Los inmuebles destacados pueden aparecer en posiciones preferentes
+            de la web.
+          </p>
         </section>
 
         <section className="admin-property-form__section">
@@ -285,6 +315,10 @@ export function AdminPropertyCreatePage() {
 
           <label className="admin-property-form__field">
             <span>Descripción</span>
+            <small className="admin-property-form__helper">
+              Describe los puntos fuertes del inmueble, distribución, estado,
+              ubicación y cualquier detalle relevante.
+            </small>
             <textarea name="description" rows={8} required />
           </label>
         </section>
@@ -296,16 +330,16 @@ export function AdminPropertyCreatePage() {
         ) : null}
 
         <div className="admin-property-form__actions">
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Guardando...' : 'Guardar inmueble'}
-          </button>
-
           <button
             type="button"
             onClick={() => navigate('/admin/inmuebles')}
             disabled={isSubmitting}
           >
             Cancelar
+          </button>
+
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Guardando...' : 'Guardar y continuar →'}
           </button>
         </div>
       </form>
