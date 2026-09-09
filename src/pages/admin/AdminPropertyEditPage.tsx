@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 
@@ -120,7 +120,8 @@ const statusLabels: Record<PropertyStatus, string> = {
 const statusDescriptions: Record<PropertyStatus, string> = {
   draft: 'No aparece en el catálogo público.',
   published: 'Visible en el catálogo y en la ficha pública del inmueble.',
-  reserved: 'Queda registrado como reservado y fuera del catálogo público.',
+  reserved:
+    'Visible en la web con la etiqueta Reservado para indicar que la operación está en curso.',
   sold: 'Operación de venta cerrada. El inmueble queda fuera del catálogo.',
   rented: 'Operación de alquiler cerrada. El inmueble queda fuera del catálogo.',
   archived: 'Se conserva en el CRM pero no aparece públicamente.',
@@ -130,13 +131,13 @@ const statusOptions: Array<{
   value: PropertyStatus;
   label: string;
 }> = [
-  { value: 'draft', label: 'Borrador' },
-  { value: 'published', label: 'Publicado' },
-  { value: 'reserved', label: 'Reservado' },
-  { value: 'sold', label: 'Vendido · Venta' },
-  { value: 'rented', label: 'Alquilado · Alquiler' },
-  { value: 'archived', label: 'Archivado' },
-];
+    { value: 'draft', label: 'Borrador' },
+    { value: 'published', label: 'Publicado' },
+    { value: 'reserved', label: 'Reservado' },
+    { value: 'sold', label: 'Vendido · Venta' },
+    { value: 'rented', label: 'Alquilado · Alquiler' },
+    { value: 'archived', label: 'Archivado' },
+  ];
 
 function getFileExtension(fileName: string) {
   return fileName.split('.').pop()?.toLowerCase() ?? '';
@@ -219,6 +220,7 @@ function createFormState(property: AdminProperty): PropertyFormState {
 
 export function AdminPropertyEditPage() {
   const { id = '' } = useParams();
+  const navigate = useNavigate();
 
   const [property, setProperty] = useState<AdminProperty | null>(null);
   const [form, setForm] = useState<PropertyFormState | null>(null);
@@ -231,6 +233,7 @@ export function AdminPropertyEditPage() {
   const [isSavingStatus, setIsSavingStatus] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isManaging, setIsManaging] = useState(false);
+  const [isDeletingProperty, setIsDeletingProperty] = useState(false);
 
   const [pageError, setPageError] = useState('');
   const [dataError, setDataError] = useState('');
@@ -238,6 +241,7 @@ export function AdminPropertyEditPage() {
   const [imageError, setImageError] = useState('');
   const [statusError, setStatusError] = useState('');
   const [statusSuccess, setStatusSuccess] = useState('');
+  const [deleteError, setDeleteError] = useState('');
 
   const refreshImages = async () => {
     if (!id) {
@@ -789,9 +793,9 @@ export function AdminPropertyEditPage() {
       reorderedImages[imageIndex],
       reorderedImages[nextIndex],
     ] = [
-      reorderedImages[nextIndex],
-      reorderedImages[imageIndex],
-    ];
+        reorderedImages[nextIndex],
+        reorderedImages[imageIndex],
+      ];
 
     setImageError('');
     setIsManaging(true);
@@ -1002,7 +1006,7 @@ export function AdminPropertyEditPage() {
     const publishedAt =
       selectedStatus === 'published'
         ? property.published_at ??
-          new Date().toISOString()
+        new Date().toISOString()
         : property.published_at;
 
     try {
@@ -1643,10 +1647,9 @@ export function AdminPropertyEditPage() {
                         isUploading ||
                         index === 0
                       }
-                      aria-label={`Subir posición de ${
-                        image.alt_text ??
+                      aria-label={`Subir posición de ${image.alt_text ??
                         property.title
-                      }`}
+                        }`}
                     >
                       ↑
                     </button>
@@ -1660,12 +1663,11 @@ export function AdminPropertyEditPage() {
                         isManaging ||
                         isUploading ||
                         index ===
-                          images.length - 1
+                        images.length - 1
                       }
-                      aria-label={`Bajar posición de ${
-                        image.alt_text ??
+                      aria-label={`Bajar posición de ${image.alt_text ??
                         property.title
-                      }`}
+                        }`}
                     >
                       ↓
                     </button>
@@ -1756,7 +1758,7 @@ export function AdminPropertyEditPage() {
           </p>
 
           {selectedStatus === 'published' &&
-          images.length === 0 ? (
+            images.length === 0 ? (
             <p className="admin-property-form__error">
               Para publicar el inmueble debes añadir
               al menos una fotografía.
