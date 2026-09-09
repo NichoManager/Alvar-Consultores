@@ -23,6 +23,18 @@ const statusOrder: ContactStatus[] = [
   'discarded',
 ];
 
+const statusSummaryLabels: Record<
+  ContactStatus,
+  { singular: string; plural: string }
+> = {
+  new: { singular: 'nuevo', plural: 'nuevos' },
+  contacted: { singular: 'contactado', plural: 'contactados' },
+  visit: { singular: 'visita', plural: 'visitas' },
+  negotiation: { singular: 'negociación', plural: 'negociaciones' },
+  closed: { singular: 'cerrado', plural: 'cerrados' },
+  discarded: { singular: 'descartado', plural: 'descartados' },
+};
+
 const dateFormatter = new Intl.DateTimeFormat('es-ES', {
   day: '2-digit',
   month: 'short',
@@ -101,7 +113,10 @@ export function AdminContactsPage() {
 
     statusOrder.forEach((status) => {
       const count = contacts.filter((contact) => contact.status === status).length;
-      if (count > 0) parts.push(`${count} ${contactStatusLabels[status].toLowerCase()}${count === 1 ? '' : 's'}`);
+      if (count > 0) {
+        const labels = statusSummaryLabels[status];
+        parts.push(`${count} ${count === 1 ? labels.singular : labels.plural}`);
+      }
     });
 
     return parts.join(' · ');
