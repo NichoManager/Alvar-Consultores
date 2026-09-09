@@ -1,27 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { Property, PropertyImage } from '../../types/content';
+import type { Property } from '../../types/content';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { trackEvent } from '../../utils/analytics';
 import { ArchitecturalVisual } from '../ui/ArchitecturalVisual';
 
 export function PropertyGallery({ property }: { property: Property }) {
   const images = property.images ?? [];
-  const firstImageId = images[0]?.id ?? '';
   const [open, setOpen] = useState(false);
-  const [activeImageId, setActiveImageId] = useState(firstImageId);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const lightboxRef = useRef<HTMLDivElement>(null);
 
-  const activeImage =
-    images.find((image) => image.id === activeImageId) ?? images[0];
+  const activeImage = images[activeImageIndex] ?? images[0];
 
   const close = useCallback(() => setOpen(false), []);
 
   useFocusTrap(lightboxRef, open, close);
 
   useEffect(() => {
-    setActiveImageId(firstImageId);
+    setActiveImageIndex(0);
     setOpen(false);
-  }, [firstImageId, property.id]);
+  }, [property.id]);
 
   useEffect(() => {
     if (!open) return;
@@ -34,13 +32,13 @@ export function PropertyGallery({ property }: { property: Property }) {
     };
   }, [open]);
 
-  const showImage = (image: PropertyImage) => {
-    setActiveImageId(image.id);
+  const showImage = (index: number) => {
+    setActiveImageIndex(index);
     setOpen(true);
 
     trackEvent('property_gallery_open', {
       property: property.slug,
-      view: image.id,
+      view: images[index]?.id ?? '',
     });
   };
 
@@ -74,7 +72,7 @@ export function PropertyGallery({ property }: { property: Property }) {
           <button
             type="button"
             className={index === 0 ? 'property-gallery__main' : undefined}
-            onClick={() => showImage(image)}
+            onClick={() => showImage(index)}
             aria-label={`Abrir fotografía ${index + 1} de ${property.title}`}
             key={image.id}
           >
@@ -85,7 +83,7 @@ export function PropertyGallery({ property }: { property: Property }) {
         <button
           type="button"
           className="gallery-open"
-          onClick={() => showImage(images[0])}
+          onClick={() => showImage(0)}
           aria-label={`Abrir galería de ${property.title}`}
         >
           Ver todas las imágenes
@@ -111,6 +109,38 @@ export function PropertyGallery({ property }: { property: Property }) {
           </button>
 
           <img src={activeImage.url} alt={activeImage.alt} />
+
+          {images.length > 1 ? (
+            <div className="lightbox__navigation">
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveImageIndex((current) =>
+                    current === 0 ? images.length - 1 : current - 1,
+                  )
+                }
+                aria-label="Ver fotografía anterior"
+              >
+                ←
+              </button>
+
+              <span aria-live="polite">
+                {activeImageIndex + 1} / {images.length}
+              </span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveImageIndex((current) =>
+                    current === images.length - 1 ? 0 : current + 1,
+                  )
+                }
+                aria-label="Ver fotografía siguiente"
+              >
+                →
+              </button>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { ContactForm } from '../components/forms/ContactForm';
 import { ValuationForm } from '../components/forms/ValuationForm';
 import { AdditionalServices } from '../components/home/AdditionalServices';
@@ -656,4 +657,3 @@ export function HomePage() {
     </>
   );
 }
-import { useEffect, useState } from 'react';

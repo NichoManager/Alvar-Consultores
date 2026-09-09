@@ -585,6 +585,37 @@
   height: min(75vh, 48rem);
 }
 
+.lightbox__navigation {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem;
+  color: var(--ivory);
+  background: rgba(17, 24, 50, 0.78);
+  transform: translateX(-50%);
+}
+
+.lightbox__navigation button {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid rgba(248, 246, 240, 0.3);
+  cursor: pointer;
+  color: var(--ivory);
+  background: transparent;
+}
+
+.lightbox__navigation span {
+  min-width: 3.5rem;
+  text-align: center;
+  font-size: 0.68rem;
+  font-weight: 750;
+}
+
 .lightbox p {
   margin: 1rem 0 0;
   font-size: 0.68rem;
