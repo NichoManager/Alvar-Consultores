@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Navigate, useSearchParams } from 'react-router-dom';
 import { PropertyFilters, type FilterState } from '../components/properties/PropertyFilters';
 import { PropertyGrid } from '../components/properties/PropertyGrid';
@@ -7,7 +7,8 @@ import { Button } from '../components/ui/Button';
 import { Container } from '../components/ui/Container';
 import { InternalHero } from '../components/ui/InternalHero';
 import { business } from '../data/business';
-import { properties } from '../data/properties';
+import { getPublishedProperties } from '../lib/properties';
+import type { Property } from '../types/content';
 
 type NormalizedOperation = 'venta' | 'alquiler' | '';
 
@@ -31,6 +32,40 @@ function normalizeOperation(value: string): NormalizedOperation {
 
 export function PropertiesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProperties = async () => {
+      try {
+        const publishedProperties = await getPublishedProperties();
+
+        if (isMounted) {
+          setProperties(publishedProperties);
+          setLoadError(false);
+        }
+      } catch (error) {
+        console.error('Error loading public properties:', error);
+
+        if (isMounted) {
+          setLoadError(true);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadProperties();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filters: FilterState = useMemo(
     () => ({
@@ -253,7 +288,25 @@ export function PropertiesPage() {
             </small>
           </div>
 
-          <PropertyGrid properties={filtered} />
+          {isLoading ? (
+            <div className="empty-state" role="status">
+              <p>Cargando propiedades disponibles...</p>
+              <span>Estamos preparando el catálogo actualizado.</span>
+            </div>
+          ) : loadError ? (
+            <div className="empty-state" role="alert">
+              <p>No hemos podido cargar las propiedades.</p>
+              <span>
+                Inténtalo de nuevo en unos minutos o cuéntanos qué estás
+                buscando para ayudarte personalmente.
+              </span>
+              <Button to="/contacto" variant="secondary">
+                Contactar
+              </Button>
+            </div>
+          ) : (
+            <PropertyGrid properties={filtered} />
+          )}
 
           {isRental ? (
             <aside
