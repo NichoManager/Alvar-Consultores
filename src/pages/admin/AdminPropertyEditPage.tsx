@@ -147,7 +147,7 @@ export function AdminPropertyEditPage() {
   }, [id]);
 
   const handleUpload = async (selectedFiles: File[]) => {
-    if (!property || selectedFiles.length === 0 || isUploading) {
+    if (!property || selectedFiles.length === 0 || isUploading || isManaging) {
       return;
     }
 
@@ -239,6 +239,9 @@ export function AdminPropertyEditPage() {
       } else if (refreshed) {
         setError('');
       }
+    } catch (unexpectedError) {
+      console.error('Unexpected property image upload error:', unexpectedError);
+      setError('No se han podido completar las subidas. Inténtalo de nuevo.');
     } finally {
       setIsUploading(false);
     }
@@ -265,7 +268,7 @@ export function AdminPropertyEditPage() {
   };
 
   const handleSetCover = async (imageId: string) => {
-    if (isManaging) {
+    if (isManaging || isUploading) {
       return;
     }
 
@@ -297,6 +300,9 @@ export function AdminPropertyEditPage() {
       }
 
       await refreshImages();
+    } catch (unexpectedError) {
+      console.error('Unexpected cover update error:', unexpectedError);
+      setError('No se ha podido cambiar la fotografía de portada.');
     } finally {
       setIsManaging(false);
     }
@@ -307,6 +313,7 @@ export function AdminPropertyEditPage() {
 
     if (
       isManaging ||
+      isUploading ||
       nextIndex < 0 ||
       nextIndex >= images.length
     ) {
@@ -335,6 +342,10 @@ export function AdminPropertyEditPage() {
       setImages(
         reorderedImages.map((image, position) => ({ ...image, position })),
       );
+    } catch (unexpectedError) {
+      console.error('Unexpected image reorder error:', unexpectedError);
+      setError('No se ha podido cambiar el orden de las fotografías.');
+      await refreshImages();
     } finally {
       setIsManaging(false);
     }
@@ -343,6 +354,7 @@ export function AdminPropertyEditPage() {
   const handleDelete = async (image: PropertyImage) => {
     if (
       isManaging ||
+      isUploading ||
       !window.confirm('¿Seguro que quieres eliminar esta fotografía?')
     ) {
       return;
@@ -396,6 +408,10 @@ export function AdminPropertyEditPage() {
         setError('La fotografía se eliminó, pero no se pudo actualizar el orden.');
       }
 
+      await refreshImages();
+    } catch (unexpectedError) {
+      console.error('Unexpected property image deletion error:', unexpectedError);
+      setError('No se ha podido completar la eliminación de la fotografía.');
       await refreshImages();
     } finally {
       setIsManaging(false);
@@ -458,7 +474,7 @@ export function AdminPropertyEditPage() {
               type="file"
               multiple
               accept="image/jpeg,image/png,image/webp,image/avif"
-              disabled={isUploading}
+              disabled={isUploading || isManaging}
               onChange={(event) => {
                 const files = Array.from(event.target.files ?? []);
                 event.target.value = '';
@@ -504,7 +520,7 @@ export function AdminPropertyEditPage() {
                     <button
                       type="button"
                       onClick={() => void handleMove(index, -1)}
-                      disabled={isManaging || index === 0}
+                      disabled={isManaging || isUploading || index === 0}
                       aria-label={`Subir posición de ${image.alt_text ?? property.title}`}
                     >
                       ↑
@@ -513,7 +529,9 @@ export function AdminPropertyEditPage() {
                     <button
                       type="button"
                       onClick={() => void handleMove(index, 1)}
-                      disabled={isManaging || index === images.length - 1}
+                      disabled={
+                        isManaging || isUploading || index === images.length - 1
+                      }
                       aria-label={`Bajar posición de ${image.alt_text ?? property.title}`}
                     >
                       ↓
@@ -523,7 +541,7 @@ export function AdminPropertyEditPage() {
                   <button
                     type="button"
                     onClick={() => void handleSetCover(image.id)}
-                    disabled={isManaging || image.is_cover}
+                    disabled={isManaging || isUploading || image.is_cover}
                   >
                     {image.is_cover ? 'Es la portada' : 'Hacer portada'}
                   </button>
@@ -531,7 +549,7 @@ export function AdminPropertyEditPage() {
                   <button
                     type="button"
                     onClick={() => void handleDelete(image)}
-                    disabled={isManaging}
+                    disabled={isManaging || isUploading}
                   >
                     Eliminar
                   </button>
