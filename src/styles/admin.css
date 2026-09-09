@@ -17,11 +17,9 @@
   min-height: 100vh;
   color: var(--admin-text);
   background:
-    linear-gradient(
-      135deg,
+    linear-gradient(135deg,
       rgba(184, 148, 77, 0.05),
-      transparent 32rem
-    ),
+      transparent 32rem),
     var(--admin-ivory);
 }
 
@@ -56,11 +54,9 @@
   overflow: hidden;
   color: var(--admin-ivory);
   background:
-    radial-gradient(
-      circle at 20% 80%,
+    radial-gradient(circle at 20% 80%,
       rgba(184, 148, 77, 0.2),
-      transparent 17rem
-    ),
+      transparent 17rem),
     linear-gradient(145deg, #111832 0%, #16264c 100%);
 }
 
@@ -75,7 +71,7 @@
   content: '';
 }
 
-.admin-login__brand > span {
+.admin-login__brand>span {
   position: relative;
   z-index: 1;
   color: var(--admin-gold);
@@ -84,7 +80,7 @@
   letter-spacing: 0.17em;
 }
 
-.admin-login__brand > p {
+.admin-login__brand>p {
   position: relative;
   z-index: 1;
   max-width: 12rem;
@@ -134,7 +130,7 @@
   gap: 0.55rem;
 }
 
-.admin-login__form label > span {
+.admin-login__form label>span {
   color: var(--admin-navy);
   font-size: 0.68rem;
   font-weight: 800;
@@ -234,13 +230,13 @@
   background: var(--admin-navy);
 }
 
-.admin-properties__header > div:first-child {
+.admin-properties__header>div:first-child {
   display: flex;
   align-items: baseline;
   gap: 1.6rem;
 }
 
-.admin-properties__header > div:first-child > span {
+.admin-properties__header>div:first-child>span {
   color: var(--admin-gold);
   font-size: 0.65rem;
   font-weight: 850;
@@ -253,7 +249,7 @@
   font: 500 2.2rem / 1 'Cormorant Garamond', serif;
 }
 
-.admin-properties__header > div:last-child {
+.admin-properties__header>div:last-child {
   display: flex;
   align-items: center;
   gap: 0.7rem;
@@ -292,15 +288,11 @@
 .admin-properties__content {
   width: min(88rem, calc(100% - 3rem));
   margin: 0 auto;
-  padding: clamp(1.75rem, 3.5vw, 3rem) 0;
+  padding: clamp(1.1rem, 2vw, 1.6rem) 0 2.5rem;
 }
 
 .admin-properties__intro {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  padding-bottom: 1rem;
+  padding-bottom: 0.8rem;
   border-bottom: 1px solid var(--admin-line);
 }
 
@@ -326,7 +318,7 @@
   line-height: 1.5;
 }
 
-.admin-properties__intro > strong {
+.admin-properties__intro>strong {
   flex: 0 0 auto;
   color: var(--admin-navy);
   font-size: 0.76rem;
@@ -417,7 +409,7 @@
   background: rgba(255, 255, 255, 0.65);
 }
 
-.admin-properties__empty > span {
+.admin-properties__empty>span {
   color: var(--admin-gold);
   font-size: 0.62rem;
   font-weight: 850;
@@ -502,7 +494,7 @@
   object-fit: cover;
 }
 
-.admin-property-card__media > span {
+.admin-property-card__media>span {
   padding: 1rem;
   text-align: center;
   font-size: 0.62rem;
@@ -522,7 +514,7 @@
   text-transform: uppercase;
 }
 
-.admin-property-card__eyebrow > span {
+.admin-property-card__eyebrow>span {
   color: var(--admin-gold);
   font-weight: 850;
 }
@@ -647,7 +639,7 @@
     padding: 1.5rem;
   }
 
-  .admin-login__brand > p {
+  .admin-login__brand>p {
     margin-top: 2.5rem;
     font-size: 1.8rem;
   }
@@ -666,13 +658,13 @@
     padding: 1.4rem;
   }
 
-  .admin-properties__header > div:first-child {
+  .admin-properties__header>div:first-child {
     align-items: flex-start;
     flex-direction: column;
     gap: 0.5rem;
   }
 
-  .admin-properties__header > div:last-child {
+  .admin-properties__header>div:last-child {
     width: 100%;
   }
 
@@ -728,7 +720,7 @@
     gap: 0.35rem;
   }
 
-  .admin-properties__header > div:last-child {
+  .admin-properties__header>div:last-child {
     flex-direction: column;
   }
 
@@ -803,7 +795,7 @@
   background: var(--admin-navy);
 }
 
-.admin-property-form__header > span {
+.admin-property-form__header>span {
   color: var(--admin-gold);
   font-size: 0.65rem;
   font-weight: 850;
@@ -838,7 +830,7 @@
   box-shadow: 0 16px 45px rgba(17, 24, 50, 0.05);
 }
 
-.admin-property-form__section > div:first-child {
+.admin-property-form__section>div:first-child {
   display: flex;
   align-items: baseline;
   gap: 0.8rem;
@@ -847,7 +839,7 @@
   border-bottom: 1px solid var(--admin-line);
 }
 
-.admin-property-form__section > div:first-child > span {
+.admin-property-form__section>div:first-child>span {
   color: var(--admin-gold);
   font-size: 0.62rem;
   font-weight: 850;
@@ -872,7 +864,7 @@
   min-width: 0;
 }
 
-.admin-property-form__field > span {
+.admin-property-form__field>span {
   color: var(--admin-navy);
   font-size: 0.66rem;
   font-weight: 800;
@@ -1055,7 +1047,7 @@
   background: var(--admin-navy);
 }
 
-.admin-property-edit__header > div:first-child > span {
+.admin-property-edit__header>div:first-child>span {
   color: var(--admin-gold);
   font-size: 0.65rem;
   font-weight: 850;
@@ -1068,7 +1060,7 @@
   font: 500 clamp(2.8rem, 5vw, 4.8rem) / 0.95 'Cormorant Garamond', serif;
 }
 
-.admin-property-edit__header > div:first-child > p {
+.admin-property-edit__header>div:first-child>p {
   margin: 0.85rem 0 0;
   color: rgba(248, 246, 240, 0.72);
   font-size: 0.9rem;
@@ -1080,7 +1072,7 @@
   gap: 1rem;
 }
 
-.admin-property-edit__meta > span {
+.admin-property-edit__meta>span {
   padding: 0.45rem 0.7rem;
   border: 1px solid rgba(184, 148, 77, 0.45);
   color: var(--admin-gold);
@@ -1090,7 +1082,7 @@
   text-transform: uppercase;
 }
 
-.admin-property-edit__meta > div {
+.admin-property-edit__meta>div {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -1130,7 +1122,7 @@
   box-shadow: 0 16px 45px rgba(17, 24, 50, 0.05);
 }
 
-.admin-images__upload > div > span {
+.admin-images__upload>div>span {
   color: var(--admin-gold);
   font-size: 0.62rem;
   font-weight: 850;
@@ -1151,12 +1143,12 @@
   line-height: 1.65;
 }
 
-.admin-images__upload > label {
+.admin-images__upload>label {
   display: grid;
   gap: 0.65rem;
 }
 
-.admin-images__upload > label > span {
+.admin-images__upload>label>span {
   color: var(--admin-navy);
   font-size: 0.68rem;
   font-weight: 800;
@@ -1266,14 +1258,14 @@
   padding: 1rem;
 }
 
-.admin-image-card__actions > span {
+.admin-image-card__actions>span {
   color: var(--admin-muted);
   font-size: 0.65rem;
   font-weight: 750;
   text-transform: uppercase;
 }
 
-.admin-image-card__actions > div {
+.admin-image-card__actions>div {
   display: flex;
   gap: 0.35rem;
 }
@@ -1289,11 +1281,11 @@
   font-weight: 800;
 }
 
-.admin-image-card__actions > button {
+.admin-image-card__actions>button {
   grid-column: span 1;
 }
 
-.admin-image-card__actions > button:last-child {
+.admin-image-card__actions>button:last-child {
   color: #8a3030;
 }
 
@@ -1318,6 +1310,7 @@
 }
 
 @media (max-width: 980px) {
+
   .admin-property-edit__header,
   .admin-images__upload {
     grid-template-columns: 1fr;
@@ -1332,7 +1325,7 @@
     justify-items: start;
   }
 
-  .admin-property-edit__meta > div {
+  .admin-property-edit__meta>div {
     justify-content: flex-start;
   }
 
@@ -1347,7 +1340,7 @@
   }
 
   .admin-property-edit__meta,
-  .admin-property-edit__meta > div,
+  .admin-property-edit__meta>div,
   .admin-property-edit__meta a {
     width: 100%;
   }
