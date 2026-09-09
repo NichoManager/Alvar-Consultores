@@ -123,7 +123,8 @@ const statusDescriptions: Record<PropertyStatus, string> = {
   reserved:
     'Visible en la web con la etiqueta Reservado para indicar que la operación está en curso.',
   sold: 'Operación de venta cerrada. El inmueble queda fuera del catálogo.',
-  rented: 'Operación de alquiler cerrada. El inmueble queda fuera del catálogo.',
+  rented:
+    'Operación de alquiler cerrada. El inmueble queda fuera del catálogo.',
   archived: 'Se conserva en el CRM pero no aparece públicamente.',
 };
 
@@ -131,13 +132,13 @@ const statusOptions: Array<{
   value: PropertyStatus;
   label: string;
 }> = [
-    { value: 'draft', label: 'Borrador' },
-    { value: 'published', label: 'Publicado' },
-    { value: 'reserved', label: 'Reservado' },
-    { value: 'sold', label: 'Vendido · Venta' },
-    { value: 'rented', label: 'Alquilado · Alquiler' },
-    { value: 'archived', label: 'Archivado' },
-  ];
+  { value: 'draft', label: 'Borrador' },
+  { value: 'published', label: 'Publicado' },
+  { value: 'reserved', label: 'Reservado' },
+  { value: 'sold', label: 'Vendido · Venta' },
+  { value: 'rented', label: 'Alquilado · Alquiler' },
+  { value: 'archived', label: 'Archivado' },
+];
 
 function getFileExtension(fileName: string) {
   return fileName.split('.').pop()?.toLowerCase() ?? '';
@@ -412,7 +413,12 @@ export function AdminPropertyEditPage() {
   ) => {
     event.preventDefault();
 
-    if (!property || !form || isSavingData) {
+    if (
+      !property ||
+      !form ||
+      isSavingData ||
+      isDeletingProperty
+    ) {
       return;
     }
 
@@ -525,7 +531,7 @@ export function AdminPropertyEditPage() {
   };
 
   const handleResetData = () => {
-    if (!property) {
+    if (!property || isDeletingProperty) {
       return;
     }
 
@@ -541,7 +547,8 @@ export function AdminPropertyEditPage() {
       !property ||
       selectedFiles.length === 0 ||
       isUploading ||
-      isManaging
+      isManaging ||
+      isDeletingProperty
     ) {
       return;
     }
@@ -710,7 +717,11 @@ export function AdminPropertyEditPage() {
   const handleSetCover = async (
     imageId: string,
   ) => {
-    if (isManaging || isUploading) {
+    if (
+      isManaging ||
+      isUploading ||
+      isDeletingProperty
+    ) {
       return;
     }
 
@@ -781,6 +792,7 @@ export function AdminPropertyEditPage() {
     if (
       isManaging ||
       isUploading ||
+      isDeletingProperty ||
       nextIndex < 0 ||
       nextIndex >= images.length
     ) {
@@ -793,9 +805,9 @@ export function AdminPropertyEditPage() {
       reorderedImages[imageIndex],
       reorderedImages[nextIndex],
     ] = [
-        reorderedImages[nextIndex],
-        reorderedImages[imageIndex],
-      ];
+      reorderedImages[nextIndex],
+      reorderedImages[imageIndex],
+    ];
 
     setImageError('');
     setIsManaging(true);
@@ -849,6 +861,7 @@ export function AdminPropertyEditPage() {
     if (
       isManaging ||
       isUploading ||
+      isDeletingProperty ||
       !window.confirm(
         '¿Seguro que quieres eliminar esta fotografía?',
       )
@@ -961,19 +974,27 @@ export function AdminPropertyEditPage() {
   ) => {
     event.preventDefault();
 
-    if (!property || isSavingStatus) {
+    if (
+      !property ||
+      isSavingStatus ||
+      isDeletingProperty
+    ) {
       return;
     }
 
     setStatusError('');
     setStatusSuccess('');
 
+    const isPublicStatus =
+      selectedStatus === 'published' ||
+      selectedStatus === 'reserved';
+
     if (
-      selectedStatus === 'published' &&
+      isPublicStatus &&
       images.length === 0
     ) {
       setStatusError(
-        'Añade al menos una fotografía antes de publicar el inmueble.',
+        'Añade al menos una fotografía antes de mostrar el inmueble en la web.',
       );
 
       return;
@@ -1004,9 +1025,9 @@ export function AdminPropertyEditPage() {
     setIsSavingStatus(true);
 
     const publishedAt =
-      selectedStatus === 'published'
+      isPublicStatus
         ? property.published_at ??
-        new Date().toISOString()
+          new Date().toISOString()
         : property.published_at;
 
     try {
@@ -1061,6 +1082,111 @@ export function AdminPropertyEditPage() {
     }
   };
 
+  const handleDeleteProperty = async () => {
+    if (
+      !property ||
+      isDeletingProperty ||
+      isSavingData ||
+      isSavingStatus ||
+      isUploading ||
+      isManaging
+    ) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `¿Seguro que quieres eliminar definitivamente "${property.title}"?\n\nSe eliminarán también todas sus fotografías. Esta acción no se puede deshacer.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeleteError('');
+    setIsDeletingProperty(true);
+
+    try {
+      const {
+        data: propertyImages,
+        error: imagesQueryError,
+      } = await supabase
+        .from('property_images')
+        .select('storage_path')
+        .eq('property_id', property.id);
+
+      if (imagesQueryError) {
+        console.error(
+          'Error loading property images before deletion:',
+          imagesQueryError,
+        );
+
+        setDeleteError(
+          'No se han podido preparar las fotografías para eliminar el inmueble.',
+        );
+
+        return;
+      }
+
+      const storagePaths = (propertyImages ?? [])
+        .map((image) => image.storage_path)
+        .filter(Boolean);
+
+      if (storagePaths.length > 0) {
+        const { error: storageDeleteError } =
+          await supabase.storage
+            .from(STORAGE_BUCKET)
+            .remove(storagePaths);
+
+        if (storageDeleteError) {
+          console.error(
+            'Error deleting property images from storage:',
+            storageDeleteError,
+          );
+
+          setDeleteError(
+            'No se han podido eliminar las fotografías del inmueble. Inténtalo de nuevo.',
+          );
+
+          return;
+        }
+      }
+
+      const { error: propertyDeleteError } =
+        await supabase
+          .from('properties')
+          .delete()
+          .eq('id', property.id);
+
+      if (propertyDeleteError) {
+        console.error(
+          'Error deleting property:',
+          propertyDeleteError,
+        );
+
+        setDeleteError(
+          'Las fotografías se han eliminado, pero no se ha podido eliminar el inmueble. Inténtalo de nuevo.',
+        );
+
+        return;
+      }
+
+      navigate('/admin/inmuebles', {
+        replace: true,
+      });
+    } catch (unexpectedError) {
+      console.error(
+        'Unexpected property deletion error:',
+        unexpectedError,
+      );
+
+      setDeleteError(
+        'No se ha podido eliminar el inmueble. Inténtalo de nuevo.',
+      );
+    } finally {
+      setIsDeletingProperty(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <main className="admin-property-edit admin-property-edit--loading">
@@ -1089,6 +1215,10 @@ export function AdminPropertyEditPage() {
       ? PROPERTY_TYPES
       : [form.propertyType, ...PROPERTY_TYPES];
 
+  const isPropertyPublic =
+    property.status === 'published' ||
+    property.status === 'reserved';
+
   return (
     <main className="admin-property-edit">
       <header className="admin-property-edit__header">
@@ -1100,7 +1230,8 @@ export function AdminPropertyEditPage() {
             className="admin-site-link"
             aria-label="Abrir la web pública de Alvar Consultores en una nueva pestaña"
           >
-            ALVAR CONSULTORES <span aria-hidden="true">↗</span>
+            ALVAR CONSULTORES{' '}
+            <span aria-hidden="true">↗</span>
           </a>
 
           <h1>Editar inmueble</h1>
@@ -1118,9 +1249,13 @@ export function AdminPropertyEditPage() {
               ← Volver a inmuebles
             </Link>
 
-            {property.status === 'published' ? (
-              <Link to={`/inmuebles/${property.slug}`}>
-                Ver inmueble en web
+            {isPropertyPublic ? (
+              <Link
+                to={`/inmuebles/${property.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver inmueble en web ↗
               </Link>
             ) : null}
           </div>
@@ -1153,6 +1288,7 @@ export function AdminPropertyEditPage() {
                     event.target.value as PropertyOperation,
                   )
                 }
+                disabled={isDeletingProperty}
                 required
               >
                 <option value="venta">Venta</option>
@@ -1171,6 +1307,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
                 required
               >
                 {propertyTypeOptions.map((type) => (
@@ -1196,6 +1333,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
                 required
               />
             </label>
@@ -1212,6 +1350,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
                 placeholder="Ej. ALV-001"
               />
             </label>
@@ -1231,6 +1370,7 @@ export function AdminPropertyEditPage() {
                       event.target.value,
                     )
                   }
+                  disabled={isDeletingProperty}
                   required
                 />
 
@@ -1238,7 +1378,6 @@ export function AdminPropertyEditPage() {
               </span>
             </label>
           </div>
-
         </section>
 
         <section className="admin-property-form__section">
@@ -1260,6 +1399,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
                 required
               />
             </label>
@@ -1276,6 +1416,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
               />
             </label>
 
@@ -1291,6 +1432,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
               />
             </label>
 
@@ -1306,6 +1448,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
               />
             </label>
           </div>
@@ -1315,14 +1458,20 @@ export function AdminPropertyEditPage() {
               type="checkbox"
               checked={form.showExactAddress}
               onChange={(event) =>
-                updateForm('showExactAddress', event.target.checked)
+                updateForm(
+                  'showExactAddress',
+                  event.target.checked,
+                )
               }
+              disabled={isDeletingProperty}
             />
+
             <span>
               Mostrar dirección exacta en la web
+
               <small>
-                Actívalo solo si quieres que la ubicación exacta del inmueble
-                sea pública.
+                Actívalo solo si quieres que la ubicación
+                exacta del inmueble sea pública.
               </small>
             </span>
           </label>
@@ -1349,6 +1498,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
               />
             </label>
 
@@ -1366,6 +1516,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
               />
             </label>
 
@@ -1385,6 +1536,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
               />
             </label>
 
@@ -1404,6 +1556,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
               />
             </label>
 
@@ -1419,6 +1572,7 @@ export function AdminPropertyEditPage() {
                     event.target.value,
                   )
                 }
+                disabled={isDeletingProperty}
               />
             </label>
           </div>
@@ -1457,6 +1611,7 @@ export function AdminPropertyEditPage() {
                         event.target.checked,
                       )
                     }
+                    disabled={isDeletingProperty}
                   />
 
                   <span>{label}</span>
@@ -1494,6 +1649,7 @@ export function AdminPropertyEditPage() {
                   event.target.value,
                 )
               }
+              disabled={isDeletingProperty}
             />
           </label>
         </section>
@@ -1519,7 +1675,10 @@ export function AdminPropertyEditPage() {
         <div className="admin-property-form__actions">
           <button
             type="button"
-            disabled={isSavingData}
+            disabled={
+              isSavingData ||
+              isDeletingProperty
+            }
             onClick={handleResetData}
           >
             Deshacer cambios
@@ -1527,7 +1686,10 @@ export function AdminPropertyEditPage() {
 
           <button
             type="submit"
-            disabled={isSavingData}
+            disabled={
+              isSavingData ||
+              isDeletingProperty
+            }
           >
             {isSavingData
               ? 'Guardando...'
@@ -1567,7 +1729,9 @@ export function AdminPropertyEditPage() {
               multiple
               accept="image/jpeg,image/png,image/webp,image/avif"
               disabled={
-                isUploading || isManaging
+                isUploading ||
+                isManaging ||
+                isDeletingProperty
               }
               onChange={(event) => {
                 const files = Array.from(
@@ -1645,11 +1809,13 @@ export function AdminPropertyEditPage() {
                       disabled={
                         isManaging ||
                         isUploading ||
+                        isDeletingProperty ||
                         index === 0
                       }
-                      aria-label={`Subir posición de ${image.alt_text ??
+                      aria-label={`Subir posición de ${
+                        image.alt_text ??
                         property.title
-                        }`}
+                      }`}
                     >
                       ↑
                     </button>
@@ -1662,12 +1828,13 @@ export function AdminPropertyEditPage() {
                       disabled={
                         isManaging ||
                         isUploading ||
-                        index ===
-                        images.length - 1
+                        isDeletingProperty ||
+                        index === images.length - 1
                       }
-                      aria-label={`Bajar posición de ${image.alt_text ??
+                      aria-label={`Bajar posición de ${
+                        image.alt_text ??
                         property.title
-                        }`}
+                      }`}
                     >
                       ↓
                     </button>
@@ -1681,6 +1848,7 @@ export function AdminPropertyEditPage() {
                     disabled={
                       isManaging ||
                       isUploading ||
+                      isDeletingProperty ||
                       image.is_cover
                     }
                   >
@@ -1696,7 +1864,8 @@ export function AdminPropertyEditPage() {
                     }
                     disabled={
                       isManaging ||
-                      isUploading
+                      isUploading ||
+                      isDeletingProperty
                     }
                   >
                     Eliminar
@@ -1741,6 +1910,7 @@ export function AdminPropertyEditPage() {
                   checked={
                     selectedStatus === value
                   }
+                  disabled={isDeletingProperty}
                   onChange={() => {
                     setSelectedStatus(value);
                     setStatusError('');
@@ -1757,11 +1927,12 @@ export function AdminPropertyEditPage() {
             {statusDescriptions[selectedStatus]}
           </p>
 
-          {selectedStatus === 'published' &&
-            images.length === 0 ? (
+          {(selectedStatus === 'published' ||
+            selectedStatus === 'reserved') &&
+          images.length === 0 ? (
             <p className="admin-property-form__error">
-              Para publicar el inmueble debes añadir
-              al menos una fotografía.
+              Para mostrar el inmueble en la web debes
+              añadir al menos una fotografía.
             </p>
           ) : null}
         </section>
@@ -1790,7 +1961,8 @@ export function AdminPropertyEditPage() {
             disabled={
               isSavingStatus ||
               isUploading ||
-              isManaging
+              isManaging ||
+              isDeletingProperty
             }
           >
             {isSavingStatus
@@ -1799,6 +1971,55 @@ export function AdminPropertyEditPage() {
           </button>
         </div>
       </form>
+
+      <section
+        className="admin-property-danger"
+        aria-labelledby="admin-property-danger-title"
+      >
+        <div className="admin-property-danger__content">
+          <div>
+            <span>ACCIÓN PERMANENTE</span>
+
+            <h2 id="admin-property-danger-title">
+              Eliminar inmueble
+            </h2>
+
+            <p>
+              Elimina definitivamente este inmueble y
+              todas sus fotografías. Esta acción no se
+              puede deshacer.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            className="admin-property-danger__button"
+            disabled={
+              isDeletingProperty ||
+              isSavingData ||
+              isSavingStatus ||
+              isUploading ||
+              isManaging
+            }
+            onClick={() =>
+              void handleDeleteProperty()
+            }
+          >
+            {isDeletingProperty
+              ? 'Eliminando...'
+              : 'Eliminar inmueble'}
+          </button>
+        </div>
+
+        {deleteError ? (
+          <p
+            className="admin-property-form__error"
+            role="alert"
+          >
+            {deleteError}
+          </p>
+        ) : null}
+      </section>
     </main>
   );
 }
