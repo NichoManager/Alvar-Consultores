@@ -20,8 +20,6 @@ const PUBLIC_PROPERTY_SELECT = `
   city,
   area,
   province,
-  postal_code,
-  address,
   show_exact_address,
   bedrooms,
   bathrooms,
@@ -69,8 +67,8 @@ type PublicPropertyRow = {
   city: string;
   area: string | null;
   province: string | null;
-  postal_code: string | null;
-  address: string | null;
+  postal_code?: string | null;
+  address?: string | null;
   show_exact_address: boolean;
   bedrooms: number | null;
   bathrooms: number | null;
@@ -154,6 +152,42 @@ function getPublicImageUrl(storagePath: string) {
     .getPublicUrl(storagePath).data.publicUrl;
 }
 
+async function attachExactAddresses(rows: PublicPropertyRow[]) {
+  const publicAddressIds = rows
+    .filter((row) => row.show_exact_address)
+    .map((row) => row.id);
+
+  if (publicAddressIds.length === 0) {
+    return rows;
+  }
+
+  const { data, error } = await supabase
+    .from('properties')
+    .select('id, address, postal_code')
+    .in('id', publicAddressIds)
+    .in('status', [...PUBLIC_PROPERTY_STATUSES])
+    .eq('show_exact_address', true);
+
+  if (error) {
+    throw error;
+  }
+
+  const exactAddresses = new Map(
+    (data ?? []).map((row) => [
+      row.id,
+      {
+        address: row.address,
+        postal_code: row.postal_code,
+      },
+    ]),
+  );
+
+  return rows.map((row) => ({
+    ...row,
+    ...(exactAddresses.get(row.id) ?? {}),
+  }));
+}
+
 function mapImages(row: PublicPropertyRow): {
   images: PropertyImage[];
   coverImage?: PropertyImage;
@@ -216,7 +250,9 @@ function mapPublicProperty(row: PublicPropertyRow): Property {
     city: row.city,
     area: row.area?.trim() || '',
     province: row.province ?? undefined,
-    postalCode: row.postal_code ?? undefined,
+    postalCode: row.show_exact_address
+      ? row.postal_code ?? undefined
+      : undefined,
     address: row.show_exact_address ? row.address ?? undefined : undefined,
     showExactAddress: row.show_exact_address,
     mapLocation: buildMapLocation(row),
@@ -258,7 +294,11 @@ export async function getPublishedProperties() {
     throw error;
   }
 
-  return ((data ?? []) as PublicPropertyRow[]).map(mapPublicProperty);
+  const rows = await attachExactAddresses(
+    (data ?? []) as PublicPropertyRow[],
+  );
+
+  return rows.map(mapPublicProperty);
 }
 
 export async function getPublishedPropertyBySlug(slug: string) {
@@ -273,7 +313,13 @@ export async function getPublishedPropertyBySlug(slug: string) {
     throw error;
   }
 
-  return data ? mapPublicProperty(data as PublicPropertyRow) : null;
+  if (!data) {
+    return null;
+  }
+
+  const [row] = await attachExactAddresses([data as PublicPropertyRow]);
+
+  return mapPublicProperty(row);
 }
 
 export async function getFeaturedProperties(limit = 3) {
@@ -290,5 +336,9 @@ export async function getFeaturedProperties(limit = 3) {
     throw error;
   }
 
-  return ((data ?? []) as PublicPropertyRow[]).map(mapPublicProperty);
+  const rows = await attachExactAddresses(
+    (data ?? []) as PublicPropertyRow[],
+  );
+
+  return rows.map(mapPublicProperty);
 }
