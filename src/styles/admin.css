@@ -748,7 +748,7 @@
     width: 100%;
   }
 
-  .admin-properties__filter {
+  .admin-properties__operation-filter button {
     flex: 1;
   }
 
