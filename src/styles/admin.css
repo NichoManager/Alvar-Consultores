@@ -640,13 +640,13 @@
   background: rgba(248, 246, 240, 0.06);
 }
 
-.admin-users .admin-properties__header > div:last-child button:nth-child(2) {
+.admin-users .admin-properties__header .admin-users__create-toggle {
   border-color: var(--admin-gold);
   color: var(--admin-navy);
   background: var(--admin-gold);
 }
 
-.admin-users .admin-properties__header > div:last-child button:nth-child(2):hover {
+.admin-users .admin-properties__header .admin-users__create-toggle:hover {
   border-color: #c6a45e;
   background: #c6a45e;
 }
@@ -2313,5 +2313,487 @@
 
   .admin-images__grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   CONTACTS CRM
+   ========================================================= */
+
+.admin-contacts__toolbar {
+  display: grid;
+  grid-template-columns: minmax(18rem, 1fr) minmax(11rem, 0.34fr) minmax(11rem, 0.34fr);
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin-contacts__toolbar label {
+  min-width: 0;
+}
+
+.admin-contacts__toolbar input,
+.admin-contacts__toolbar select {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(17, 24, 50, 0.17);
+  border-radius: 0;
+  outline: none;
+  color: var(--admin-navy);
+  background: var(--admin-white);
+  font: inherit;
+  font-size: 0.72rem;
+}
+
+.admin-contacts__toolbar input:focus,
+.admin-contacts__toolbar select:focus {
+  border-color: var(--admin-gold);
+  box-shadow: 0 0 0 3px rgba(184, 148, 77, 0.1);
+}
+
+.admin-contacts__list {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1.25rem;
+}
+
+.admin-contact-card {
+  display: grid;
+  grid-template-columns: minmax(16rem, 1.25fr) minmax(14rem, 0.9fr) minmax(10rem, 0.55fr) auto;
+  gap: clamp(1rem, 2vw, 1.8rem);
+  align-items: center;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--admin-line);
+  background: var(--admin-white);
+  box-shadow: 0 8px 24px rgba(17, 24, 50, 0.035);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-contact-card:hover {
+  border-color: rgba(15, 76, 132, 0.26);
+  box-shadow: 0 11px 30px rgba(17, 24, 50, 0.05);
+}
+
+.admin-contact-card__identity,
+.admin-contact-card__properties,
+.admin-contact-card__activity {
+  min-width: 0;
+}
+
+.admin-contact-card__identity > span,
+.admin-contact-card__properties > span,
+.admin-contact-card__activity > span:first-child {
+  display: block;
+  color: var(--admin-gold);
+  font-size: 0.56rem;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-contact-card h3 {
+  margin: 0.4rem 0 0;
+  color: var(--admin-navy);
+  font: 500 clamp(1.4rem, 2vw, 1.8rem) / 1.05 'Cormorant Garamond', serif;
+}
+
+.admin-contact-card__identity > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.admin-contact-card__identity a {
+  color: var(--admin-blue);
+  font-size: 0.68rem;
+  text-decoration: none;
+}
+
+.admin-contact-card__identity small,
+.admin-contact-card__properties p {
+  margin: 0.4rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.66rem;
+  line-height: 1.5;
+}
+
+.admin-contact-card__activity {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+}
+
+.admin-contact-card__activity strong {
+  color: var(--admin-navy);
+  font-size: 0.7rem;
+}
+
+.admin-contact-status {
+  display: inline-flex;
+  min-height: 1.65rem;
+  align-items: center;
+  padding: 0 0.6rem;
+  border: 1px solid currentColor;
+  font-size: 0.53rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-contact-status--new,
+.admin-contact-status--visit {
+  color: var(--admin-blue);
+  background: rgba(15, 76, 132, 0.07);
+}
+
+.admin-contact-status--contacted,
+.admin-contact-status--negotiation {
+  color: #7c5d29;
+  background: rgba(184, 148, 77, 0.12);
+}
+
+.admin-contact-status--closed {
+  color: #315f54;
+  background: rgba(49, 95, 84, 0.09);
+}
+
+.admin-contact-status--discarded {
+  color: #646875;
+  background: #f1f1f2;
+}
+
+.admin-contact-card__open {
+  min-height: 2.65rem;
+  padding: 0 1rem;
+  border: 1px solid var(--admin-navy);
+  cursor: pointer;
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+  font: inherit;
+  font-size: 0.63rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.admin-contact-card__open:hover {
+  border-color: var(--admin-blue);
+  background: var(--admin-blue);
+}
+
+.admin-contact-properties-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+}
+
+.admin-contact-properties-picker label {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.9rem;
+  border: 1px solid var(--admin-line);
+  cursor: pointer;
+  background: var(--admin-white);
+}
+
+.admin-contact-properties-picker label:has(input:checked) {
+  border-color: var(--admin-gold);
+  background: rgba(184, 148, 77, 0.07);
+}
+
+.admin-contact-properties-picker input {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: 0 0 auto;
+  accent-color: var(--admin-blue);
+}
+
+.admin-contact-properties-picker span {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.admin-contact-properties-picker strong {
+  overflow: hidden;
+  color: var(--admin-navy);
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-contact-properties-picker small,
+.admin-contacts__inline-status {
+  color: var(--admin-muted);
+  font-size: 0.67rem;
+  line-height: 1.5;
+}
+
+.admin-contacts__inline-status {
+  margin: 1rem 0 0;
+}
+
+.admin-contact-detail__quick-actions,
+.admin-contact-relations,
+.admin-contact-audit {
+  width: min(88rem, calc(100% - 4rem));
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.admin-contact-detail__quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}
+
+.admin-contact-detail__quick-actions a {
+  display: inline-flex;
+  min-height: 2.8rem;
+  align-items: center;
+  padding: 0 1rem;
+  border: 1px solid var(--admin-navy);
+  color: var(--admin-navy);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.admin-contact-detail__quick-actions a:hover {
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+}
+
+.admin-contact-relations {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  padding: clamp(1.4rem, 2.5vw, 2rem);
+  border: 1px solid var(--admin-line);
+  background: var(--admin-white);
+}
+
+.admin-contact-relations__heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin-contact-relations__heading > div:first-child > span {
+  color: var(--admin-gold);
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.12em;
+}
+
+.admin-contact-relations h2 {
+  margin: 0.45rem 0 0;
+  color: var(--admin-navy);
+  font: 500 clamp(2rem, 3vw, 2.6rem) / 1 'Cormorant Garamond', serif;
+}
+
+.admin-contact-relations__add {
+  display: flex;
+  min-width: min(100%, 30rem);
+}
+
+.admin-contact-relations__add select {
+  min-width: 0;
+  flex: 1;
+  min-height: 2.9rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--admin-line);
+  border-radius: 0;
+  background: var(--admin-white);
+  font: inherit;
+  font-size: 0.68rem;
+}
+
+.admin-contact-relations__add button {
+  min-height: 2.9rem;
+  padding: 0 1rem;
+  border: 1px solid var(--admin-navy);
+  cursor: pointer;
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+  font: inherit;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.admin-contact-relations__add button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.admin-contact-relations__list {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.admin-contact-relations__list article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--admin-line);
+}
+
+.admin-contact-relations__list article > div:first-child {
+  min-width: 0;
+}
+
+.admin-contact-relations__list span {
+  color: var(--admin-gold);
+  font-size: 0.54rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+.admin-contact-relations__list h3 {
+  margin: 0.35rem 0 0;
+  color: var(--admin-navy);
+  font: 500 1.3rem / 1.1 'Cormorant Garamond', serif;
+}
+
+.admin-contact-relations__list p {
+  margin: 0.25rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.65rem;
+}
+
+.admin-contact-relations__list article > div:last-child {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+}
+
+.admin-contact-relations__list a,
+.admin-contact-relations__list button {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  padding: 0 0.8rem;
+  border: 1px solid var(--admin-line);
+  cursor: pointer;
+  color: var(--admin-navy);
+  background: transparent;
+  font: inherit;
+  font-size: 0.61rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.admin-contact-relations__list button {
+  color: #8a3030;
+}
+
+.admin-contact-audit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  margin-top: 1rem;
+  color: var(--admin-muted);
+  font-size: 0.65rem;
+}
+
+.admin-contact-audit strong {
+  color: var(--admin-navy);
+}
+
+@media (max-width: 1050px) {
+  .admin-contact-card {
+    grid-template-columns: minmax(15rem, 1fr) minmax(13rem, 0.8fr) auto;
+  }
+
+  .admin-contact-card__activity {
+    grid-column: 1 / 3;
+  }
+}
+
+@media (max-width: 800px) {
+  .admin-contacts__toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-contacts__search {
+    grid-column: 1 / -1;
+  }
+
+  .admin-contact-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-contact-card__identity,
+  .admin-contact-card__properties {
+    grid-column: 1 / -1;
+  }
+
+  .admin-contact-card__activity {
+    grid-column: auto;
+  }
+
+  .admin-contact-relations__heading,
+  .admin-contact-relations__list article {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-contact-relations__add {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-contact-detail__quick-actions,
+  .admin-contact-relations,
+  .admin-contact-audit {
+    width: min(100% - 2rem, 88rem);
+  }
+
+  .admin-contact-properties-picker {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-contacts__toolbar,
+  .admin-contact-card {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-contacts__search,
+  .admin-contact-card__identity,
+  .admin-contact-card__properties,
+  .admin-contact-card__activity {
+    grid-column: auto;
+  }
+
+  .admin-contact-card__open,
+  .admin-contact-detail__quick-actions a,
+  .admin-contact-relations__add,
+  .admin-contact-relations__list article > div:last-child,
+  .admin-contact-relations__list a,
+  .admin-contact-relations__list button {
+    width: 100%;
+  }
+
+  .admin-contact-detail__quick-actions a,
+  .admin-contact-relations__list a,
+  .admin-contact-relations__list button {
+    justify-content: center;
+  }
+
+  .admin-contact-relations__add,
+  .admin-contact-relations__list article > div:last-child {
+    flex-direction: column;
   }
 }
