@@ -12,8 +12,13 @@ import { PropertyDetailPage } from '../pages/PropertyDetailPage';
 import { ReviewsPage } from '../pages/ReviewsPage';
 import { SellPage } from '../pages/SellPage';
 import { ServicesPage } from '../pages/ServicesPage';
+import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
 
 const router = createBrowserRouter([
+  {
+    path: '/admin/login',
+    element: <AdminLoginPage />,
+  },
   {
     element: <SiteLayout />,
     children: [
