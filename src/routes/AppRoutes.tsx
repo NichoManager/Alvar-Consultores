@@ -1,6 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AdminProtectedRoute } from '../components/admin/AdminProtectedRoute';
 import { SiteLayout } from '../components/layout/SiteLayout';
 import { AboutPage } from '../pages/AboutPage';
+import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
+import { AdminPropertiesPage } from '../pages/admin/AdminPropertiesPage';
 import { BlogPage } from '../pages/BlogPage';
 import { BlogPostPage } from '../pages/BlogPostPage';
 import { ContactPage } from '../pages/ContactPage';
@@ -12,12 +15,20 @@ import { PropertyDetailPage } from '../pages/PropertyDetailPage';
 import { ReviewsPage } from '../pages/ReviewsPage';
 import { SellPage } from '../pages/SellPage';
 import { ServicesPage } from '../pages/ServicesPage';
-import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
 
 const router = createBrowserRouter([
   {
     path: '/admin/login',
     element: <AdminLoginPage />,
+  },
+  {
+    element: <AdminProtectedRoute />,
+    children: [
+      {
+        path: '/admin/inmuebles',
+        element: <AdminPropertiesPage />,
+      },
+    ],
   },
   {
     element: <SiteLayout />,
