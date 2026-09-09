@@ -326,7 +326,11 @@ export function PropertyDetailPage() {
                 </p>
               </div>
 
-              <PropertyLeadForm propertyTitle={property.title} />
+              <PropertyLeadForm
+                propertyId={property.id}
+                propertyTitle={property.title}
+                operation={property.operation}
+              />
 
               <div className="property-contact__direct">
                 <a

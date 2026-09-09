@@ -44,6 +44,7 @@ export type Contact = {
   source: ContactSource;
   notes: string | null;
   lastContactAt: string | null;
+  privacyAcceptedAt: string | null;
   createdAt: string;
   updatedAt: string;
   properties: ContactPropertySummary[];
@@ -75,6 +76,7 @@ type ContactRow = {
   source: ContactSource;
   notes: string | null;
   last_contact_at: string | null;
+  privacy_accepted_at: string | null;
   created_at: string;
   updated_at: string;
   contact_properties: ContactPropertyLinkRow[] | null;
@@ -90,6 +92,7 @@ const CONTACT_SELECT = `
   source,
   notes,
   last_contact_at,
+  privacy_accepted_at,
   created_at,
   updated_at,
   contact_properties (
@@ -144,6 +147,7 @@ function mapContact(row: ContactRow): Contact {
     source: row.source,
     notes: row.notes,
     lastContactAt: row.last_contact_at,
+    privacyAcceptedAt: row.privacy_accepted_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     properties: (row.contact_properties ?? [])

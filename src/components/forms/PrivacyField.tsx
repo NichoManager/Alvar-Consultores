@@ -8,7 +8,10 @@ export function PrivacyField({ name = 'privacy', error }: { name?: string; error
     <div className="privacy-field-wrap">
       <label className="privacy-field" htmlFor={id}>
         <input id={id} type="checkbox" name={name} required aria-invalid={Boolean(error)} aria-describedby={error ? errorId : undefined} />
-        <span>He leído y acepto la <Link to="/privacidad">política de privacidad</Link>.</span>
+        <span>
+          He leído la <Link to="/privacidad">Política de Privacidad</Link> y
+          acepto el tratamiento de mis datos para atender mi solicitud.
+        </span>
       </label>
       {error && <span id={errorId} className="form-field__error">{error}</span>}
     </div>

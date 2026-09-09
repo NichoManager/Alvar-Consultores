@@ -4974,6 +4974,39 @@ em {
   text-decoration: underline;
 }
 
+.form-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.form-submit-message {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-left: 2px solid var(--sand);
+  background: rgba(184, 148, 77, 0.08);
+  color: var(--forest);
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+.form-submit-message--error {
+  border-left-color: #8a2f2f;
+  background: rgba(138, 47, 47, 0.07);
+  color: #762727;
+}
+
+.premium-form .button:disabled,
+.service-request-form .button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
 .form-field__error {
   color: #8a2f2f;
   font-size: 0.64rem;

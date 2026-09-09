@@ -411,6 +411,14 @@ export function AdminContactDetailPage() {
       <section className="admin-contact-audit" aria-label="Información del registro">
         <span>Fecha de alta: <strong>{formatDateTime(contact.createdAt)}</strong></span>
         <span>Última actualización: <strong>{formatDateTime(contact.updatedAt)}</strong></span>
+        <span>
+          Privacidad:{' '}
+          <strong>
+            {contact.privacyAcceptedAt
+              ? `Aceptada el ${formatDateTime(contact.privacyAcceptedAt)}`
+              : 'Registro manual / sin consentimiento web registrado'}
+          </strong>
+        </span>
       </section>
 
       <section className="admin-property-danger" aria-labelledby="contact-danger-title">
