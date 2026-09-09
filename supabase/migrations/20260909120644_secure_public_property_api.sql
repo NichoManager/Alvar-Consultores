@@ -1,33 +1,18 @@
 -- Public property rows are exposed through a constrained read-only RPC.
--- The base table remains available to authenticated admins through the
--- existing is_admin() policies, while anonymous callers cannot query it.
+-- Anonymous callers must use the RPC.
+-- Admins keep direct table access through existing authenticated + RLS policies.
 
 drop policy if exists "Public can view published properties"
 on public.properties;
 
-create policy "Public can view published or reserved properties"
-on public.properties
-for select
-to anon
-using (
-  status in ('published', 'reserved')
-);
+drop policy if exists "Public can view published or reserved properties"
+on public.properties;
 
 drop policy if exists "Public can view images from published properties"
 on public.property_images;
 
-create policy "Public can view images from published or reserved properties"
-on public.property_images
-for select
-to anon
-using (
-  exists (
-    select 1
-    from public.properties
-    where properties.id = property_images.property_id
-      and properties.status in ('published', 'reserved')
-  )
-);
+drop policy if exists "Public can view images from published or reserved properties"
+on public.property_images;
 
 create or replace function public.get_public_properties(
   p_slug text default null,
@@ -74,67 +59,67 @@ security definer
 set search_path = ''
 as $$
   select
-    properties.id,
-    properties.reference,
-    properties.title,
-    properties.slug,
-    properties.operation,
-    properties.property_type,
-    properties.status,
-    properties.price,
-    properties.currency,
-    properties.city,
-    properties.area,
-    properties.province,
+    p.id,
+    p.reference,
+    p.title,
+    p.slug,
+    p.operation,
+    p.property_type,
+    p.status,
+    p.price,
+    p.currency,
+    p.city,
+    p.area,
+    p.province,
     case
-      when properties.show_exact_address then properties.postal_code
+      when p.show_exact_address then p.postal_code
       else null
     end as postal_code,
     case
-      when properties.show_exact_address then properties.address
+      when p.show_exact_address then p.address
       else null
     end as address,
-    properties.show_exact_address,
-    properties.bedrooms,
-    properties.bathrooms,
-    properties.built_area,
-    properties.usable_area,
-    properties.plot_area,
-    properties.floor,
-    properties.elevator,
-    properties.parking,
-    properties.terrace,
-    properties.furnished,
-    properties.exterior,
-    properties.description,
-    properties.features,
-    properties.featured,
-    properties.published_at,
-    properties.created_at,
+    p.show_exact_address,
+    p.bedrooms,
+    p.bathrooms,
+    p.built_area,
+    p.usable_area,
+    p.plot_area,
+    p.floor,
+    p.elevator,
+    p.parking,
+    p.terrace,
+    p.furnished,
+    p.exterior,
+    p.description,
+    p.features,
+    p.featured,
+    p.published_at,
+    p.created_at,
     coalesce(
       (
         select jsonb_agg(
           jsonb_build_object(
-            'id', property_images.id,
-            'storage_path', property_images.storage_path,
-            'alt_text', property_images.alt_text,
-            'position', property_images.position,
-            'is_cover', property_images.is_cover
+            'id', pi.id,
+            'storage_path', pi.storage_path,
+            'alt_text', pi.alt_text,
+            'position', pi.position,
+            'is_cover', pi.is_cover
           )
-          order by property_images.position asc
+          order by pi.position asc
         )
-        from public.property_images
-        where property_images.property_id = properties.id
+        from public.property_images as pi
+        where pi.property_id = p.id
       ),
       '[]'::jsonb
     ) as property_images
-  from public.properties
-  where properties.status in ('published', 'reserved')
-    and (p_slug is null or properties.slug = p_slug)
-    and (p_featured is null or properties.featured = p_featured)
+  from public.properties as p
+  where p.status in ('published', 'reserved')
+    and (p_slug is null or p.slug = p_slug)
+    and (p_featured is null or p.featured = p_featured)
   order by
-    properties.published_at desc nulls last,
-    properties.created_at desc
+    p.published_at desc nulls last,
+    p.created_at desc
   limit least(greatest(coalesce(p_limit, 1000), 0), 1000);
 $$;
 
@@ -147,7 +132,10 @@ from public, anon, authenticated;
 grant execute on function public.get_public_properties(text, boolean, integer)
 to anon, authenticated;
 
--- RLS cannot redact individual columns. Anonymous callers must use the RPC,
--- while authenticated admins retain direct table access subject to is_admin().
+-- Anonymous users must not read base tables directly.
 revoke select on table public.properties from anon;
+revoke select on table public.property_images from anon;
+
+-- Keep authenticated access for the CRM.
 grant select, insert, update, delete on table public.properties to authenticated;
+grant select, insert, update, delete on table public.property_images to authenticated;
