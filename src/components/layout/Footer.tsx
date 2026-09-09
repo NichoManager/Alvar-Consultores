@@ -108,6 +108,12 @@ export function Footer() {
             <Link to="/aviso-legal">Aviso legal</Link>
             <Link to="/privacidad">Privacidad</Link>
             <Link to="/cookies">Cookies</Link>
+            <Link
+              to="/admin/login"
+              aria-label="Acceder al área privada de Alvar Consultores"
+            >
+              Área privada
+            </Link>
           </div>
         </div>
       </Container>
