@@ -23,7 +23,10 @@ export function AdminLoginPage() {
       });
 
       if (signInError) {
-        setError('El email o la contraseña no son correctos.');
+        console.error('Supabase sign-in error:', signInError);
+
+        setError(`Supabase: ${signInError.message}`);
+
         return;
       }
 
@@ -31,11 +34,21 @@ export function AdminLoginPage() {
         'is_admin',
       );
 
-      if (adminError || !isAdmin) {
+      if (adminError) {
+        console.error('Supabase admin check error:', adminError);
+
+        await supabase.auth.signOut();
+
+        setError(`Supabase admin: ${adminError.message}`);
+
+        return;
+      }
+
+      if (!isAdmin) {
         await supabase.auth.signOut();
 
         setError(
-          'Este usuario no tiene permisos para acceder al CRM.',
+          'Este usuario ha iniciado sesión correctamente, pero no tiene permisos para acceder al CRM.',
         );
 
         return;
@@ -44,9 +57,11 @@ export function AdminLoginPage() {
       navigate('/admin/inmuebles', {
         replace: true,
       });
-    } catch {
+    } catch (unexpectedError) {
+      console.error('Unexpected login error:', unexpectedError);
+
       setError(
-        'No se ha podido iniciar sesión. Inténtalo de nuevo.',
+        'No se ha podido iniciar sesión. Revisa la consola para ver el error.',
       );
     } finally {
       setIsSubmitting(false);
