@@ -227,8 +227,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  min-height: 6rem;
-  padding: 1.3rem clamp(1.5rem, 4vw, 4rem);
+  min-height: 5rem;
+  padding: 1rem clamp(1.5rem, 4vw, 4rem);
   border-bottom: 1px solid rgba(184, 148, 77, 0.24);
   color: var(--admin-ivory);
   background: var(--admin-navy);
@@ -292,15 +292,15 @@
 .admin-properties__content {
   width: min(88rem, calc(100% - 3rem));
   margin: 0 auto;
-  padding: clamp(3rem, 6vw, 5.5rem) 0;
+  padding: clamp(1.75rem, 3.5vw, 3rem) 0;
 }
 
 .admin-properties__intro {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--admin-line);
 }
 
@@ -315,30 +315,106 @@
 .admin-properties__intro h2 {
   margin: 0;
   color: var(--admin-navy);
-  font: 500 clamp(2.8rem, 5vw, 4.8rem) / 0.95 'Cormorant Garamond', serif;
+  font: 500 clamp(2.2rem, 3.5vw, 3.2rem) / 0.95 'Cormorant Garamond', serif;
 }
 
-.admin-properties__intro > span {
-  padding-bottom: 0.45rem;
+.admin-properties__summary {
+  display: block;
+  margin-top: 0.55rem;
   color: var(--admin-muted);
-  font-size: 0.75rem;
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.admin-properties__intro > strong {
+  flex: 0 0 auto;
+  color: var(--admin-navy);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.admin-properties__toolbar {
+  display: grid;
+  grid-template-columns: minmax(18rem, 1fr) auto minmax(12rem, auto);
+  gap: 0.75rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.admin-properties__search input,
+.admin-properties__status-filter select {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(17, 24, 50, 0.17);
+  border-radius: 0;
+  outline: none;
+  color: var(--admin-navy);
+  background: var(--admin-white);
+  font: inherit;
+  font-size: 0.72rem;
+}
+
+.admin-properties__search input:focus,
+.admin-properties__status-filter select:focus {
+  border-color: var(--admin-gold);
+  box-shadow: 0 0 0 3px rgba(184, 148, 77, 0.1);
+}
+
+.admin-properties__operation-filter {
+  display: flex;
+  min-width: 0;
+}
+
+.admin-properties__operation-filter button {
+  min-height: 2.9rem;
+  padding: 0 0.9rem;
+  border: 1px solid rgba(17, 24, 50, 0.17);
+  border-right: 0;
+  cursor: pointer;
+  color: var(--admin-muted);
+  background: var(--admin-white);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.admin-properties__operation-filter button:last-child {
+  border-right: 1px solid rgba(17, 24, 50, 0.17);
+}
+
+.admin-properties__operation-filter button.is-active {
+  border-color: var(--admin-navy);
+  color: var(--admin-ivory);
+  background: var(--admin-navy);
+}
+
+.admin-properties__loading,
+.admin-properties__error {
+  margin: 1.5rem 0 0;
+  padding: 1rem;
+  font-size: 0.78rem;
+}
+
+.admin-properties__loading {
+  color: var(--admin-muted);
+}
+
+.admin-properties__error {
+  border-left: 2px solid #b65050;
+  color: #8a3030;
+  background: rgba(182, 80, 80, 0.08);
 }
 
 .admin-properties__empty {
   display: grid;
   place-items: center;
   max-width: 50rem;
-  margin: 5rem auto 0;
-  padding: clamp(3rem, 7vw, 6rem);
+  margin: 2rem auto 0;
+  padding: clamp(2rem, 4vw, 3.5rem);
   border: 1px solid rgba(184, 148, 77, 0.24);
   text-align: center;
-  background:
-    radial-gradient(
-      circle at 50% 0%,
-      rgba(184, 148, 77, 0.11),
-      transparent 20rem
-    ),
-    rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.65);
 }
 
 .admin-properties__empty > span {
@@ -351,17 +427,9 @@
 
 .admin-properties__empty h3 {
   max-width: 32rem;
-  margin: 1.1rem 0;
+  margin: 0.8rem 0 0;
   color: var(--admin-navy);
-  font: 500 clamp(2.4rem, 5vw, 4rem) / 0.95 'Cormorant Garamond', serif;
-}
-
-.admin-properties__empty p {
-  max-width: 36rem;
-  margin: 0;
-  color: var(--admin-muted);
-  font-size: 0.9rem;
-  line-height: 1.7;
+  font: 500 clamp(2rem, 4vw, 3rem) / 0.98 'Cormorant Garamond', serif;
 }
 
 .admin-properties__empty button {
@@ -382,6 +450,10 @@
 .admin-properties__empty button:hover {
   border-color: var(--admin-blue);
   background: var(--admin-blue);
+}
+
+.admin-properties__empty--filtered h3 {
+  margin-top: 0;
 }
 
 /* =========================================================
@@ -993,7 +1065,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.25rem;
-  margin-top: 2rem;
+  margin-top: 1.4rem;
 }
 
 .admin-image-card {
