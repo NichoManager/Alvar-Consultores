@@ -62,7 +62,7 @@ export type ContactInput = {
 
 type ContactPropertyLinkRow = {
   property_id: string;
-  properties: ContactPropertySummary | null;
+  properties: ContactPropertySummary[] | ContactPropertySummary | null;
 };
 
 type ContactRow = {
@@ -147,7 +147,11 @@ function mapContact(row: ContactRow): Contact {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     properties: (row.contact_properties ?? [])
-      .map((link) => link.properties)
+      .map((link) =>
+        Array.isArray(link.properties)
+          ? link.properties[0]
+          : link.properties,
+      )
       .filter(
         (property): property is ContactPropertySummary => Boolean(property),
       ),
