@@ -170,7 +170,9 @@ export function AdminUsersPage() {
     ).length;
 
     return `${withAccess} ${
-      withAccess === 1 ? 'usuario con acceso' : 'usuarios con acceso'
+      withAccess === 1
+        ? 'usuario con acceso'
+        : 'usuarios con acceso'
     } · ${superadmins} ${
       superadmins === 1
         ? 'superadministrador'
@@ -357,7 +359,7 @@ export function AdminUsersPage() {
 
     if (user.isCurrentUser) {
       setError(
-        'No puedes eliminar tu propio usuario desde este panel.',
+        'No puedes eliminar el usuario con el que has iniciado sesión.',
       );
       return;
     }
@@ -377,7 +379,8 @@ export function AdminUsersPage() {
 
       setUsers((currentUsers) =>
         currentUsers.filter(
-          (currentUser) => currentUser.id !== user.id,
+          (currentUser) =>
+            currentUser.id !== user.id,
         ),
       );
 
@@ -417,7 +420,9 @@ export function AdminUsersPage() {
               className="admin-site-link"
             >
               ALVAR CONSULTORES{' '}
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true">
+                ↗
+              </span>
             </a>
 
             <h1>Usuarios</h1>
@@ -445,7 +450,9 @@ export function AdminUsersPage() {
               className="admin-site-link"
             >
               ALVAR CONSULTORES{' '}
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true">
+                ↗
+              </span>
             </a>
 
             <h1>Usuarios</h1>
@@ -472,15 +479,18 @@ export function AdminUsersPage() {
 
         <section className="admin-properties__content">
           <div className="admin-users__restricted">
-            <span>ACCESO RESTRINGIDO</span>
+            <span>
+              ACCESO RESTRINGIDO
+            </span>
 
             <h2>
               Gestión reservada al superadministrador.
             </h2>
 
             <p>
-              Tu cuenta puede utilizar el CRM, pero no tiene
-              permisos para crear, modificar o eliminar usuarios.
+              Esta cuenta puede utilizar el CRM,
+              pero no tiene permisos para crear,
+              modificar o eliminar usuarios.
             </p>
 
             {error ? (
@@ -518,7 +528,9 @@ export function AdminUsersPage() {
             aria-label="Abrir la web pública de Alvar Consultores en una nueva pestaña"
           >
             ALVAR CONSULTORES{' '}
-            <span aria-hidden="true">↗</span>
+            <span aria-hidden="true">
+              ↗
+            </span>
           </a>
 
           <h1>Usuarios</h1>
@@ -538,6 +550,7 @@ export function AdminUsersPage() {
             type="button"
             onClick={() => {
               clearMessages();
+
               setIsCreateOpen(
                 (currentValue) =>
                   !currentValue,
@@ -561,7 +574,9 @@ export function AdminUsersPage() {
       <section className="admin-properties__content">
         <div className="admin-properties__intro">
           <div>
-            <p>ADMINISTRACIÓN DEL CRM</p>
+            <p>
+              ADMINISTRACIÓN DEL CRM
+            </p>
 
             <h2>Accesos</h2>
 
@@ -578,9 +593,10 @@ export function AdminUsersPage() {
             <span>SEGURIDAD</span>
 
             <p>
-              Desde aquí puedes gestionar quién tiene acceso al
-              área privada. Las contraseñas nunca se muestran ni
-              se almacenan en el CRM.
+              Desde aquí puedes gestionar quién
+              tiene acceso al área privada. Las
+              contraseñas nunca se muestran ni se
+              almacenan en el CRM.
             </p>
           </div>
 
@@ -611,14 +627,19 @@ export function AdminUsersPage() {
           <section className="admin-users__create">
             <div className="admin-users__section-heading">
               <div>
-                <span>NUEVO ACCESO</span>
-                <h3>Crear usuario</h3>
+                <span>
+                  NUEVO ACCESO
+                </span>
+
+                <h3>
+                  Crear usuario
+                </h3>
               </div>
 
               <p>
-                El usuario podrá iniciar sesión en el CRM
-                inmediatamente con las credenciales que le
-                asignes.
+                El usuario podrá iniciar sesión en
+                el CRM inmediatamente con las
+                credenciales que le asignes.
               </p>
             </div>
 
@@ -639,7 +660,8 @@ export function AdminUsersPage() {
                     setCreateForm(
                       (currentForm) => ({
                         ...currentForm,
-                        name: event.target.value,
+                        name:
+                          event.target.value,
                       }),
                     )
                   }
@@ -662,7 +684,8 @@ export function AdminUsersPage() {
                     setCreateForm(
                       (currentForm) => ({
                         ...currentForm,
-                        email: event.target.value,
+                        email:
+                          event.target.value,
                       }),
                     )
                   }
@@ -686,7 +709,8 @@ export function AdminUsersPage() {
                     setCreateForm(
                       (currentForm) => ({
                         ...currentForm,
-                        password: event.target.value,
+                        password:
+                          event.target.value,
                       }),
                     )
                   }
@@ -710,8 +734,9 @@ export function AdminUsersPage() {
                     setCreateForm(
                       (currentForm) => ({
                         ...currentForm,
-                        role: event.target
-                          .value as AdminRole,
+                        role:
+                          event.target
+                            .value as AdminRole,
                       }),
                     )
                   }
@@ -735,6 +760,7 @@ export function AdminUsersPage() {
                     setCreateForm(
                       initialCreateForm,
                     );
+
                     setIsCreateOpen(false);
                     clearMessages();
                   }}
@@ -763,9 +789,12 @@ export function AdminUsersPage() {
           </p>
         ) : null}
 
-        {!isLoading && users.length === 0 ? (
+        {!isLoading &&
+        users.length === 0 ? (
           <div className="admin-properties__empty">
-            <span>Sin usuarios</span>
+            <span>
+              Sin usuarios
+            </span>
 
             <h3>
               No hay usuarios registrados.
@@ -782,7 +811,8 @@ export function AdminUsersPage() {
           </div>
         ) : null}
 
-        {!isLoading && users.length > 0 ? (
+        {!isLoading &&
+        users.length > 0 ? (
           <div className="admin-users__list">
             {users.map((user) => {
               const isBusy =
@@ -794,11 +824,7 @@ export function AdminUsersPage() {
               return (
                 <article
                   key={user.id}
-                  className={`admin-user-card${
-                    user.isCurrentUser
-                      ? ' admin-user-card--current'
-                      : ''
-                  }`}
+                  className="admin-user-card"
                 >
                   <div className="admin-user-card__identity">
                     <div className="admin-user-card__avatar">
@@ -816,12 +842,6 @@ export function AdminUsersPage() {
                           {user.name ||
                             user.email}
                         </h3>
-
-                        {user.isCurrentUser ? (
-                          <span className="admin-user-card__you">
-                            TÚ
-                          </span>
-                        ) : null}
                       </div>
 
                       {user.name ? (
@@ -843,7 +863,9 @@ export function AdminUsersPage() {
                   </div>
 
                   <div className="admin-user-card__activity">
-                    <span>ÚLTIMO ACCESO</span>
+                    <span>
+                      ÚLTIMO ACCESO
+                    </span>
 
                     <strong>
                       {formatDateTime(
@@ -867,7 +889,9 @@ export function AdminUsersPage() {
 
                     <select
                       id={`admin-role-${user.id}`}
-                      value={user.role ?? ''}
+                      value={
+                        user.role ?? ''
+                      }
                       disabled={
                         isBusy ||
                         user.isCurrentUser
@@ -900,12 +924,6 @@ export function AdminUsersPage() {
                         Superadministrador
                       </option>
                     </select>
-
-                    {user.isCurrentUser ? (
-                      <small>
-                        Tu rol está protegido
-                      </small>
-                    ) : null}
                   </div>
 
                   <div className="admin-user-card__actions">
@@ -962,8 +980,8 @@ export function AdminUsersPage() {
                         </label>
 
                         <p>
-                          Debe tener al menos 8
-                          caracteres.
+                          Debe tener al menos
+                          8 caracteres.
                         </p>
                       </div>
 
