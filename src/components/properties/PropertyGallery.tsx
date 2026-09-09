@@ -6,8 +6,9 @@ import { ArchitecturalVisual } from '../ui/ArchitecturalVisual';
 
 export function PropertyGallery({ property }: { property: Property }) {
   const images = property.images ?? [];
+  const firstImageId = images[0]?.id ?? '';
   const [open, setOpen] = useState(false);
-  const [activeImageId, setActiveImageId] = useState(images[0]?.id ?? '');
+  const [activeImageId, setActiveImageId] = useState(firstImageId);
   const lightboxRef = useRef<HTMLDivElement>(null);
 
   const activeImage =
@@ -18,9 +19,9 @@ export function PropertyGallery({ property }: { property: Property }) {
   useFocusTrap(lightboxRef, open, close);
 
   useEffect(() => {
-    setActiveImageId(images[0]?.id ?? '');
+    setActiveImageId(firstImageId);
     setOpen(false);
-  }, [property.id]);
+  }, [firstImageId, property.id]);
 
   useEffect(() => {
     if (!open) return;

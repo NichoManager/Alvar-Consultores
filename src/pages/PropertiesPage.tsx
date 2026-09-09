@@ -130,7 +130,7 @@ export function PropertiesPage() {
             ? (b.price ?? 0) - (a.price ?? 0)
             : Number(b.featured) - Number(a.featured),
     );
-  }, [activeOperation, filters]);
+  }, [activeOperation, filters, properties]);
 
   const operationParam = searchParams.get('operation');
 
