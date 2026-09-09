@@ -1,6 +1,6 @@
 import type { Property } from '../types/content';
 
-// Contenido demo. Sustituir por inventario real antes de publicar el catálogo.
+// Contenido demo conservado como referencia; ya no es la fuente del catálogo público.
 export const properties: Property[] = [
   {
     id: 'demo-001',
