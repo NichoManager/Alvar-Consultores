@@ -72,6 +72,7 @@ export function AdminPropertyCreatePage() {
           area: nullableText(formData.get('area')),
           postal_code: nullableText(formData.get('postal_code')),
           address: nullableText(formData.get('address')),
+          show_exact_address: formData.has('show_exact_address'),
           bedrooms: nullableNumber(formData.get('bedrooms')),
           bathrooms: nullableNumber(formData.get('bathrooms')),
           built_area: nullableNumber(formData.get('built_area')),
@@ -247,6 +248,17 @@ export function AdminPropertyCreatePage() {
               />
             </label>
           </div>
+
+          <label className="admin-property-form__check admin-property-form__privacy-check">
+            <input type="checkbox" name="show_exact_address" />
+            <span>
+              Mostrar dirección exacta en la web
+              <small>
+                Actívalo solo si quieres que la ubicación exacta del inmueble
+                sea pública.
+              </small>
+            </span>
+          </label>
         </section>
 
         <section className="admin-property-form__section">

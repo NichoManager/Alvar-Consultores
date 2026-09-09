@@ -58,6 +58,7 @@ type AdminProperty = {
   area: string | null;
   postal_code: string | null;
   address: string | null;
+  show_exact_address: boolean;
   bedrooms: number | null;
   bathrooms: number | null;
   built_area: number | null;
@@ -83,6 +84,7 @@ type PropertyFormState = {
   area: string;
   postalCode: string;
   address: string;
+  showExactAddress: boolean;
   bedrooms: string;
   bathrooms: string;
   builtArea: string;
@@ -187,6 +189,7 @@ function createFormState(property: AdminProperty): PropertyFormState {
     area: property.area ?? '',
     postalCode: property.postal_code ?? '',
     address: property.address ?? '',
+    showExactAddress: property.show_exact_address,
     bedrooms:
       property.bedrooms !== null
         ? String(property.bedrooms)
@@ -303,6 +306,7 @@ export function AdminPropertyEditPage() {
               area,
               postal_code,
               address,
+              show_exact_address,
               bedrooms,
               bathrooms,
               built_area,
@@ -454,6 +458,7 @@ export function AdminPropertyEditPage() {
       area: nullableText(form.area),
       postal_code: nullableText(form.postalCode),
       address: nullableText(form.address),
+      show_exact_address: form.showExactAddress,
       bedrooms: nullableNumber(form.bedrooms),
       bathrooms: nullableNumber(form.bathrooms),
       built_area: nullableNumber(form.builtArea),
@@ -1229,6 +1234,23 @@ export function AdminPropertyEditPage() {
               </span>
             </label>
           </div>
+
+          <label className="admin-property-form__check admin-property-form__privacy-check">
+            <input
+              type="checkbox"
+              checked={form.showExactAddress}
+              onChange={(event) =>
+                updateForm('showExactAddress', event.target.checked)
+              }
+            />
+            <span>
+              Mostrar dirección exacta en la web
+              <small>
+                Actívalo solo si quieres que la ubicación exacta del inmueble
+                sea pública.
+              </small>
+            </span>
+          </label>
         </section>
 
         <section className="admin-property-form__section">

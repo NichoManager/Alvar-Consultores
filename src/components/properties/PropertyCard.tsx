@@ -20,6 +20,7 @@ export function PropertyCard({
   const featuredNumber = String(index + 1).padStart(2, '0');
   const visibleFeatures = property.features.slice(0, 3);
   const location = [property.area, property.city].filter(Boolean).join(' · ');
+  const isReserved = property.status === 'Reservado';
 
   return (
     <article className="property-card">
@@ -41,7 +42,11 @@ export function PropertyCard({
 
           <div className="property-card__media-layer" aria-hidden="true" />
 
-          <span className="property-card__badge">{operation}</span>
+          <span
+            className={`property-card__badge${isReserved ? ' property-card__badge--reserved' : ''}`}
+          >
+            {isReserved ? 'Reservado' : operation}
+          </span>
 
           <span className="property-card__number" aria-hidden="true">
             {featuredNumber}

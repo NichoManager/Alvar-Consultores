@@ -3,6 +3,10 @@ import { supabase } from './supabase';
 
 const STORAGE_BUCKET = 'property-images';
 
+export const PUBLIC_PROPERTY_STATUSES = ['published', 'reserved'] as const;
+
+type PublicPropertyStatus = (typeof PUBLIC_PROPERTY_STATUSES)[number];
+
 const PUBLIC_PROPERTY_SELECT = `
   id,
   reference,
@@ -52,14 +56,14 @@ type PropertyImageRow = {
   is_cover: boolean;
 };
 
-type PublishedPropertyRow = {
+type PublicPropertyRow = {
   id: string;
   reference: string | null;
   title: string;
   slug: string;
   operation: 'venta' | 'alquiler';
   property_type: string;
-  status: 'published';
+  status: PublicPropertyStatus;
   price: number | string;
   currency: string;
   city: string;
@@ -105,7 +109,7 @@ function normalizeFeature(value: string) {
     .toLowerCase();
 }
 
-function buildFeatures(row: PublishedPropertyRow) {
+function buildFeatures(row: PublicPropertyRow) {
   const features = [
     row.property_type,
     row.bedrooms !== null
@@ -150,7 +154,7 @@ function getPublicImageUrl(storagePath: string) {
     .getPublicUrl(storagePath).data.publicUrl;
 }
 
-function mapImages(row: PublishedPropertyRow): {
+function mapImages(row: PublicPropertyRow): {
   images: PropertyImage[];
   coverImage?: PropertyImage;
 } {
@@ -180,7 +184,23 @@ function mapImages(row: PublishedPropertyRow): {
   };
 }
 
-function mapPublishedProperty(row: PublishedPropertyRow): Property {
+function buildMapLocation(row: PublicPropertyRow) {
+  if (row.show_exact_address && row.address?.trim()) {
+    const postalCity = [row.postal_code, row.city]
+      .filter((value): value is string => Boolean(value?.trim()))
+      .join(' ');
+
+    return [row.address, postalCity, row.province]
+      .filter((value): value is string => Boolean(value?.trim()))
+      .join(', ');
+  }
+
+  return [row.area, row.city, row.province]
+    .filter((value): value is string => Boolean(value?.trim()))
+    .join(', ');
+}
+
+function mapPublicProperty(row: PublicPropertyRow): Property {
   const { images, coverImage } = mapImages(row);
 
   return {
@@ -189,7 +209,7 @@ function mapPublishedProperty(row: PublishedPropertyRow): Property {
     slug: row.slug,
     title: row.title,
     operation: row.operation === 'alquiler' ? 'Alquilar' : 'Comprar',
-    status: 'Disponible',
+    status: row.status === 'reserved' ? 'Reservado' : 'Disponible',
     propertyType: row.property_type,
     price: Number(row.price),
     currency: row.currency,
@@ -199,6 +219,7 @@ function mapPublishedProperty(row: PublishedPropertyRow): Property {
     postalCode: row.postal_code ?? undefined,
     address: row.show_exact_address ? row.address ?? undefined : undefined,
     showExactAddress: row.show_exact_address,
+    mapLocation: buildMapLocation(row),
     bedrooms: row.bedrooms ?? undefined,
     bathrooms: row.bathrooms ?? undefined,
     builtArea: optionalNumber(row.built_area),
@@ -212,7 +233,7 @@ function mapPublishedProperty(row: PublishedPropertyRow): Property {
     exterior: row.exterior,
     description:
       row.description?.trim() ||
-      `${row.property_type} disponible en ${row.city}.`,
+      `${row.property_type} en ${row.city}.`,
     features: buildFeatures(row),
     featured: row.featured,
     published: true,
@@ -229,7 +250,7 @@ export async function getPublishedProperties() {
   const { data, error } = await supabase
     .from('properties')
     .select(PUBLIC_PROPERTY_SELECT)
-    .eq('status', 'published')
+    .in('status', [...PUBLIC_PROPERTY_STATUSES])
     .order('published_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false });
 
@@ -237,7 +258,7 @@ export async function getPublishedProperties() {
     throw error;
   }
 
-  return ((data ?? []) as PublishedPropertyRow[]).map(mapPublishedProperty);
+  return ((data ?? []) as PublicPropertyRow[]).map(mapPublicProperty);
 }
 
 export async function getPublishedPropertyBySlug(slug: string) {
@@ -245,21 +266,21 @@ export async function getPublishedPropertyBySlug(slug: string) {
     .from('properties')
     .select(PUBLIC_PROPERTY_SELECT)
     .eq('slug', slug)
-    .eq('status', 'published')
+    .in('status', [...PUBLIC_PROPERTY_STATUSES])
     .maybeSingle();
 
   if (error) {
     throw error;
   }
 
-  return data ? mapPublishedProperty(data as PublishedPropertyRow) : null;
+  return data ? mapPublicProperty(data as PublicPropertyRow) : null;
 }
 
 export async function getFeaturedProperties(limit = 3) {
   const { data, error } = await supabase
     .from('properties')
     .select(PUBLIC_PROPERTY_SELECT)
-    .eq('status', 'published')
+    .in('status', [...PUBLIC_PROPERTY_STATUSES])
     .eq('featured', true)
     .order('published_at', { ascending: false, nullsFirst: false })
     .order('created_at', { ascending: false })
@@ -269,5 +290,5 @@ export async function getFeaturedProperties(limit = 3) {
     throw error;
   }
 
-  return ((data ?? []) as PublishedPropertyRow[]).map(mapPublishedProperty);
+  return ((data ?? []) as PublicPropertyRow[]).map(mapPublicProperty);
 }

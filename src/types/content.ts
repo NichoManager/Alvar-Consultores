@@ -29,6 +29,7 @@ export interface Property {
   postalCode?: string;
   address?: string;
   showExactAddress?: boolean;
+  mapLocation?: string;
   bedrooms?: number;
   bathrooms?: number;
   builtArea?: number;
