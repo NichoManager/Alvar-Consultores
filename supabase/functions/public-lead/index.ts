@@ -8,7 +8,19 @@ type PublicLeadInterest =
   | 'owner'
   | 'other';
 
-type PublicLeadSource = 'website' | 'property';
+type PublicLeadSource =
+  | 'contact'
+  | 'valuation'
+  | 'property'
+  | 'service';
+
+type PublicProperty = {
+  id: string;
+  reference: string | null;
+  title: string;
+  operation: 'venta' | 'alquiler';
+  status: string;
+};
 
 type ContactInsert = {
   name: string;
@@ -17,6 +29,7 @@ type ContactInsert = {
   interest: PublicLeadInterest;
   status: 'new';
   source: PublicLeadSource;
+  message: string | null;
   notes: string | null;
   privacy_accepted_at: string;
 };
@@ -44,11 +57,7 @@ type Database = {
         Relationships: [];
       };
       properties: {
-        Row: {
-          id: string;
-          operation: 'venta' | 'alquiler';
-          status: string;
-        };
+        Row: PublicProperty;
         Insert: never;
         Update: never;
         Relationships: [];
@@ -79,9 +88,27 @@ const ALLOWED_INTERESTS = new Set<PublicLeadInterest>([
 ]);
 
 const ALLOWED_SOURCES = new Set<PublicLeadSource>([
-  'website',
+  'contact',
+  'valuation',
   'property',
+  'service',
 ]);
+
+const INTEREST_LABELS: Record<PublicLeadInterest, string> = {
+  buy: 'Compra',
+  rent: 'Alquiler',
+  sell: 'Venta',
+  invest: 'Inversión',
+  owner: 'Propietario',
+  other: 'Otro',
+};
+
+const SOURCE_LABELS: Record<PublicLeadSource, string> = {
+  contact: 'Contacto web',
+  valuation: 'Valoración',
+  property: 'Ficha de inmueble',
+  service: 'Servicios',
+};
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -126,6 +153,140 @@ function isPublicLeadSource(value: string): value is PublicLeadSource {
   return ALLOWED_SOURCES.has(value as PublicLeadSource);
 }
 
+function getEnvironmentVariable(name: string) {
+  const runtime = globalThis as typeof globalThis & {
+    Deno?: {
+      env: {
+        get(key: string): string | undefined;
+      };
+    };
+  };
+
+  return runtime.Deno?.env.get(name)?.trim() ?? '';
+}
+
+function sanitizeSubjectValue(value: string) {
+  return value.replace(/[\r\n]+/g, ' ').trim();
+}
+
+function getNotificationSubject(
+  source: PublicLeadSource,
+  name: string,
+  property: PublicProperty | null,
+) {
+  const safeName = sanitizeSubjectValue(name);
+
+  if (source === 'valuation') {
+    return `Nueva solicitud de valoración · ${safeName}`;
+  }
+
+  if (source === 'property') {
+    const propertyLabel = property?.reference
+      ? `REF ${sanitizeSubjectValue(property.reference)}`
+      : safeName;
+    return `Nueva consulta sobre inmueble · ${propertyLabel}`;
+  }
+
+  if (source === 'service') {
+    return `Nueva solicitud de servicio · ${safeName}`;
+  }
+
+  return `Nueva consulta web · ${safeName}`;
+}
+
+function getNotificationText(input: {
+  name: string;
+  phone: string;
+  email: string;
+  interest: PublicLeadInterest;
+  source: PublicLeadSource;
+  message: string;
+  property: PublicProperty | null;
+}) {
+  const lines = [
+    'NUEVO CONTACTO DESDE LA WEB',
+    '',
+    `Nombre: ${input.name}`,
+    `Teléfono: ${input.phone || 'No facilitado'}`,
+    `Email: ${input.email || 'No facilitado'}`,
+    '',
+    `Interés: ${INTEREST_LABELS[input.interest]}`,
+    `Origen: ${SOURCE_LABELS[input.source]}`,
+    '',
+    'Mensaje:',
+    input.message || 'Sin mensaje registrado.',
+  ];
+
+  if (input.property) {
+    lines.push(
+      '',
+      'Inmueble',
+      `Referencia: ${input.property.reference || 'Sin referencia'}`,
+      `Título: ${input.property.title}`,
+    );
+  }
+
+  lines.push(
+    '',
+    input.email
+      ? 'Puedes responder directamente a este correo para contestar al cliente.'
+      : 'El contacto no facilitó email. Utiliza el teléfono indicado para responder.',
+  );
+
+  return lines.join('\n');
+}
+
+async function sendLeadNotification(input: {
+  name: string;
+  phone: string;
+  email: string;
+  interest: PublicLeadInterest;
+  source: PublicLeadSource;
+  message: string;
+  property: PublicProperty | null;
+}) {
+  const resendApiKey = getEnvironmentVariable('RESEND_API_KEY');
+  const from = getEnvironmentVariable('LEAD_FROM_EMAIL');
+  const recipients = getEnvironmentVariable('LEAD_NOTIFICATION_EMAILS')
+    .split(',')
+    .map((recipient) => recipient.trim().toLowerCase())
+    .filter(
+      (recipient) =>
+        recipient.length <= 254 && EMAIL_PATTERN.test(recipient),
+    )
+    .slice(0, 50);
+
+  if (!resendApiKey || !from || recipients.length === 0) {
+    console.error('public-lead email notification is not configured.');
+    return;
+  }
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from,
+        to: recipients,
+        subject: getNotificationSubject(input.source, input.name, input.property),
+        text: getNotificationText(input),
+        ...(input.email ? { reply_to: input.email } : {}),
+      }),
+    });
+
+    if (!response.ok) {
+      console.error(
+        `public-lead email notification failed with status ${response.status}.`,
+      );
+    }
+  } catch {
+    console.error('public-lead email notification request failed.');
+  }
+}
+
 export default {
   fetch: async (req: Request) => {
     const origin = req.headers.get('origin') ?? '';
@@ -167,7 +328,7 @@ export default {
     const email = readString(body.email).toLowerCase();
     const interest = readString(body.interest);
     const source = readString(body.source);
-    const notes = readString(body.notes);
+    const message = readString(body.message);
     const propertyId = readString(body.propertyId);
 
     if (!name || name.length > 160) {
@@ -198,7 +359,7 @@ export default {
       return json(origin, { error: 'El origen no es válido.' }, 400);
     }
 
-    if (notes.length > 4000) {
+    if (message.length > 4000) {
       return json(origin, { error: 'El mensaje es demasiado largo.' }, 400);
     }
 
@@ -223,11 +384,12 @@ export default {
     }
 
     let validatedInterest: PublicLeadInterest = interest;
+    let linkedProperty: PublicProperty | null = null;
 
     if (source === 'property') {
       const { data: property, error: propertyError } = await ctx.supabaseAdmin
         .from('properties')
-        .select('id, operation, status')
+        .select('id, reference, title, operation, status')
         .eq('id', propertyId)
         .in('status', ['published', 'reserved'])
         .maybeSingle();
@@ -242,6 +404,7 @@ export default {
       }
 
       validatedInterest = property.operation === 'alquiler' ? 'rent' : 'buy';
+      linkedProperty = property;
     }
 
     const { data: contact, error: contactError } = await ctx.supabaseAdmin
@@ -253,7 +416,8 @@ export default {
         interest: validatedInterest,
         status: 'new',
         source,
-        notes: notes || null,
+        message: message || null,
+        notes: null,
         privacy_accepted_at: new Date().toISOString(),
       })
       .select('id')
@@ -287,6 +451,16 @@ export default {
         return json(origin, { error: 'No se ha podido enviar la consulta.' }, 500);
       }
     }
+
+    await sendLeadNotification({
+      name,
+      phone,
+      email,
+      interest: validatedInterest,
+      source,
+      message,
+      property: linkedProperty,
+    });
 
     return json(origin, { success: true }, 201);
   },

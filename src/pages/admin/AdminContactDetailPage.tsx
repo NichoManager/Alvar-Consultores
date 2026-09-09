@@ -339,7 +339,7 @@ export function AdminContactDetailPage() {
               </select>
             </label>
             <label className="admin-property-form__field">
-              <span>Fuente</span>
+              <span>Origen</span>
               <select value={form.source} onChange={(event) => updateForm('source', event.target.value as ContactSource)}>
                 {Object.entries(contactSourceLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
               </select>
@@ -352,9 +352,16 @@ export function AdminContactDetailPage() {
         </section>
 
         <section className="admin-property-form__section">
-          <div><span>02</span><h2>Notas</h2></div>
+          <div><span>02</span><h2>Mensaje del cliente</h2></div>
+          <div className="admin-contact-message">
+            <p>{contact.message || 'Sin mensaje registrado.'}</p>
+          </div>
+        </section>
+
+        <section className="admin-property-form__section">
+          <div><span>03</span><h2>Notas internas</h2></div>
           <label className="admin-property-form__field">
-            <span>Notas</span>
+            <span>Notas internas</span>
             <textarea value={form.notes} onChange={(event) => updateForm('notes', event.target.value)} />
           </label>
         </section>

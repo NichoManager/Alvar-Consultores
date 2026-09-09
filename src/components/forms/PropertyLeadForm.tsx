@@ -51,6 +51,7 @@ export function PropertyLeadForm({
         email: getValue(data, 'leadEmail'),
         interest: operation === 'Alquilar' ? 'rent' : 'buy',
         source: 'property',
+        message: getValue(data, 'message'),
         propertyId,
         privacyAccepted: data.get('propertyPrivacy') === 'on',
         website: getValue(data, 'website'),
@@ -109,6 +110,13 @@ export function PropertyLeadForm({
     autoComplete="email"
     maxLength={254}
     error={errors.leadEmail}
+  />
+
+  <FormField
+    as="textarea"
+    label="Mensaje (opcional)"
+    name="message"
+    maxLength={3500}
   />
 
   <PrivacyField

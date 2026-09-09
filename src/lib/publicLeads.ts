@@ -1,7 +1,11 @@
 import type { ContactInterest } from './contacts';
 import { supabase } from './supabase';
 
-export type PublicLeadSource = 'website' | 'property';
+export type PublicLeadSource =
+  | 'contact'
+  | 'valuation'
+  | 'property'
+  | 'service';
 
 export type PublicLeadInput = {
   name: string;
@@ -9,7 +13,7 @@ export type PublicLeadInput = {
   email?: string;
   interest: ContactInterest;
   source: PublicLeadSource;
-  notes?: string;
+  message?: string;
   propertyId?: string;
   privacyAccepted: boolean;
   website?: string;

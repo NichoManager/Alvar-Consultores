@@ -2709,6 +2709,20 @@
   color: var(--admin-navy);
 }
 
+.admin-contact-message {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--admin-line);
+  background: var(--admin-ivory);
+}
+
+.admin-contact-message p {
+  margin: 0;
+  color: var(--admin-navy);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
 @media (max-width: 1050px) {
   .admin-contact-card {
     grid-template-columns: minmax(15rem, 1fr) minmax(13rem, 0.8fr) auto;

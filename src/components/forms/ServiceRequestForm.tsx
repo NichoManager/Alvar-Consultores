@@ -76,7 +76,7 @@ function getInterest(
   return 'other';
 }
 
-function getNotes(serviceType: ServiceType, data: FormData) {
+function getMessage(serviceType: ServiceType, data: FormData) {
   const details = Object.entries(detailLabels)
     .map(([name, label]) => [label, getValue(data, name)] as const)
     .filter(([, value]) => value)
@@ -165,8 +165,8 @@ export function ServiceRequestForm({ serviceType }: ServiceRequestFormProps) {
         phone: getValue(data, 'phone'),
         email: getValue(data, 'email'),
         interest: getInterest(serviceType, data),
-        source: 'website',
-        notes: getNotes(serviceType, data),
+        source: 'service',
+        message: getMessage(serviceType, data),
         privacyAccepted: data.get(privacyFieldName) === 'on',
         website: getValue(data, 'website'),
       });

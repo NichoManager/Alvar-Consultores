@@ -48,8 +48,8 @@ export function ValuationForm() {
         phone: getValue(data, 'phone'),
         email: getValue(data, 'email'),
         interest: 'sell',
-        source: 'website',
-        notes: details,
+        source: 'valuation',
+        message: details,
         privacyAccepted: data.get('valuationPrivacy') === 'on',
         website: getValue(data, 'website'),
       });

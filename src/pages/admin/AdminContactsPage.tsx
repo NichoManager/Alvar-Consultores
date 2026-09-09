@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   contactInterestLabels,
+  contactSourceLabels,
   contactStatusLabels,
   getContacts,
   type Contact,
@@ -270,7 +271,10 @@ export function AdminContactsPage() {
             {filteredContacts.map((contact) => (
               <article className="admin-contact-card" key={contact.id}>
                 <div className="admin-contact-card__identity">
-                  <span>{contactInterestLabels[contact.interest]}</span>
+                  <span>
+                    INTERÉS: {contactInterestLabels[contact.interest]} · ORIGEN:{' '}
+                    {contactSourceLabels[contact.source]}
+                  </span>
                   <h3>{contact.name}</h3>
                   <div>
                     {contact.phone ? <a href={`tel:${contact.phone}`}>{contact.phone}</a> : null}

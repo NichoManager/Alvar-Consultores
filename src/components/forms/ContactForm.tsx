@@ -53,8 +53,8 @@ export function ContactForm() {
         email: getValue(data, 'email'),
         phone: getValue(data, 'phone'),
         interest: interestByTopic[topic] ?? 'other',
-        source: 'website',
-        notes: [`Tipo de consulta: ${topic}`, `Mensaje: ${message}`].join('\n\n'),
+        source: 'contact',
+        message,
         privacyAccepted: data.get('contactPrivacy') === 'on',
         website: getValue(data, 'website'),
       });

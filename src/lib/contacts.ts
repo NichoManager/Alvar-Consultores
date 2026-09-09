@@ -17,9 +17,11 @@ export type ContactStatus =
   | 'discarded';
 
 export type ContactSource =
-  | 'manual'
-  | 'website'
+  | 'contact'
+  | 'valuation'
   | 'property'
+  | 'service'
+  | 'manual'
   | 'whatsapp'
   | 'phone'
   | 'email'
@@ -42,6 +44,7 @@ export type Contact = {
   interest: ContactInterest;
   status: ContactStatus;
   source: ContactSource;
+  message: string | null;
   notes: string | null;
   lastContactAt: string | null;
   privacyAcceptedAt: string | null;
@@ -74,6 +77,7 @@ type ContactRow = {
   interest: ContactInterest;
   status: ContactStatus;
   source: ContactSource;
+  message: string | null;
   notes: string | null;
   last_contact_at: string | null;
   privacy_accepted_at: string | null;
@@ -90,6 +94,7 @@ const CONTACT_SELECT = `
   interest,
   status,
   source,
+  message,
   notes,
   last_contact_at,
   privacy_accepted_at,
@@ -109,10 +114,10 @@ const CONTACT_SELECT = `
 `;
 
 export const contactInterestLabels: Record<ContactInterest, string> = {
-  buy: 'Comprar',
-  rent: 'Alquilar',
-  sell: 'Vender',
-  invest: 'Invertir',
+  buy: 'Compra',
+  rent: 'Alquiler',
+  sell: 'Venta',
+  invest: 'Inversión',
   owner: 'Propietario',
   other: 'Otro',
 };
@@ -127,9 +132,11 @@ export const contactStatusLabels: Record<ContactStatus, string> = {
 };
 
 export const contactSourceLabels: Record<ContactSource, string> = {
+  contact: 'Contacto web',
+  valuation: 'Valoración',
+  property: 'Ficha de inmueble',
+  service: 'Formulario de servicios',
   manual: 'Manual',
-  website: 'Web',
-  property: 'Inmueble',
   whatsapp: 'WhatsApp',
   phone: 'Teléfono',
   email: 'Email',
@@ -145,6 +152,7 @@ function mapContact(row: ContactRow): Contact {
     interest: row.interest,
     status: row.status,
     source: row.source,
+    message: row.message,
     notes: row.notes,
     lastContactAt: row.last_contact_at,
     privacyAcceptedAt: row.privacy_accepted_at,
