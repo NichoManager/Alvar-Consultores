@@ -790,58 +790,95 @@
 }
 
 .admin-property-form__header {
-  padding: clamp(2rem, 5vw, 4rem) max(1.5rem, calc((100% - 74rem) / 2));
+  padding: clamp(1.5rem, 3.5vw, 2.75rem) 0;
   color: var(--admin-ivory);
   background: var(--admin-navy);
 }
 
-.admin-property-form__header>span {
+.admin-property-form__header-inner {
+  width: min(88rem, calc(100% - 4rem));
+  margin: 0 auto;
+}
+
+.admin-property-form__back {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 1.35rem;
+  padding: 0 0.85rem;
+  border: 1px solid rgba(248, 246, 240, 0.28);
+  cursor: pointer;
+  color: var(--admin-ivory);
+  background: transparent;
+  font: inherit;
+  font-size: 0.67rem;
+  font-weight: 800;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.admin-property-form__back:hover {
+  border-color: var(--admin-gold);
+  background: rgba(248, 246, 240, 0.06);
+}
+
+.admin-property-form__header-inner > span {
+  display: block;
   color: var(--admin-gold);
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 850;
   letter-spacing: 0.15em;
 }
 
 .admin-property-form__header h1 {
-  margin: 0.75rem 0 0;
+  margin: 0.6rem 0 0;
   color: var(--admin-ivory);
-  font: 500 clamp(2.8rem, 5vw, 4.8rem) / 0.95 'Cormorant Garamond', serif;
+  font: 500 clamp(2.6rem, 4.5vw, 4.2rem) / 0.95 'Cormorant Garamond', serif;
 }
 
 .admin-property-form__header p {
-  max-width: 46rem;
-  margin: 1rem 0 0;
+  max-width: 50rem;
+  margin: 0.8rem 0 0;
   color: rgba(248, 246, 240, 0.72);
-  font-size: 0.9rem;
-  line-height: 1.65;
+  font-size: 0.88rem;
+  line-height: 1.6;
 }
 
 .admin-property-form {
   display: grid;
-  gap: 1.5rem;
-  width: min(74rem, calc(100% - 3rem));
-  margin: clamp(2rem, 5vw, 4rem) auto 0;
+  gap: 1.25rem;
+  width: min(88rem, calc(100% - 4rem));
+  margin: clamp(1.75rem, 4vw, 3rem) auto 0;
+}
+
+.admin-property-form__required-note {
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
 
 .admin-property-form__section {
-  padding: clamp(1.5rem, 3vw, 2.5rem);
+  padding: clamp(1.5rem, 2.5vw, 2.25rem);
   border: 1px solid var(--admin-line);
   background: var(--admin-white);
-  box-shadow: 0 16px 45px rgba(17, 24, 50, 0.05);
+  box-shadow: 0 8px 24px rgba(17, 24, 50, 0.025);
 }
 
 .admin-property-form__section>div:first-child {
   display: flex;
   align-items: baseline;
   gap: 0.8rem;
-  margin-bottom: 1.6rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1.4rem;
+  padding-bottom: 0.85rem;
   border-bottom: 1px solid var(--admin-line);
 }
 
 .admin-property-form__section>div:first-child>span {
   color: var(--admin-gold);
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   font-weight: 850;
   letter-spacing: 0.12em;
 }
@@ -849,26 +886,26 @@
 .admin-property-form__section h2 {
   margin: 0;
   color: var(--admin-navy);
-  font: 500 2rem / 1 'Cormorant Garamond', serif;
+  font: 500 clamp(2rem, 3vw, 2.45rem) / 1 'Cormorant Garamond', serif;
 }
 
 .admin-property-form__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
+  gap: 1.3rem 1.5rem;
 }
 
 .admin-property-form__field {
   display: grid;
-  gap: 0.55rem;
+  gap: 0.6rem;
   min-width: 0;
 }
 
-.admin-property-form__field>span {
+.admin-property-form__field > span:not(.admin-property-form__input-suffix) {
   color: var(--admin-navy);
-  font-size: 0.66rem;
+  font-size: 0.74rem;
   font-weight: 800;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.045em;
   text-transform: uppercase;
 }
 
@@ -876,22 +913,79 @@
 .admin-property-form__field select,
 .admin-property-form__field textarea {
   width: 100%;
-  min-height: 3.4rem;
-  padding: 0.85rem 1rem;
+  min-height: 3.75rem;
+  padding: 0.95rem 1.05rem;
   border: 1px solid rgba(17, 24, 50, 0.18);
   border-radius: 0;
   outline: none;
   color: var(--admin-navy);
   background: var(--admin-white);
   font: inherit;
+  font-size: 0.88rem;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
 .admin-property-form__field textarea {
-  min-height: 11rem;
+  min-height: 15rem;
+  line-height: 1.6;
   resize: vertical;
+}
+
+.admin-property-form__input-suffix {
+  position: relative;
+  display: block;
+}
+
+.admin-property-form__input-suffix input {
+  padding-right: 3rem;
+}
+
+.admin-property-form__input-suffix > span {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  color: var(--admin-muted);
+  font-size: 0.9rem;
+  font-weight: 800;
+  transform: translateY(-50%);
+}
+
+.admin-property-form__status {
+  display: grid;
+  align-content: center;
+  gap: 0.35rem;
+  min-height: 3.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(184, 148, 77, 0.42);
+  background: rgba(184, 148, 77, 0.08);
+}
+
+.admin-property-form__status > span {
+  color: var(--admin-gold);
+  font-size: 0.64rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-property-form__status strong {
+  color: var(--admin-navy);
+  font-size: 0.82rem;
+}
+
+.admin-property-form__status small,
+.admin-property-form__helper,
+.admin-property-form__check-help {
+  color: var(--admin-muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.admin-property-form__helper {
+  display: block;
+  margin-top: -0.1rem;
 }
 
 .admin-property-form__field input:focus,
@@ -904,61 +998,82 @@
 .admin-property-form__checks {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 0.8rem;
+  margin-top: 1.4rem;
 }
 
-.admin-property-form__checks label {
+.admin-property-form__check {
   display: flex;
-  min-height: 3.4rem;
+  min-height: 3.75rem;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.8rem 1rem;
-  border: 1px solid var(--admin-line);
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(17, 24, 50, 0.16);
   cursor: pointer;
   color: var(--admin-navy);
-  background: var(--admin-ivory);
-  font-size: 0.76rem;
+  background: var(--admin-white);
+  font-size: 0.8rem;
   font-weight: 750;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-property-form__check:hover {
+  border-color: rgba(184, 148, 77, 0.7);
+}
+
+.admin-property-form__check:has(input:checked) {
+  border-color: var(--admin-gold);
+  background: rgba(184, 148, 77, 0.09);
+  box-shadow: inset 3px 0 0 var(--admin-gold);
 }
 
 .admin-property-form__checks input {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
   accent-color: var(--admin-blue);
+}
+
+.admin-property-form__check-help {
+  margin: 0.75rem 0 0;
 }
 
 .admin-property-form__actions {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
-  gap: 0.75rem;
+  gap: 0.85rem;
+  padding-top: 0.35rem;
 }
 
 .admin-property-form__actions button {
-  min-height: 3.4rem;
-  padding: 0 1.6rem;
+  min-height: 3.75rem;
+  padding: 0 1.8rem;
   border: 1px solid var(--admin-navy);
   cursor: pointer;
   color: var(--admin-ivory);
   background: var(--admin-navy);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 800;
   transition:
     background 0.2s ease,
     border-color 0.2s ease;
 }
 
-.admin-property-form__actions button:hover:not(:disabled) {
+.admin-property-form__actions button[type='submit']:hover:not(:disabled) {
   border-color: var(--admin-blue);
   background: var(--admin-blue);
 }
 
-.admin-property-form__actions button:last-child {
+.admin-property-form__actions button[type='button'] {
   color: var(--admin-navy);
   background: transparent;
 }
 
-.admin-property-form__actions button:last-child:hover:not(:disabled) {
+.admin-property-form__actions button[type='button']:hover:not(:disabled) {
   border-color: var(--admin-gold);
   background: rgba(184, 148, 77, 0.08);
 }
@@ -974,13 +1089,14 @@
   border-left: 2px solid #b65050;
   color: #8a3030;
   background: rgba(182, 80, 80, 0.08);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   line-height: 1.5;
 }
 
 @media (max-width: 700px) {
+  .admin-property-form__header-inner,
   .admin-property-form {
-    width: min(100% - 2rem, 74rem);
+    width: min(100% - 2rem, 88rem);
   }
 
   .admin-property-form__grid,
@@ -994,6 +1110,15 @@
 
   .admin-property-form__actions button {
     width: 100%;
+  }
+
+  .admin-property-form__section {
+    padding: 1.3rem 1rem;
+  }
+
+  .admin-property-form__back {
+    width: 100%;
+    justify-content: center;
   }
 }
 
