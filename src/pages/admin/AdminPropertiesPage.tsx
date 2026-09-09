@@ -1,199 +1,509 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type FormEvent,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  createAdminUser,
+  deleteAdminUser,
+  getAdminUsers,
+  setAdminUserPassword,
+  setAdminUserRole,
+  type AdminRole,
+  type AdminUser,
+} from '../../lib/adminUsers';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 
-type PropertyStatus =
-  | 'draft'
-  | 'published'
-  | 'reserved'
-  | 'sold'
-  | 'rented'
-  | 'archived';
-
-type OperationFilter = 'all' | 'venta' | 'alquiler';
-type StatusFilter = 'all' | PropertyStatus;
-
-type PropertyImage = {
-  id: string;
-  storage_path: string;
-  is_cover: boolean;
-  position: number;
+type CreateUserForm = {
+  name: string;
+  email: string;
+  password: string;
+  role: AdminRole;
 };
 
-type Property = {
-  id: string;
-  reference: string | null;
-  title: string;
-  operation: 'venta' | 'alquiler';
-  status: PropertyStatus;
-  price: number;
-  city: string;
-  area: string | null;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  built_area: number | null;
-  created_at: string;
-  property_images: PropertyImage[];
+const initialCreateForm: CreateUserForm = {
+  name: '',
+  email: '',
+  password: '',
+  role: 'admin',
 };
 
-const statusLabels: Record<PropertyStatus, string> = {
-  draft: 'Borrador',
-  published: 'Publicado',
-  reserved: 'Reservado',
-  sold: 'Vendido',
-  rented: 'Alquilado',
-  archived: 'Archivado',
+const roleLabels: Record<AdminRole, string> = {
+  admin: 'Administrador',
+  superadmin: 'Superadministrador',
 };
 
-const summaryStatuses: Array<{
-  status: PropertyStatus;
-  singular: string;
-  plural: string;
-}> = [
-  { status: 'published', singular: 'publicado', plural: 'publicados' },
-  { status: 'draft', singular: 'borrador', plural: 'borradores' },
-  { status: 'reserved', singular: 'reservado', plural: 'reservados' },
-  { status: 'sold', singular: 'vendido', plural: 'vendidos' },
-  { status: 'rented', singular: 'alquilado', plural: 'alquilados' },
-  { status: 'archived', singular: 'archivado', plural: 'archivados' },
-];
-
-const priceFormatter = new Intl.NumberFormat('es-ES', {
-  style: 'currency',
-  currency: 'EUR',
-  maximumFractionDigits: 0,
+const dateFormatter = new Intl.DateTimeFormat('es-ES', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
 });
 
-const areaFormatter = new Intl.NumberFormat('es-ES', {
-  maximumFractionDigits: 2,
+const dateTimeFormatter = new Intl.DateTimeFormat('es-ES', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
 });
 
-function normalizeSearch(value: string) {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
+function formatDate(value: string | null) {
+  if (!value) return '—';
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return '—';
+  }
+
+  return dateFormatter.format(date);
 }
 
-function getCoverImage(images: PropertyImage[]) {
-  return (
-    images.find((image) => image.is_cover) ??
-    [...images].sort((a, b) => a.position - b.position)[0]
-  );
+function formatDateTime(value: string | null) {
+  if (!value) return 'Nunca';
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return 'Nunca';
+  }
+
+  return dateTimeFormatter.format(date);
 }
 
-function getPublicImageUrl(storagePath: string) {
-  return supabase.storage
-    .from('property-images')
-    .getPublicUrl(storagePath).data.publicUrl;
-}
-
-export function AdminPropertiesPage() {
+export function AdminUsersPage() {
   const navigate = useNavigate();
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [users, setUsers] = useState<AdminUser[]>([]);
+
+  const [isCheckingAccess, setIsCheckingAccess] = useState(true);
+  const [isSuperadmin, setIsSuperadmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [error, setError] = useState('');
-  const [search, setSearch] = useState('');
-  const [operationFilter, setOperationFilter] =
-    useState<OperationFilter>('all');
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [createForm, setCreateForm] =
+    useState<CreateUserForm>(initialCreateForm);
+  const [isCreating, setIsCreating] = useState(false);
+
+  const [busyUserId, setBusyUserId] = useState<string | null>(null);
+
+  const [passwordUserId, setPasswordUserId] =
+    useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [isChangingPassword, setIsChangingPassword] =
+    useState(false);
+
+  const loadUsers = useCallback(async () => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const loadedUsers = await getAdminUsers();
+      setUsers(loadedUsers);
+    } catch (loadError) {
+      console.error('Error loading admin users:', loadError);
+
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : 'No se han podido cargar los usuarios.',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const loadProperties = async () => {
-      setIsLoading(true);
+    const checkAccess = async () => {
+      setIsCheckingAccess(true);
       setError('');
 
-      const { data, error: propertiesError } = await supabase
-        .from('properties')
-        .select(
-          `
-            id,
-            reference,
-            title,
-            operation,
-            status,
-            price,
-            city,
-            area,
-            bedrooms,
-            bathrooms,
-            built_area,
-            created_at,
-            property_images (
-              id,
-              storage_path,
-              is_cover,
-              position
-            )
-          `,
-        )
-        .order('created_at', { ascending: false });
+      const {
+        data,
+        error: accessError,
+      } = await supabase.rpc('is_superadmin');
 
-      if (propertiesError) {
-        console.error('Error loading properties:', propertiesError);
-        setError('No se han podido cargar los inmuebles.');
-        setIsLoading(false);
+      if (accessError) {
+        console.error(
+          'Error checking superadmin access:',
+          accessError,
+        );
+
+        setError(
+          'No se han podido comprobar tus permisos de administración.',
+        );
+        setIsSuperadmin(false);
+        setIsCheckingAccess(false);
         return;
       }
 
-      setProperties((data ?? []) as Property[]);
-      setIsLoading(false);
+      if (data !== true) {
+        setIsSuperadmin(false);
+        setIsCheckingAccess(false);
+        return;
+      }
+
+      setIsSuperadmin(true);
+      setIsCheckingAccess(false);
+
+      await loadUsers();
     };
 
-    void loadProperties();
-  }, []);
-
-  const filteredProperties = useMemo(() => {
-    const normalizedSearch = normalizeSearch(search);
-
-    return properties.filter((property) => {
-      const matchesSearch =
-        !normalizedSearch ||
-        [property.title, property.reference, property.city, property.area].some(
-          (value) => normalizeSearch(value ?? '').includes(normalizedSearch),
-        );
-      const matchesOperation =
-        operationFilter === 'all' || property.operation === operationFilter;
-      const matchesStatus =
-        statusFilter === 'all' || property.status === statusFilter;
-
-      return matchesSearch && matchesOperation && matchesStatus;
-    });
-  }, [operationFilter, properties, search, statusFilter]);
+    void checkAccess();
+  }, [loadUsers]);
 
   const summary = useMemo(() => {
-    const parts = [
-      `${properties.length} ${properties.length === 1 ? 'inmueble' : 'inmuebles'}`,
-    ];
+    const withAccess = users.filter(
+      (user) => user.hasAccess,
+    ).length;
 
-    summaryStatuses.forEach(({ status, singular, plural }) => {
-      const count = properties.filter(
-        (property) => property.status === status,
-      ).length;
+    const superadmins = users.filter(
+      (user) => user.role === 'superadmin',
+    ).length;
 
-      if (count > 0) {
-        parts.push(`${count} ${count === 1 ? singular : plural}`);
-      }
-    });
-
-    return parts.join(' · ');
-  }, [properties]);
-
-  const clearFilters = () => {
-    setSearch('');
-    setOperationFilter('all');
-    setStatusFilter('all');
-  };
+    return `${withAccess} ${
+      withAccess === 1 ? 'usuario con acceso' : 'usuarios con acceso'
+    } · ${superadmins} ${
+      superadmins === 1
+        ? 'superadministrador'
+        : 'superadministradores'
+    }`;
+  }, [users]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/admin/login', { replace: true });
+    navigate('/admin/login', {
+      replace: true,
+    });
   };
 
+  const clearMessages = () => {
+    setError('');
+    setSuccessMessage('');
+  };
+
+  const handleCreateUser = async (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    clearMessages();
+
+    const email = createForm.email.trim();
+    const name = createForm.name.trim();
+
+    if (!email) {
+      setError('Introduce el email del nuevo usuario.');
+      return;
+    }
+
+    if (createForm.password.length < 8) {
+      setError(
+        'La contraseña debe tener al menos 8 caracteres.',
+      );
+      return;
+    }
+
+    setIsCreating(true);
+
+    try {
+      await createAdminUser({
+        name,
+        email,
+        password: createForm.password,
+        role: createForm.role,
+      });
+
+      setCreateForm(initialCreateForm);
+      setIsCreateOpen(false);
+
+      setSuccessMessage(
+        `Usuario ${email} creado correctamente.`,
+      );
+
+      await loadUsers();
+    } catch (createError) {
+      console.error(
+        'Error creating admin user:',
+        createError,
+      );
+
+      setError(
+        createError instanceof Error
+          ? createError.message
+          : 'No se ha podido crear el usuario.',
+      );
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleRoleChange = async (
+    user: AdminUser,
+    role: AdminRole,
+  ) => {
+    if (user.role === role) {
+      return;
+    }
+
+    clearMessages();
+    setBusyUserId(user.id);
+
+    try {
+      await setAdminUserRole(user.id, role);
+
+      setUsers((currentUsers) =>
+        currentUsers.map((currentUser) =>
+          currentUser.id === user.id
+            ? {
+                ...currentUser,
+                role,
+                hasAccess: true,
+              }
+            : currentUser,
+        ),
+      );
+
+      setSuccessMessage(
+        `Rol de ${user.email} actualizado a ${roleLabels[role]}.`,
+      );
+    } catch (roleError) {
+      console.error(
+        'Error updating admin role:',
+        roleError,
+      );
+
+      setError(
+        roleError instanceof Error
+          ? roleError.message
+          : 'No se ha podido actualizar el rol.',
+      );
+    } finally {
+      setBusyUserId(null);
+    }
+  };
+
+  const openPasswordEditor = (userId: string) => {
+    clearMessages();
+
+    if (passwordUserId === userId) {
+      setPasswordUserId(null);
+      setNewPassword('');
+      return;
+    }
+
+    setPasswordUserId(userId);
+    setNewPassword('');
+  };
+
+  const handlePasswordChange = async (
+    event: FormEvent<HTMLFormElement>,
+    user: AdminUser,
+  ) => {
+    event.preventDefault();
+    clearMessages();
+
+    if (newPassword.length < 8) {
+      setError(
+        'La nueva contraseña debe tener al menos 8 caracteres.',
+      );
+      return;
+    }
+
+    setIsChangingPassword(true);
+    setBusyUserId(user.id);
+
+    try {
+      await setAdminUserPassword(
+        user.id,
+        newPassword,
+      );
+
+      setPasswordUserId(null);
+      setNewPassword('');
+
+      setSuccessMessage(
+        `Contraseña de ${user.email} actualizada correctamente.`,
+      );
+    } catch (passwordError) {
+      console.error(
+        'Error updating user password:',
+        passwordError,
+      );
+
+      setError(
+        passwordError instanceof Error
+          ? passwordError.message
+          : 'No se ha podido cambiar la contraseña.',
+      );
+    } finally {
+      setIsChangingPassword(false);
+      setBusyUserId(null);
+    }
+  };
+
+  const handleDeleteUser = async (
+    user: AdminUser,
+  ) => {
+    clearMessages();
+
+    if (user.isCurrentUser) {
+      setError(
+        'No puedes eliminar tu propio usuario desde este panel.',
+      );
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Vas a eliminar permanentemente el usuario ${user.email}.\n\nEl usuario dejará de poder iniciar sesión en el CRM.\n\n¿Quieres continuar?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setBusyUserId(user.id);
+
+    try {
+      await deleteAdminUser(user.id);
+
+      setUsers((currentUsers) =>
+        currentUsers.filter(
+          (currentUser) => currentUser.id !== user.id,
+        ),
+      );
+
+      if (passwordUserId === user.id) {
+        setPasswordUserId(null);
+        setNewPassword('');
+      }
+
+      setSuccessMessage(
+        `Usuario ${user.email} eliminado correctamente.`,
+      );
+    } catch (deleteError) {
+      console.error(
+        'Error deleting admin user:',
+        deleteError,
+      );
+
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : 'No se ha podido eliminar el usuario.',
+      );
+    } finally {
+      setBusyUserId(null);
+    }
+  };
+
+  if (isCheckingAccess) {
+    return (
+      <main className="admin-properties">
+        <header className="admin-properties__header">
+          <div>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-site-link"
+            >
+              ALVAR CONSULTORES{' '}
+              <span aria-hidden="true">↗</span>
+            </a>
+
+            <h1>Usuarios</h1>
+          </div>
+        </header>
+
+        <section className="admin-properties__content">
+          <p className="admin-properties__loading">
+            Comprobando permisos...
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  if (!isSuperadmin) {
+    return (
+      <main className="admin-properties">
+        <header className="admin-properties__header">
+          <div>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="admin-site-link"
+            >
+              ALVAR CONSULTORES{' '}
+              <span aria-hidden="true">↗</span>
+            </a>
+
+            <h1>Usuarios</h1>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              onClick={() =>
+                navigate('/admin/inmuebles')
+              }
+            >
+              Inmuebles
+            </button>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        </header>
+
+        <section className="admin-properties__content">
+          <div className="admin-users__restricted">
+            <span>ACCESO RESTRINGIDO</span>
+
+            <h2>Gestión reservada al superadministrador.</h2>
+
+            <p>
+              Tu cuenta puede utilizar el CRM, pero no tiene
+              permisos para crear, modificar o eliminar usuarios.
+            </p>
+
+            {error ? (
+              <p
+                className="admin-properties__error"
+                role="alert"
+              >
+                {error}
+              </p>
+            ) : null}
+
+            <button
+              type="button"
+              onClick={() =>
+                navigate('/admin/inmuebles')
+              }
+            >
+              Volver a inmuebles
+            </button>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   return (
-    <main className="admin-properties">
+    <main className="admin-properties admin-users">
       <header className="admin-properties__header">
         <div>
           <a
@@ -203,20 +513,41 @@ export function AdminPropertiesPage() {
             className="admin-site-link"
             aria-label="Abrir la web pública de Alvar Consultores en una nueva pestaña"
           >
-            ALVAR CONSULTORES <span aria-hidden="true">↗</span>
+            ALVAR CONSULTORES{' '}
+            <span aria-hidden="true">↗</span>
           </a>
-          <h1>Inmuebles</h1>
+
+          <h1>Usuarios</h1>
         </div>
 
         <div>
           <button
             type="button"
-            onClick={() => navigate('/admin/inmuebles/nuevo')}
+            onClick={() =>
+              navigate('/admin/inmuebles')
+            }
           >
-            + Nuevo inmueble
+            Inmuebles
           </button>
 
-          <button type="button" onClick={handleLogout}>
+          <button
+            type="button"
+            onClick={() => {
+              clearMessages();
+              setIsCreateOpen(
+                (currentValue) => !currentValue,
+              );
+            }}
+          >
+            {isCreateOpen
+              ? 'Cancelar'
+              : '+ Nuevo usuario'}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+          >
             Cerrar sesión
           </button>
         </div>
@@ -224,177 +555,428 @@ export function AdminPropertiesPage() {
 
       <section className="admin-properties__content">
         <div className="admin-properties__intro">
-  <div>
-    <p>GESTIÓN INMOBILIARIA</p>
-    <h2>Propiedades</h2>
+          <div>
+            <p>ADMINISTRACIÓN DEL CRM</p>
+            <h2>Accesos</h2>
 
-    {!isLoading && !error ? (
-      <span className="admin-properties__summary">{summary}</span>
-    ) : null}
-  </div>
-</div>
-
-        {!isLoading && !error && properties.length > 0 ? (
-          <div className="admin-properties__toolbar">
-            <div className="admin-properties__search">
-              <label htmlFor="admin-property-search" className="sr-only">
-                Buscar inmuebles
-              </label>
-              <input
-                id="admin-property-search"
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Buscar por título, referencia, ciudad o zona"
-              />
-            </div>
-
-            <div
-              className="admin-properties__operation-filter"
-              aria-label="Filtrar por operación"
-            >
-              {[
-                ['all', 'Todos'],
-                ['venta', 'Venta'],
-                ['alquiler', 'Alquiler'],
-              ].map(([value, label]) => (
-                <button
-                  type="button"
-                  key={value}
-                  className={operationFilter === value ? 'is-active' : ''}
-                  aria-pressed={operationFilter === value}
-                  onClick={() => setOperationFilter(value as OperationFilter)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            <div className="admin-properties__status-filter">
-              <label htmlFor="admin-property-status" className="sr-only">
-                Filtrar por estado
-              </label>
-              <select
-                id="admin-property-status"
-                value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(event.target.value as StatusFilter)
-                }
-              >
-                <option value="all">Todos los estados</option>
-                <option value="published">Publicado</option>
-                <option value="draft">Borrador</option>
-                <option value="reserved">Reservado</option>
-                <option value="sold">Vendido</option>
-                <option value="rented">Alquilado</option>
-                <option value="archived">Archivado</option>
-              </select>
-            </div>
+            {!isLoading && !error ? (
+              <span className="admin-properties__summary">
+                {summary}
+              </span>
+            ) : null}
           </div>
-        ) : null}
+        </div>
 
-        {isLoading ? (
-          <p className="admin-properties__loading">Cargando inmuebles...</p>
+        <div className="admin-users__notice">
+          <div>
+            <span>SEGURIDAD</span>
+
+            <p>
+              Desde aquí puedes gestionar quién tiene acceso al
+              área privada. Las contraseñas nunca se muestran ni
+              se almacenan en el CRM.
+            </p>
+          </div>
+
+          <strong>Solo superadministradores</strong>
+        </div>
+
+        {successMessage ? (
+          <p
+            className="admin-users__success"
+            role="status"
+          >
+            {successMessage}
+          </p>
         ) : null}
 
         {error ? (
-          <p className="admin-properties__error" role="alert">
+          <p
+            className="admin-properties__error"
+            role="alert"
+          >
             {error}
           </p>
         ) : null}
 
-        {!isLoading && !error && properties.length === 0 ? (
+        {isCreateOpen ? (
+          <section className="admin-users__create">
+            <div className="admin-users__section-heading">
+              <div>
+                <span>NUEVO ACCESO</span>
+                <h3>Crear usuario</h3>
+              </div>
+
+              <p>
+                El usuario podrá iniciar sesión en el CRM
+                inmediatamente con las credenciales que le
+                asignes.
+              </p>
+            </div>
+
+            <form
+              className="admin-users__create-form"
+              onSubmit={handleCreateUser}
+            >
+              <div className="admin-users__field">
+                <label htmlFor="admin-user-name">
+                  Nombre
+                </label>
+
+                <input
+                  id="admin-user-name"
+                  type="text"
+                  value={createForm.name}
+                  onChange={(event) =>
+                    setCreateForm((currentForm) => ({
+                      ...currentForm,
+                      name: event.target.value,
+                    }))
+                  }
+                  placeholder="Nombre del usuario"
+                  autoComplete="name"
+                  disabled={isCreating}
+                />
+              </div>
+
+              <div className="admin-users__field">
+                <label htmlFor="admin-user-email">
+                  Email
+                </label>
+
+                <input
+                  id="admin-user-email"
+                  type="email"
+                  value={createForm.email}
+                  onChange={(event) =>
+                    setCreateForm((currentForm) => ({
+                      ...currentForm,
+                      email: event.target.value,
+                    }))
+                  }
+                  placeholder="usuario@empresa.com"
+                  autoComplete="email"
+                  required
+                  disabled={isCreating}
+                />
+              </div>
+
+              <div className="admin-users__field">
+                <label htmlFor="admin-user-password">
+                  Contraseña inicial
+                </label>
+
+                <input
+                  id="admin-user-password"
+                  type="password"
+                  value={createForm.password}
+                  onChange={(event) =>
+                    setCreateForm((currentForm) => ({
+                      ...currentForm,
+                      password: event.target.value,
+                    }))
+                  }
+                  placeholder="Mínimo 8 caracteres"
+                  autoComplete="new-password"
+                  minLength={8}
+                  required
+                  disabled={isCreating}
+                />
+              </div>
+
+              <div className="admin-users__field">
+                <label htmlFor="admin-user-role">
+                  Permisos
+                </label>
+
+                <select
+                  id="admin-user-role"
+                  value={createForm.role}
+                  onChange={(event) =>
+                    setCreateForm((currentForm) => ({
+                      ...currentForm,
+                      role: event.target.value as AdminRole,
+                    }))
+                  }
+                  disabled={isCreating}
+                >
+                  <option value="admin">
+                    Administrador
+                  </option>
+
+                  <option value="superadmin">
+                    Superadministrador
+                  </option>
+                </select>
+              </div>
+
+              <div className="admin-users__create-actions">
+                <button
+                  type="button"
+                  className="admin-users__secondary-button"
+                  onClick={() => {
+                    setCreateForm(initialCreateForm);
+                    setIsCreateOpen(false);
+                    clearMessages();
+                  }}
+                  disabled={isCreating}
+                >
+                  Cancelar
+                </button>
+
+                <button
+                  type="submit"
+                  className="admin-users__primary-button"
+                  disabled={isCreating}
+                >
+                  {isCreating
+                    ? 'Creando usuario...'
+                    : 'Crear usuario'}
+                </button>
+              </div>
+            </form>
+          </section>
+        ) : null}
+
+        {isLoading ? (
+          <p className="admin-properties__loading">
+            Cargando usuarios...
+          </p>
+        ) : null}
+
+        {!isLoading && users.length === 0 ? (
           <div className="admin-properties__empty">
-            <span>Sin inmuebles todavía</span>
-            <h3>Publica tu primer inmueble.</h3>
+            <span>Sin usuarios</span>
+
+            <h3>No hay usuarios registrados.</h3>
+
             <button
               type="button"
-              onClick={() => navigate('/admin/inmuebles/nuevo')}
+              onClick={() =>
+                setIsCreateOpen(true)
+              }
             >
-              Crear primer inmueble
+              Crear usuario
             </button>
           </div>
         ) : null}
 
-        {!isLoading && !error && properties.length > 0 && filteredProperties.length === 0 ? (
-          <div className="admin-properties__empty admin-properties__empty--filtered">
-            <h3>No encontramos inmuebles con estos filtros.</h3>
-            <button type="button" onClick={clearFilters}>
-              Limpiar filtros
-            </button>
-          </div>
-        ) : null}
+        {!isLoading && users.length > 0 ? (
+          <div className="admin-users__list">
+            {users.map((user) => {
+              const isBusy =
+                busyUserId === user.id;
 
-        {!isLoading && filteredProperties.length > 0 ? (
-          <div className="admin-properties__list">
-            {filteredProperties.map((property) => {
-              const coverImage = getCoverImage(property.property_images ?? []);
-              const features = [
-                property.bedrooms !== null
-                  ? `${property.bedrooms} ${property.bedrooms === 1 ? 'dormitorio' : 'dormitorios'}`
-                  : null,
-                property.bathrooms !== null
-                  ? `${property.bathrooms} ${property.bathrooms === 1 ? 'baño' : 'baños'}`
-                  : null,
-                property.built_area !== null
-                  ? `${areaFormatter.format(property.built_area)} m²`
-                  : null,
-              ].filter(Boolean);
+              const passwordOpen =
+                passwordUserId === user.id;
 
               return (
-                <article key={property.id} className="admin-property-card">
-                  <div className="admin-property-card__media">
-                    {coverImage ? (
-                      <img
-                        src={getPublicImageUrl(coverImage.storage_path)}
-                        alt={`Fotografía principal de ${property.title}`}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span>Sin fotografías</span>
-                    )}
+                <article
+                  key={user.id}
+                  className={`admin-user-card${
+                    user.isCurrentUser
+                      ? ' admin-user-card--current'
+                      : ''
+                  }`}
+                >
+                  <div className="admin-user-card__identity">
+                    <div className="admin-user-card__avatar">
+                      {(user.name ||
+                        user.email ||
+                        '?')
+                        .trim()
+                        .charAt(0)
+                        .toUpperCase()}
+                    </div>
+
+                    <div>
+                      <div className="admin-user-card__title">
+                        <h3>
+                          {user.name ||
+                            user.email}
+                        </h3>
+
+                        {user.isCurrentUser ? (
+                          <span className="admin-user-card__you">
+                            TÚ
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {user.name ? (
+                        <a
+                          href={`mailto:${user.email}`}
+                        >
+                          {user.email}
+                        </a>
+                      ) : null}
+
+                      <p>
+                        Alta:{' '}
+                        {formatDate(
+                          user.adminCreatedAt ??
+                            user.createdAt,
+                        )}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="admin-property-card__content">
-                    <p className="admin-property-card__eyebrow">
-                      <span>
-                        {property.operation === 'venta' ? 'VENTA' : 'ALQUILER'}
-                      </span>
-                      {property.reference ? ` · REF. ${property.reference}` : ''}
-                    </p>
+                  <div className="admin-user-card__activity">
+                    <span>ÚLTIMO ACCESO</span>
 
-                    <h3>{property.title}</h3>
+                    <strong>
+                      {formatDateTime(
+                        user.lastSignInAt,
+                      )}
+                    </strong>
 
-                    <p className="admin-property-card__location">
-                      {[property.area, property.city].filter(Boolean).join(' · ')}
-                    </p>
+                    <small>
+                      {user.emailConfirmedAt
+                        ? 'Email confirmado'
+                        : 'Email pendiente'}
+                    </small>
+                  </div>
 
-                    {features.length > 0 ? (
-                      <p className="admin-property-card__features">
-                        {features.join(' · ')}
-                      </p>
+                  <div className="admin-user-card__role">
+                    <label
+                      htmlFor={`admin-role-${user.id}`}
+                    >
+                      Permisos
+                    </label>
+
+                    <select
+                      id={`admin-role-${user.id}`}
+                      value={user.role ?? ''}
+                      disabled={
+                        isBusy ||
+                        user.isCurrentUser
+                      }
+                      onChange={(event) => {
+                        const role =
+                          event.target
+                            .value as AdminRole;
+
+                        void handleRoleChange(
+                          user,
+                          role,
+                        );
+                      }}
+                    >
+                      {!user.role ? (
+                        <option
+                          value=""
+                          disabled
+                        >
+                          Sin acceso
+                        </option>
+                      ) : null}
+
+                      <option value="admin">
+                        Administrador
+                      </option>
+
+                      <option value="superadmin">
+                        Superadministrador
+                      </option>
+                    </select>
+
+                    {user.isCurrentUser ? (
+                      <small>
+                        Tu rol está protegido
+                      </small>
                     ) : null}
                   </div>
 
-                  <div className="admin-property-card__aside">
-                    <strong>{priceFormatter.format(property.price)}</strong>
-
-                    <span
-                      className={`admin-status admin-status--${property.status}`}
+                  <div className="admin-user-card__actions">
+                    <button
+                      type="button"
+                      className="admin-user-card__password-button"
+                      onClick={() =>
+                        openPasswordEditor(
+                          user.id,
+                        )
+                      }
+                      disabled={isBusy}
                     >
-                      {statusLabels[property.status]}
-                    </span>
+                      {passwordOpen
+                        ? 'Cancelar contraseña'
+                        : 'Cambiar contraseña'}
+                    </button>
 
                     <button
                       type="button"
-                      className="admin-property-card__edit"
+                      className="admin-user-card__delete-button"
                       onClick={() =>
-                        navigate(`/admin/inmuebles/${property.id}/editar`)
+                        void handleDeleteUser(
+                          user,
+                        )
+                      }
+                      disabled={
+                        isBusy ||
+                        user.isCurrentUser
                       }
                     >
-                      Editar <span aria-hidden="true">→</span>
+                      {isBusy
+                        ? 'Procesando...'
+                        : 'Eliminar'}
                     </button>
                   </div>
+
+                  {passwordOpen ? (
+                    <form
+                      className="admin-user-card__password-form"
+                      onSubmit={(event) =>
+                        void handlePasswordChange(
+                          event,
+                          user,
+                        )
+                      }
+                    >
+                      <div>
+                        <label
+                          htmlFor={`admin-password-${user.id}`}
+                        >
+                          Nueva contraseña para{' '}
+                          {user.email}
+                        </label>
+
+                        <p>
+                          Debe tener al menos 8
+                          caracteres.
+                        </p>
+                      </div>
+
+                      <input
+                        id={`admin-password-${user.id}`}
+                        type="password"
+                        value={newPassword}
+                        onChange={(event) =>
+                          setNewPassword(
+                            event.target.value,
+                          )
+                        }
+                        placeholder="Nueva contraseña"
+                        autoComplete="new-password"
+                        minLength={8}
+                        required
+                        autoFocus
+                        disabled={
+                          isChangingPassword
+                        }
+                      />
+
+                      <button
+                        type="submit"
+                        disabled={
+                          isChangingPassword
+                        }
+                      >
+                        {isChangingPassword
+                          ? 'Guardando...'
+                          : 'Guardar contraseña'}
+                      </button>
+                    </form>
+                  ) : null}
                 </article>
               );
             })}
