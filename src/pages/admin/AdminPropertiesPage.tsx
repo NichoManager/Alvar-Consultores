@@ -216,19 +216,15 @@ export function AdminPropertiesPage() {
 
       <section className="admin-properties__content">
         <div className="admin-properties__intro">
-          <div>
-            <p>GESTIÓN INMOBILIARIA</p>
-            <h2>Propiedades</h2>
-            {!isLoading && !error ? (
-              <span className="admin-properties__summary">{summary}</span>
-            ) : null}
-          </div>
+  <div>
+    <p>GESTIÓN INMOBILIARIA</p>
+    <h2>Propiedades</h2>
 
-          <strong>
-            {filteredProperties.length}{' '}
-            {filteredProperties.length === 1 ? 'inmueble' : 'inmuebles'}
-          </strong>
-        </div>
+    {!isLoading && !error ? (
+      <span className="admin-properties__summary">{summary}</span>
+    ) : null}
+  </div>
+</div>
 
         {!isLoading && !error && properties.length > 0 ? (
           <div className="admin-properties__toolbar">
