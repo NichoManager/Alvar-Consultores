@@ -17,9 +17,11 @@
   min-height: 100vh;
   color: var(--admin-text);
   background:
-    linear-gradient(135deg,
+    linear-gradient(
+      135deg,
       rgba(184, 148, 77, 0.05),
-      transparent 32rem),
+      transparent 32rem
+    ),
     var(--admin-ivory);
 }
 
@@ -73,9 +75,11 @@
   overflow: hidden;
   color: var(--admin-ivory);
   background:
-    radial-gradient(circle at 20% 80%,
+    radial-gradient(
+      circle at 20% 80%,
       rgba(184, 148, 77, 0.2),
-      transparent 17rem),
+      transparent 17rem
+    ),
     linear-gradient(145deg, #111832 0%, #16264c 100%);
 }
 
@@ -90,7 +94,7 @@
   content: '';
 }
 
-.admin-login__brand>span {
+.admin-login__brand > span {
   position: relative;
   z-index: 1;
   color: var(--admin-gold);
@@ -99,7 +103,7 @@
   letter-spacing: 0.17em;
 }
 
-.admin-login__brand>p {
+.admin-login__brand > p {
   position: relative;
   z-index: 1;
   max-width: 12rem;
@@ -149,7 +153,7 @@
   gap: 0.55rem;
 }
 
-.admin-login__form label>span {
+.admin-login__form label > span {
   color: var(--admin-navy);
   font-size: 0.68rem;
   font-weight: 800;
@@ -249,7 +253,7 @@
   background: var(--admin-navy);
 }
 
-.admin-properties__header>div:first-child {
+.admin-properties__header > div:first-child {
   display: flex;
   align-items: baseline;
   gap: 1.6rem;
@@ -261,7 +265,7 @@
   font: 500 2.2rem / 1 'Cormorant Garamond', serif;
 }
 
-.admin-properties__header>div:last-child {
+.admin-properties__header > div:last-child {
   display: flex;
   align-items: center;
   gap: 0.7rem;
@@ -330,7 +334,7 @@
   line-height: 1.5;
 }
 
-.admin-properties__intro>strong {
+.admin-properties__intro > strong {
   flex: 0 0 auto;
   color: var(--admin-navy);
   font-size: 0.76rem;
@@ -421,7 +425,7 @@
   background: rgba(255, 255, 255, 0.65);
 }
 
-.admin-properties__empty>span {
+.admin-properties__empty > span {
   color: var(--admin-gold);
   font-size: 0.62rem;
   font-weight: 850;
@@ -472,7 +476,10 @@
 
 .admin-property-card {
   display: grid;
-  grid-template-columns: clamp(9.5rem, 14vw, 12rem) minmax(0, 1fr) minmax(10.5rem, auto);
+  grid-template-columns:
+    clamp(9.5rem, 14vw, 12rem)
+    minmax(0, 1fr)
+    minmax(10.5rem, auto);
   align-items: center;
   gap: clamp(1rem, 2.5vw, 2rem);
   padding: 0.75rem;
@@ -506,7 +513,7 @@
   object-fit: cover;
 }
 
-.admin-property-card__media>span {
+.admin-property-card__media > span {
   padding: 1rem;
   text-align: center;
   font-size: 0.62rem;
@@ -526,7 +533,7 @@
   text-transform: uppercase;
 }
 
-.admin-property-card__eyebrow>span {
+.admin-property-card__eyebrow > span {
   color: var(--admin-gold);
   font-weight: 850;
 }
@@ -633,7 +640,7 @@
 }
 
 /* =========================================================
-   RESPONSIVE
+   RESPONSIVE — DASHBOARD / LOGIN
    ========================================================= */
 
 @media (max-width: 800px) {
@@ -651,7 +658,7 @@
     padding: 1.5rem;
   }
 
-  .admin-login__brand>p {
+  .admin-login__brand > p {
     margin-top: 2.5rem;
     font-size: 1.8rem;
   }
@@ -670,13 +677,13 @@
     padding: 1.4rem;
   }
 
-  .admin-properties__header>div:first-child {
+  .admin-properties__header > div:first-child {
     align-items: flex-start;
     flex-direction: column;
     gap: 0.5rem;
   }
 
-  .admin-properties__header>div:last-child {
+  .admin-properties__header > div:last-child {
     width: 100%;
   }
 
@@ -732,7 +739,7 @@
     gap: 0.35rem;
   }
 
-  .admin-properties__header>div:last-child {
+  .admin-properties__header > div:last-child {
     flex-direction: column;
   }
 
@@ -874,7 +881,7 @@
   box-shadow: 0 8px 24px rgba(17, 24, 50, 0.025);
 }
 
-.admin-property-form__section>div:first-child {
+.admin-property-form__section > div:first-child {
   display: flex;
   align-items: baseline;
   gap: 0.8rem;
@@ -883,7 +890,7 @@
   border-bottom: 1px solid var(--admin-line);
 }
 
-.admin-property-form__section>div:first-child>span {
+.admin-property-form__section > div:first-child > span {
   color: var(--admin-gold);
   font-size: 0.68rem;
   font-weight: 850;
@@ -908,7 +915,7 @@
   min-width: 0;
 }
 
-.admin-property-form__field>span:not(.admin-property-form__input-suffix) {
+.admin-property-form__field > span:not(.admin-property-form__input-suffix) {
   color: var(--admin-navy);
   font-size: 0.74rem;
   font-weight: 800;
@@ -949,7 +956,7 @@
   padding-right: 3rem;
 }
 
-.admin-property-form__input-suffix>span {
+.admin-property-form__input-suffix > span {
   position: absolute;
   top: 50%;
   right: 1rem;
@@ -969,7 +976,7 @@
   background: rgba(184, 148, 77, 0.08);
 }
 
-.admin-property-form__status>span {
+.admin-property-form__status > span {
   color: var(--admin-gold);
   font-size: 0.64rem;
   font-weight: 850;
@@ -1052,7 +1059,7 @@
   margin-top: 1.4rem;
 }
 
-.admin-property-form__privacy-check>span {
+.admin-property-form__privacy-check > span {
   display: grid;
   gap: 0.25rem;
 }
@@ -1125,7 +1132,6 @@
 }
 
 @media (max-width: 700px) {
-
   .admin-property-form__header-inner,
   .admin-property-form {
     width: min(100% - 2rem, 88rem);
@@ -1210,7 +1216,7 @@
   font: 500 clamp(2.8rem, 5vw, 4.8rem) / 0.95 'Cormorant Garamond', serif;
 }
 
-.admin-property-edit__header>div:first-child>p {
+.admin-property-edit__header > div:first-child > p {
   margin: 0.85rem 0 0;
   color: rgba(248, 246, 240, 0.72);
   font-size: 0.9rem;
@@ -1222,7 +1228,7 @@
   gap: 1rem;
 }
 
-.admin-property-edit__meta>span {
+.admin-property-edit__meta > span {
   padding: 0.45rem 0.7rem;
   border: 1px solid rgba(184, 148, 77, 0.45);
   color: var(--admin-gold);
@@ -1232,7 +1238,7 @@
   text-transform: uppercase;
 }
 
-.admin-property-edit__meta>div {
+.admin-property-edit__meta > div {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -1272,7 +1278,7 @@
   box-shadow: 0 16px 45px rgba(17, 24, 50, 0.05);
 }
 
-.admin-images__upload>div>span {
+.admin-images__upload > div > span {
   color: var(--admin-gold);
   font-size: 0.62rem;
   font-weight: 850;
@@ -1293,12 +1299,12 @@
   line-height: 1.65;
 }
 
-.admin-images__upload>label {
+.admin-images__upload > label {
   display: grid;
   gap: 0.65rem;
 }
 
-.admin-images__upload>label>span {
+.admin-images__upload > label > span {
   color: var(--admin-navy);
   font-size: 0.68rem;
   font-weight: 800;
@@ -1382,10 +1388,10 @@
 }
 
 .admin-image-card__media img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
 .admin-image-card__cover {
@@ -1408,14 +1414,14 @@
   padding: 1rem;
 }
 
-.admin-image-card__actions>span {
+.admin-image-card__actions > span {
   color: var(--admin-muted);
   font-size: 0.65rem;
   font-weight: 750;
   text-transform: uppercase;
 }
 
-.admin-image-card__actions>div {
+.admin-image-card__actions > div {
   display: flex;
   gap: 0.35rem;
 }
@@ -1431,11 +1437,11 @@
   font-weight: 800;
 }
 
-.admin-image-card__actions>button {
+.admin-image-card__actions > button {
   grid-column: span 1;
 }
 
-.admin-image-card__actions>button:last-child {
+.admin-image-card__actions > button:last-child {
   color: #8a3030;
 }
 
@@ -1459,8 +1465,102 @@
   font-size: 0.82rem;
 }
 
-@media (max-width: 980px) {
+/* =========================================================
+   PROPERTY DANGER ZONE
+   ========================================================= */
 
+.admin-property-danger {
+  width: min(88rem, calc(100% - 4rem));
+  margin: clamp(2rem, 4vw, 3rem) auto 0;
+  padding: clamp(1.4rem, 2.5vw, 2rem);
+  border: 1px solid rgba(138, 48, 48, 0.24);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(138, 48, 48, 0.035),
+      transparent 45%
+    ),
+    var(--admin-white);
+  box-shadow: 0 8px 24px rgba(17, 24, 50, 0.025);
+}
+
+.admin-property-danger__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.admin-property-danger__content > div {
+  max-width: 48rem;
+}
+
+.admin-property-danger__content > div > span {
+  display: block;
+  margin: 0 0 0.65rem;
+  color: #8a3030;
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+
+.admin-property-danger h2 {
+  margin: 0;
+  color: var(--admin-navy);
+  font: 500 clamp(1.9rem, 3vw, 2.5rem) / 1 'Cormorant Garamond', serif;
+}
+
+.admin-property-danger__content p {
+  max-width: 42rem;
+  margin: 0.75rem 0 0;
+  color: var(--admin-muted);
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.admin-property-danger__button {
+  flex: 0 0 auto;
+  min-width: 11rem;
+  min-height: 3.5rem;
+  padding: 0 1.4rem;
+  border: 1px solid rgba(138, 48, 48, 0.72);
+  cursor: pointer;
+  color: #8a3030;
+  background: transparent;
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 800;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.admin-property-danger__button:hover:not(:disabled) {
+  border-color: #8a3030;
+  color: var(--admin-white);
+  background: #8a3030;
+}
+
+.admin-property-danger__button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(138, 48, 48, 0.12);
+}
+
+.admin-property-danger__button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+
+.admin-property-danger > .admin-property-form__error {
+  margin-top: 1rem;
+}
+
+/* =========================================================
+   RESPONSIVE — PROPERTY EDIT
+   ========================================================= */
+
+@media (max-width: 980px) {
   .admin-property-edit__header,
   .admin-images__upload {
     grid-template-columns: 1fr;
@@ -1475,12 +1575,30 @@
     justify-items: start;
   }
 
-  .admin-property-edit__meta>div {
+  .admin-property-edit__meta > div {
     justify-content: flex-start;
   }
 
   .admin-images__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-property-danger__content {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-property-danger {
+    width: min(100% - 2rem, 88rem);
+    padding: 1.3rem 1rem;
+  }
+
+  .admin-property-danger__button {
+    width: 100%;
+    min-width: 0;
   }
 }
 
@@ -1490,7 +1608,7 @@
   }
 
   .admin-property-edit__meta,
-  .admin-property-edit__meta>div,
+  .admin-property-edit__meta > div,
   .admin-property-edit__meta a {
     width: 100%;
   }
