@@ -29,9 +29,8 @@ export function PropertiesPage() {
   const [searchParams, setSearchParams] =
     useSearchParams();
 
-  const [properties, setProperties] = useState<
-    Property[]
-  >([]);
+  const [properties, setProperties] =
+    useState<Property[]>([]);
 
   const [isLoading, setIsLoading] =
     useState(true);
@@ -107,9 +106,20 @@ export function PropertiesPage() {
   };
 
   const clearFilters = () => {
-    setSearchParams(
-      new URLSearchParams(),
-    );
+    const nextParams =
+      new URLSearchParams();
+
+    if (
+      filters.operation === 'venta' ||
+      filters.operation === 'alquiler'
+    ) {
+      nextParams.set(
+        'operation',
+        filters.operation,
+      );
+    }
+
+    setSearchParams(nextParams);
   };
 
   const removeFilter = (
@@ -286,6 +296,7 @@ export function PropertiesPage() {
               <h2 id="catalogue-title">
                 Una búsqueda precisa,
                 <br />
+
                 <em>
                   sin limitar ubicaciones.
                 </em>
@@ -301,16 +312,6 @@ export function PropertiesPage() {
               </p>
 
               <div className="catalogue__meta">
-                <span>
-                  <strong>
-                    {filtered.length}
-                  </strong>
-
-                  {filtered.length === 1
-                    ? ' inmueble'
-                    : ' inmuebles'}
-                </span>
-
                 <i aria-hidden="true" />
 
                 <span>
@@ -322,17 +323,6 @@ export function PropertiesPage() {
           </header>
 
           <div className="catalogue__filters">
-            <div className="catalogue__filters-heading">
-              <span>
-                BUSCAR INMUEBLES
-              </span>
-
-              <p>
-                Encuentra la propiedad
-                que mejor encaja contigo.
-              </p>
-            </div>
-
             <PropertyFilters
               value={filters}
               locationOptions={
@@ -545,6 +535,7 @@ export function PropertiesPage() {
                 <h2 id="buyer-search-title">
                   ¿No encuentras lo
                   <br />
+
                   <em>
                     que estás buscando?
                   </em>
