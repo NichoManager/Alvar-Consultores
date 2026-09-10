@@ -1,8 +1,25 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
+import {
+  energyRatingOptions,
+  heatingTypeOptions,
+  isManagedPropertyFeature,
+  orientationOptions,
+  parkingTypeOptions,
+  propertyAmenityGroups,
+  propertyConditionOptions,
+  type EnergyRating,
+  type HeatingType,
+  type ManagedPropertyFeature,
+  type ParkingType,
+  type PropertyCondition,
+  type PropertyOrientation,
+} from '../../data/propertyOptions';
+import { FLOORPLAN_ACCEPT, uploadPropertyFloorplans, validateFloorplanFiles } from '../../lib/propertyMedia';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
+import '../../styles/admin-property-enhancements.css';
 
 const STORAGE_BUCKET = 'property-images';
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -64,12 +81,23 @@ type AdminProperty = {
   bathrooms: number | null;
   built_area: number | null;
   usable_area: number | null;
+  plot_area: number | null;
   floor: string | null;
+  floors_count: number | null;
+  construction_year: number | null;
+  property_condition: PropertyCondition | null;
+  orientations: PropertyOrientation[];
+  heating_type: HeatingType | null;
   elevator: boolean;
   parking: boolean;
+  parking_type: ParkingType | null;
+  parking_spaces: number | null;
   terrace: boolean;
   furnished: boolean;
   exterior: boolean;
+  energy_consumption_rating: EnergyRating | null;
+  energy_emissions_rating: EnergyRating | null;
+  features: string[];
   description: string | null;
   featured: boolean;
   published_at: string | null;
@@ -90,12 +118,24 @@ type PropertyFormState = {
   bathrooms: string;
   builtArea: string;
   usableArea: string;
+  plotArea: string;
   floor: string;
+  floorsCount: string;
+  constructionYear: string;
+  propertyCondition: PropertyCondition | '';
+  orientations: PropertyOrientation[];
+  heatingType: HeatingType | '';
   elevator: boolean;
   parking: boolean;
+  parkingType: ParkingType | '';
+  parkingSpaces: string;
   terrace: boolean;
   furnished: boolean;
-  exterior: boolean;
+  exposure: '' | 'exterior' | 'interior';
+  energyConsumptionRating: EnergyRating | '';
+  energyEmissionsRating: EnergyRating | '';
+  managedFeatures: ManagedPropertyFeature[];
+  legacyFeatures: string[];
   description: string;
   featured: boolean;
 };
@@ -107,6 +147,7 @@ type PropertyImage = {
   alt_text: string | null;
   position: number;
   is_cover: boolean;
+  media_type: 'photo' | 'floorplan';
 };
 
 const statusLabels: Record<PropertyStatus, string> = {
@@ -209,12 +250,24 @@ function createFormState(property: AdminProperty): PropertyFormState {
       property.usable_area !== null
         ? String(property.usable_area)
         : '',
+    plotArea: property.plot_area !== null ? String(property.plot_area) : '',
     floor: property.floor ?? '',
+    floorsCount: property.floors_count !== null ? String(property.floors_count) : '',
+    constructionYear: property.construction_year !== null ? String(property.construction_year) : '',
+    propertyCondition: property.property_condition ?? '',
+    orientations: property.orientations ?? [],
+    heatingType: property.heating_type ?? '',
     elevator: property.elevator,
     parking: property.parking,
+    parkingType: property.parking_type ?? '',
+    parkingSpaces: property.parking_spaces !== null ? String(property.parking_spaces) : '',
     terrace: property.terrace,
     furnished: property.furnished,
-    exterior: property.exterior,
+    exposure: property.exterior ? 'exterior' : property.features.includes('Interior') ? 'interior' : '',
+    energyConsumptionRating: property.energy_consumption_rating ?? '',
+    energyEmissionsRating: property.energy_emissions_rating ?? '',
+    managedFeatures: property.features.filter(isManagedPropertyFeature).filter((feature) => feature !== 'Interior'),
+    legacyFeatures: property.features.filter((feature) => !isManagedPropertyFeature(feature)),
     description: property.description ?? '',
     featured: property.featured,
   };
@@ -223,10 +276,13 @@ function createFormState(property: AdminProperty): PropertyFormState {
 export function AdminPropertyEditPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [property, setProperty] = useState<AdminProperty | null>(null);
   const [form, setForm] = useState<PropertyFormState | null>(null);
   const [images, setImages] = useState<PropertyImage[]>([]);
+  const photos = images.filter((image) => image.media_type === 'photo');
+  const floorplans = images.filter((image) => image.media_type === 'floorplan');
   const [selectedStatus, setSelectedStatus] =
     useState<PropertyStatus>('draft');
 
@@ -241,6 +297,9 @@ export function AdminPropertyEditPage() {
   const [dataError, setDataError] = useState('');
   const [dataSuccess, setDataSuccess] = useState('');
   const [imageError, setImageError] = useState('');
+  const [floorplanError, setFloorplanError] = useState(
+    (location.state as { floorplanUploadWarning?: string } | null)?.floorplanUploadWarning ?? '',
+  );
   const [statusError, setStatusError] = useState('');
   const [statusSuccess, setStatusSuccess] = useState('');
   const [deleteError, setDeleteError] = useState('');
@@ -258,7 +317,7 @@ export function AdminPropertyEditPage() {
     const { data, error: imagesError } = await supabase
       .from('property_images')
       .select(
-        'id, property_id, storage_path, alt_text, position, is_cover',
+        'id, property_id, storage_path, alt_text, position, is_cover, media_type',
       )
       .eq('property_id', id)
       .order('position', { ascending: true });
@@ -322,12 +381,23 @@ export function AdminPropertyEditPage() {
               bathrooms,
               built_area,
               usable_area,
+              plot_area,
               floor,
+              floors_count,
+              construction_year,
+              property_condition,
+              orientations,
+              heating_type,
               elevator,
               parking,
+              parking_type,
+              parking_spaces,
               terrace,
               furnished,
               exterior,
+              energy_consumption_rating,
+              energy_emissions_rating,
+              features,
               description,
               featured,
               published_at
@@ -339,7 +409,7 @@ export function AdminPropertyEditPage() {
         supabase
           .from('property_images')
           .select(
-            'id, property_id, storage_path, alt_text, position, is_cover',
+            'id, property_id, storage_path, alt_text, position, is_cover, media_type',
           )
           .eq('property_id', id)
           .order('position', { ascending: true }),
@@ -479,12 +549,23 @@ export function AdminPropertyEditPage() {
       bathrooms: nullableNumber(form.bathrooms),
       built_area: nullableNumber(form.builtArea),
       usable_area: nullableNumber(form.usableArea),
+      plot_area: nullableNumber(form.plotArea),
       floor: nullableText(form.floor),
+      floors_count: nullableNumber(form.floorsCount),
+      construction_year: nullableNumber(form.constructionYear),
+      property_condition: form.propertyCondition || null,
+      orientations: form.orientations,
+      heating_type: form.heatingType || null,
       elevator: form.elevator,
       parking: form.parking,
+      parking_type: form.parking ? form.parkingType || null : null,
+      parking_spaces: form.parking ? nullableNumber(form.parkingSpaces) : null,
       terrace: form.terrace,
       furnished: form.furnished,
-      exterior: form.exterior,
+      exterior: form.exposure === 'exterior',
+      energy_consumption_rating: form.energyConsumptionRating || null,
+      energy_emissions_rating: form.energyEmissionsRating || null,
+      features: [...form.legacyFeatures, ...form.managedFeatures, ...(form.exposure === 'interior' ? ['Interior'] : [])],
       description: nullableText(form.description),
       featured: form.featured,
     };
@@ -596,7 +677,7 @@ export function AdminPropertyEditPage() {
     setIsUploading(true);
 
     let nextPosition =
-      images.reduce(
+      photos.reduce(
         (highest, image) =>
           Math.max(highest, image.position),
         -1,
@@ -604,7 +685,7 @@ export function AdminPropertyEditPage() {
 
     let successfulUploads = 0;
 
-    const hasExistingImages = images.length > 0;
+    const hasExistingImages = photos.length > 0;
 
     try {
       for (const file of validFiles) {
@@ -645,6 +726,7 @@ export function AdminPropertyEditPage() {
               is_cover:
                 !hasExistingImages &&
                 successfulUploads === 0,
+              media_type: 'photo',
             });
 
         if (insertError) {
@@ -739,7 +821,8 @@ export function AdminPropertyEditPage() {
         await supabase
           .from('property_images')
           .update({ is_cover: false })
-          .eq('property_id', id);
+          .eq('property_id', id)
+          .eq('media_type', 'photo');
 
       if (resetError) {
         console.error(
@@ -792,6 +875,7 @@ export function AdminPropertyEditPage() {
   const handleMove = async (
     imageIndex: number,
     direction: -1 | 1,
+    mediaItems: PropertyImage[],
   ) => {
     const nextIndex = imageIndex + direction;
 
@@ -800,12 +884,12 @@ export function AdminPropertyEditPage() {
       isUploading ||
       isDeletingProperty ||
       nextIndex < 0 ||
-      nextIndex >= images.length
+      nextIndex >= mediaItems.length
     ) {
       return;
     }
 
-    const reorderedImages = [...images];
+    const reorderedImages = [...mediaItems];
 
     [
       reorderedImages[imageIndex],
@@ -837,14 +921,7 @@ export function AdminPropertyEditPage() {
         return;
       }
 
-      setImages(
-        reorderedImages.map(
-          (image, position) => ({
-            ...image,
-            position,
-          }),
-        ),
-      );
+      await refreshImages();
     } catch (unexpectedError) {
       console.error(
         'Unexpected image reorder error:',
@@ -917,7 +994,8 @@ export function AdminPropertyEditPage() {
         return;
       }
 
-      const remainingImages = images.filter(
+      const sameTypeImages = images.filter((item) => item.media_type === image.media_type);
+      const remainingImages = sameTypeImages.filter(
         (item) => item.id !== image.id,
       );
 
@@ -975,6 +1053,33 @@ export function AdminPropertyEditPage() {
     }
   };
 
+  const handleFloorplanUpload = async (selectedFiles: File[]) => {
+    if (!property || !selectedFiles.length || isUploading || isManaging || isDeletingProperty) return;
+    const validation = validateFloorplanFiles(selectedFiles);
+    if (!validation.validFiles.length) {
+      setFloorplanError(validation.errors.join(' '));
+      return;
+    }
+    setFloorplanError('');
+    setIsUploading(true);
+    try {
+      const result = await uploadPropertyFloorplans({
+        propertyId: property.id,
+        propertyTitle: property.title,
+        propertyCity: property.city,
+        files: validation.validFiles,
+        startPosition: floorplans.reduce((highest, image) => Math.max(highest, image.position), -1) + 1,
+      });
+      setFloorplanError([...validation.errors, ...result.errors].join(' '));
+      await refreshImages();
+    } catch (unexpectedError) {
+      console.error('Unexpected floorplan upload error:', unexpectedError);
+      setFloorplanError('No se han podido completar las subidas de planos. Inténtalo de nuevo.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleStatusSave = async (
     event: FormEvent<HTMLFormElement>,
   ) => {
@@ -997,7 +1102,7 @@ export function AdminPropertyEditPage() {
 
     if (
       isPublicStatus &&
-      images.length === 0
+      photos.length === 0
     ) {
       setStatusError(
         'Añade al menos una fotografía antes de mostrar el inmueble en la web.',
@@ -1782,9 +1887,9 @@ export function AdminPropertyEditPage() {
           </p>
         ) : null}
 
-        {images.length > 0 ? (
+        {photos.length > 0 ? (
           <div className="admin-images__grid">
-            {images.map((image, index) => (
+            {photos.map((image, index) => (
               <article
                 className="admin-image-card"
                 key={image.id}
@@ -1817,7 +1922,7 @@ export function AdminPropertyEditPage() {
                     <button
                       type="button"
                       onClick={() =>
-                        void handleMove(index, -1)
+                        void handleMove(index, -1, photos)
                       }
                       disabled={
                         isManaging ||
@@ -1836,13 +1941,13 @@ export function AdminPropertyEditPage() {
                     <button
                       type="button"
                       onClick={() =>
-                        void handleMove(index, 1)
+                        void handleMove(index, 1, photos)
                       }
                       disabled={
                         isManaging ||
                         isUploading ||
                         isDeletingProperty ||
-                        index === images.length - 1
+                        index === photos.length - 1
                       }
                       aria-label={`Bajar posición de ${
                         image.alt_text ??
@@ -1942,7 +2047,7 @@ export function AdminPropertyEditPage() {
 
           {(selectedStatus === 'published' ||
             selectedStatus === 'reserved') &&
-          images.length === 0 ? (
+          photos.length === 0 ? (
             <p className="admin-property-form__error">
               Para mostrar el inmueble en la web debes
               añadir al menos una fotografía.

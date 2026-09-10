@@ -1,0 +1,108 @@
+.admin-property-subsection {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(17, 24, 50, 0.12);
+}
+
+.admin-property-subsection h3 {
+  margin: 0 0 1rem;
+  color: #111832;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-floorplans-editor__picker {
+  display: flex;
+  min-height: 9rem;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border: 1px dashed rgba(17, 24, 50, 0.32);
+  cursor: pointer;
+  color: #111832;
+  background: #f8f6f0;
+  text-align: center;
+}
+
+.admin-floorplans-editor__picker input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.admin-floorplans-editor__picker > span {
+  color: #111832;
+  font-weight: 800;
+}
+
+.admin-floorplans-editor__picker small {
+  color: rgba(17, 24, 50, 0.68);
+}
+
+.admin-floorplans-editor__picker:focus-within {
+  outline: 2px solid #b8944d;
+  outline-offset: 3px;
+}
+
+.admin-floorplans-editor__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.admin-floorplans-editor__grid article {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(17, 24, 50, 0.14);
+  background: #fff;
+}
+
+.admin-floorplans-editor__grid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: #f8f6f0;
+}
+
+.admin-floorplans-editor__grid article > div {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem;
+}
+
+.admin-floorplans-editor__grid span {
+  overflow-wrap: anywhere;
+  color: #111832;
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.admin-floorplans-editor__grid button {
+  min-height: 2.5rem;
+  border: 1px solid rgba(17, 24, 50, 0.2);
+  cursor: pointer;
+  color: #111832;
+  background: transparent;
+}
+
+@media (max-width: 800px) {
+  .admin-floorplans-editor__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-floorplans-editor__grid {
+    grid-template-columns: 1fr;
+  }
+}
