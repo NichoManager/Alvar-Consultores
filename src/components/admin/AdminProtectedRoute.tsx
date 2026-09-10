@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react';
+import type { User } from '@supabase/supabase-js';
 import { Navigate, Outlet } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 
 type AuthStatus = 'loading' | 'allowed' | 'denied';
 
+export type AdminRouteContext = {
+  user: User;
+};
+
 export function AdminProtectedRoute() {
   const [status, setStatus] = useState<AuthStatus>('loading');
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -39,6 +45,7 @@ export function AdminProtectedRoute() {
       }
 
       if (isMounted) {
+        setUser(session.user);
         setStatus('allowed');
       }
     };
@@ -67,5 +74,9 @@ export function AdminProtectedRoute() {
     );
   }
 
-  return <Outlet />;
+  if (!user) {
+    return null;
+  }
+
+  return <Outlet context={{ user } satisfies AdminRouteContext} />;
 }

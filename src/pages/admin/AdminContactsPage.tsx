@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import {
   contactInterestLabels,
   contactSourceLabels,
@@ -168,7 +169,7 @@ export function AdminContactsPage() {
           <h1>Contactos</h1>
         </div>
 
-        <div>
+        <div className="admin-properties__actions">
           <button type="button" onClick={() => navigate('/admin/contactos/nuevo')}>
             + Nuevo contacto
           </button>
@@ -180,6 +181,7 @@ export function AdminContactsPage() {
               Usuarios
             </button>
           ) : null}
+          <AdminCurrentUser />
           <button type="button" onClick={handleLogout}>
             Cerrar sesión
           </button>

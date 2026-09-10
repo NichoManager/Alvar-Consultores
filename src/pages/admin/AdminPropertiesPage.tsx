@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 
@@ -329,7 +330,7 @@ export function AdminPropertiesPage() {
           <h1>Inmuebles</h1>
         </div>
 
-        <div>
+        <div className="admin-properties__actions">
           <button
             type="button"
             onClick={() =>
@@ -356,6 +357,8 @@ export function AdminPropertiesPage() {
               Usuarios
             </button>
           ) : null}
+
+          <AdminCurrentUser />
 
           <button
             type="button"
