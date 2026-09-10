@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { sitemapBlogArticles } from './_blogArticleMetadata';
+import { sitemapBlogArticles } from './_blogArticleMetadata.js';
 
 declare const process: {
   env: Record<string, string | undefined>;
