@@ -4,6 +4,8 @@ import {
   orientationOptions,
   parkingTypeOptions,
   propertyConditionOptions,
+  type CommunityFeePeriod,
+  type EnergyCertificateStatus,
 } from '../data/propertyOptions';
 import type { Property, PropertyImage } from '../types/content';
 import { supabase } from './supabase';
@@ -57,8 +59,16 @@ type PublicPropertyRow = {
   terrace: boolean;
   furnished: boolean;
   exterior: boolean;
+  video_url: string | null;
+  virtual_tour_url: string | null;
+  community_fee_amount: number | string | null;
+  community_fee_period: CommunityFeePeriod | null;
+  ibi_annual_amount: number | string | null;
+  energy_certificate_status: EnergyCertificateStatus | null;
   energy_consumption_rating: string | null;
+  energy_consumption_value: number | string | null;
   energy_emissions_rating: string | null;
+  energy_emissions_value: number | string | null;
   description: string | null;
   features: string[] | null;
   featured: boolean;
@@ -71,6 +81,19 @@ function optionalNumber(value: number | string | null) {
   if (value === null) return undefined;
   const number = Number(value);
   return Number.isFinite(number) ? number : undefined;
+}
+
+function safePublicUrl(value: string | null) {
+  if (!value?.trim()) return undefined;
+
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' || url.protocol === 'http:'
+      ? url.toString()
+      : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 function normalizeFeature(value: string) {
@@ -124,8 +147,6 @@ function buildFeatureGroups(row: PublicPropertyRow) {
     row.parking
       ? `Garaje${parkingType ? ` ${parkingType.toLowerCase()}` : ''}${row.parking_spaces ? ` · ${row.parking_spaces} ${row.parking_spaces === 1 ? 'plaza' : 'plazas'}` : ''}`
       : null,
-    row.energy_consumption_rating ? `Consumo energético ${row.energy_consumption_rating}` : null,
-    row.energy_emissions_rating ? `Emisiones ${row.energy_emissions_rating}` : null,
   ]);
 
   return { characteristics, equipment };
@@ -213,8 +234,16 @@ function mapPublicProperty(row: PublicPropertyRow): Property {
     terrace: row.terrace,
     furnished: row.furnished,
     exterior: row.exterior,
+    videoUrl: safePublicUrl(row.video_url),
+    virtualTourUrl: safePublicUrl(row.virtual_tour_url),
+    communityFeeAmount: optionalNumber(row.community_fee_amount),
+    communityFeePeriod: row.community_fee_period ?? undefined,
+    ibiAnnualAmount: optionalNumber(row.ibi_annual_amount),
+    energyCertificateStatus: row.energy_certificate_status ?? undefined,
     energyConsumptionRating: row.energy_consumption_rating ?? undefined,
+    energyConsumptionValue: optionalNumber(row.energy_consumption_value),
     energyEmissionsRating: row.energy_emissions_rating ?? undefined,
+    energyEmissionsValue: optionalNumber(row.energy_emissions_value),
     amenities: row.features ?? [],
     characteristics,
     equipment,
