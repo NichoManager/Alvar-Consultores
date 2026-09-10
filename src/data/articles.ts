@@ -1,8 +1,9 @@
 import type { Article } from '../types/content';
+import { blogArticleMetadata } from '../../api/_blogArticleMetadata';
 
 export const articles: Article[] = [
   {
-    slug: 'como-vender-vivienda-pinto',
+    ...blogArticleMetadata.sellHomeInPinto,
 
     image: '/images/alvar/blog/blog-vender-vivienda-pinto.webp',
 
@@ -19,8 +20,6 @@ export const articles: Article[] = [
 
     excerpt:
       'Una guía práctica para preparar la venta de una vivienda en Pinto, definir una estrategia y llegar a la firma con la operación bien organizada.',
-
-    date: '2026-08-22',
 
     readingTime: '8 min',
 
@@ -126,7 +125,7 @@ export const articles: Article[] = [
   },
 
   {
-    slug: 'comprar-piso-mostoles',
+    ...blogArticleMetadata.buyFlatInMostoles,
 
     image: '/images/alvar/blog/blog-comprar-piso-mostoles.webp',
 
@@ -143,8 +142,6 @@ export const articles: Article[] = [
 
     excerpt:
       'Presupuesto, zona, estado de la vivienda y documentación: las decisiones que conviene ordenar antes de comprar un piso en Móstoles.',
-
-    date: '2026-09-04',
 
     readingTime: '8 min',
 
@@ -246,7 +243,7 @@ export const articles: Article[] = [
   },
 
   {
-    slug: 'calcular-precio-venta-vivienda',
+    ...blogArticleMetadata.calculateSalePrice,
 
     image: '/images/alvar/blog/blog-calcular-precio-venta-vivienda.webp',
 
@@ -263,8 +260,6 @@ export const articles: Article[] = [
 
     excerpt:
       'Los factores que permiten construir una valoración inmobiliaria razonada y definir un precio de salida coherente con el mercado.',
-
-    date: '2026-07-18',
 
     readingTime: '9 min',
 
@@ -366,7 +361,7 @@ export const articles: Article[] = [
   },
 
   {
-    slug: 'documentos-vender-vivienda',
+    ...blogArticleMetadata.documentsToSellHome,
 
     image: '/images/alvar/blog/blog-documentos-vender-vivienda.webp',
 
@@ -383,8 +378,6 @@ export const articles: Article[] = [
 
     excerpt:
       'Qué documentación conviene preparar antes de vender una vivienda y por qué revisarla con tiempo puede evitar retrasos durante la operación.',
-
-    date: '2026-07-16',
 
     readingTime: '9 min',
 
@@ -506,7 +499,7 @@ export const articles: Article[] = [
   },
 
   {
-    slug: 'invertir-vivienda-alquiler',
+    ...blogArticleMetadata.investInRentalHome,
 
     image: '/images/alvar/blog/blog-invertir-vivienda-alquiler.webp',
 
@@ -523,8 +516,6 @@ export const articles: Article[] = [
 
     excerpt:
       'Cómo analizar una inversión en vivienda para alquiler teniendo en cuenta rentabilidad, gastos, demanda, riesgos y horizonte de inversión.',
-
-    date: '2026-06-14',
 
     readingTime: '9 min',
 
@@ -626,7 +617,7 @@ export const articles: Article[] = [
   },
 
   {
-    slug: 'mercado-inmobiliario-sur-madrid',
+    ...blogArticleMetadata.southMadridPropertyMarket,
 
     image: '/images/alvar/blog/blog-mercado-inmobiliario-sur-madrid.webp',
 
@@ -643,8 +634,6 @@ export const articles: Article[] = [
 
     excerpt:
       'Una guía para entender por qué el mercado inmobiliario del sur de Madrid debe analizarse municipio a municipio y zona a zona.',
-
-    date: '2026-06-12',
 
     readingTime: '8 min',
 

@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { articles } from '../src/data/articles.ts';
+import { sitemapBlogArticles } from './_blogArticleMetadata';
 
 declare const process: {
   env: Record<string, string | undefined>;
@@ -126,7 +126,7 @@ export async function GET() {
     };
 
     STATIC_PATHS.forEach((path) => addEntry(path));
-    articles.forEach((article) => {
+    sitemapBlogArticles.forEach((article) => {
       const slug = normalizeSlug(article.slug);
       if (slug) addEntry(`/blog/${slug}`, validLastmod(article.date));
     });
