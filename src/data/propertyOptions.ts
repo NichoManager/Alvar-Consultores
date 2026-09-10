@@ -83,6 +83,24 @@ export const energyRatingOptions = [
 
 export type EnergyRating = (typeof energyRatingOptions)[number];
 
+export const communityFeePeriodOptions = [
+  { value: 'monthly', label: 'Mensual' },
+  { value: 'quarterly', label: 'Trimestral' },
+  { value: 'annual', label: 'Anual' },
+] as const;
+
+export type CommunityFeePeriod =
+  (typeof communityFeePeriodOptions)[number]['value'];
+
+export const energyCertificateStatusOptions = [
+  { value: 'available', label: 'Disponible' },
+  { value: 'pending', label: 'Pendiente' },
+  { value: 'exempt', label: 'Exento' },
+] as const;
+
+export type EnergyCertificateStatus =
+  (typeof energyCertificateStatusOptions)[number]['value'];
+
 export function isManagedPropertyFeature(
   value: string,
 ): value is ManagedPropertyFeature {
