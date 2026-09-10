@@ -59,6 +59,8 @@ type AdminProperty = {
   reference: string | null;
   title: string;
   slug: string;
+  seo_title: string | null;
+  seo_description: string | null;
   operation: PropertyOperation;
   property_type: string;
   status: PropertyStatus;
@@ -106,6 +108,8 @@ type AdminProperty = {
 type PropertyFormState = {
   reference: string;
   title: string;
+  seoTitle: string;
+  seoDescription: string;
   operation: PropertyOperation;
   propertyType: string;
   price: string;
@@ -234,6 +238,8 @@ function createFormState(property: AdminProperty): PropertyFormState {
   return {
     reference: property.reference ?? '',
     title: property.title,
+    seoTitle: property.seo_title ?? '',
+    seoDescription: property.seo_description ?? '',
     operation: property.operation,
     propertyType: property.property_type,
     price: String(property.price),
@@ -384,6 +390,8 @@ export function AdminPropertyEditPage() {
               reference,
               title,
               slug,
+              seo_title,
+              seo_description,
               operation,
               property_type,
               status,
@@ -562,6 +570,8 @@ export function AdminPropertyEditPage() {
     const updatePayload = {
       reference: nullableText(form.reference),
       title,
+      seo_title: nullableText(form.seoTitle),
+      seo_description: nullableText(form.seoDescription),
       operation: form.operation,
       property_type: form.propertyType,
       price,
@@ -1898,6 +1908,37 @@ export function AdminPropertyEditPage() {
               disabled={isDeletingProperty}
             />
           </label>
+
+          <div className="admin-property-subsection">
+            <h3>SEO</h3>
+            <p className="admin-property-form__check-help">
+              Opcional. Si lo dejas vacío, la web generará automáticamente los metadatos a partir del inmueble y su ubicación.
+            </p>
+            <div className="admin-property-form__grid">
+              <label className="admin-property-form__field">
+                <span>Título SEO</span>
+                <input
+                  type="text"
+                  value={form.seoTitle}
+                  onChange={(event) => updateForm('seoTitle', event.target.value)}
+                  disabled={isDeletingProperty}
+                  placeholder="Chalet en venta en Illescas, Toledo | Alvar Consultores"
+                />
+                <small className="admin-property-form__helper">{form.seoTitle.length} caracteres · Recomendado: hasta 60 caracteres</small>
+              </label>
+              <label className="admin-property-form__field">
+                <span>Meta descripción</span>
+                <textarea
+                  rows={4}
+                  value={form.seoDescription}
+                  onChange={(event) => updateForm('seoDescription', event.target.value)}
+                  disabled={isDeletingProperty}
+                  placeholder="Chalet en venta en Illescas, Toledo. Descubre características, precio, ubicación y solicita información a Alvar Consultores."
+                />
+                <small className="admin-property-form__helper">{form.seoDescription.length} caracteres · Recomendado: 140–160 caracteres</small>
+              </label>
+            </div>
+          </div>
         </section>
 
         {dataError ? (

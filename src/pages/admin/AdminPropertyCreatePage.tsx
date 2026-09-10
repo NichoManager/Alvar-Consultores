@@ -42,6 +42,8 @@ export function AdminPropertyCreatePage() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [seoTitle, setSeoTitle] = useState('');
+  const [seoDescription, setSeoDescription] = useState('');
   const [floorplans, setFloorplans] = useState<Array<{ file: File; preview: string }>>([]);
   const floorplanPreviewsRef = useRef<string[]>([]);
 
@@ -97,6 +99,8 @@ export function AdminPropertyCreatePage() {
         reference: nullableText(formData.get('reference')),
         title,
         slug,
+        seo_title: nullableText(formData.get('seo_title')),
+        seo_description: nullableText(formData.get('seo_description')),
         operation: String(formData.get('operation')),
         property_type: String(formData.get('property_type')),
         status: 'draft',
@@ -275,6 +279,15 @@ export function AdminPropertyCreatePage() {
         <section className="admin-property-form__section">
           <div><span>06</span><h2>Descripción</h2></div>
           <label className="admin-property-form__field"><span>Descripción</span><small className="admin-property-form__helper">Describe los puntos fuertes del inmueble, distribución, estado, ubicación y cualquier detalle relevante.</small><textarea name="description" rows={8} required /></label>
+
+          <div className="admin-property-subsection">
+            <h3>SEO</h3>
+            <p className="admin-property-form__check-help">Opcional. Si lo dejas vacío, la web generará automáticamente los metadatos a partir del inmueble y su ubicación.</p>
+            <div className="admin-property-form__grid">
+              <label className="admin-property-form__field"><span>Título SEO</span><input type="text" name="seo_title" value={seoTitle} onChange={(event) => setSeoTitle(event.target.value)} placeholder="Chalet en venta en Illescas, Toledo | Alvar Consultores" /><small className="admin-property-form__helper">{seoTitle.length} caracteres · Recomendado: hasta 60 caracteres</small></label>
+              <label className="admin-property-form__field"><span>Meta descripción</span><textarea name="seo_description" rows={4} value={seoDescription} onChange={(event) => setSeoDescription(event.target.value)} placeholder="Chalet en venta en Illescas, Toledo. Descubre características, precio, ubicación y solicita información a Alvar Consultores." /><small className="admin-property-form__helper">{seoDescription.length} caracteres · Recomendado: 140–160 caracteres</small></label>
+            </div>
+          </div>
         </section>
 
         {error ? <p className="admin-property-form__error" role="alert">{error}</p> : null}
