@@ -7,6 +7,7 @@ interface SeoHeadProps {
   type?: 'website' | 'article';
   noIndex?: boolean;
   image?: string;
+  imageAlt?: string;
 }
 
 const SITE_URL = (
@@ -17,6 +18,9 @@ const SITE_URL = (
 const DEFAULT_SOCIAL_IMAGE =
   '/images/alvar/og-alvar-consultores.png';
 
+const DEFAULT_IMAGE_ALT =
+  'Alvar Consultores Inmobiliarios';
+
 const SITE_IS_INDEXABLE =
   import.meta.env.VITE_ALLOW_INDEXING === 'true';
 
@@ -25,9 +29,10 @@ function setMeta(
   content: string,
   attribute = 'name',
 ) {
-  let element = document.head.querySelector<HTMLMetaElement>(
-    `meta[${attribute}="${property}"]`,
-  );
+  let element =
+    document.head.querySelector<HTMLMetaElement>(
+      `meta[${attribute}="${property}"]`,
+    );
 
   if (!element) {
     element = document.createElement('meta');
@@ -42,15 +47,18 @@ function removeMeta(
   property: string,
   attribute = 'name',
 ) {
-  const element = document.head.querySelector<HTMLMetaElement>(
-    `meta[${attribute}="${property}"]`,
-  );
+  const element =
+    document.head.querySelector<HTMLMetaElement>(
+      `meta[${attribute}="${property}"]`,
+    );
 
   element?.remove();
 }
 
 function getImageType(image: string) {
-  const cleanImage = image.split('?')[0].toLowerCase();
+  const cleanImage = image
+    .split('?')[0]
+    .toLowerCase();
 
   if (cleanImage.endsWith('.png')) {
     return 'image/png';
@@ -77,65 +85,147 @@ export function SeoHead({
   type = 'website',
   noIndex = false,
   image = DEFAULT_SOCIAL_IMAGE,
+  imageAlt = DEFAULT_IMAGE_ALT,
 }: SeoHeadProps) {
   useEffect(() => {
-    const canonicalUrl = `${SITE_URL}${path}`;
+    const canonicalUrl =
+      `${SITE_URL}${path}`;
 
     const imageUrl = image.startsWith('http')
       ? image
       : `${SITE_URL}${image}`;
 
-    const imageType = getImageType(image);
+    const imageType =
+      getImageType(image);
 
-    const robots = noIndex
-      ? 'noindex, follow'
-      : SITE_IS_INDEXABLE
-        ? 'index, follow'
-        : 'noindex, nofollow';
+    const robots = !SITE_IS_INDEXABLE
+      ? 'noindex, nofollow'
+      : noIndex
+        ? 'noindex, follow'
+        : 'index, follow';
 
     document.title = title;
 
-    setMeta('description', description);
-    setMeta('robots', robots);
+    setMeta(
+      'description',
+      description,
+    );
 
-    setMeta('og:title', title, 'property');
-    setMeta('og:description', description, 'property');
-    setMeta('og:type', type, 'property');
-    setMeta('og:url', canonicalUrl, 'property');
+    setMeta(
+      'robots',
+      robots,
+    );
+
+    setMeta(
+      'og:title',
+      title,
+      'property',
+    );
+
+    setMeta(
+      'og:description',
+      description,
+      'property',
+    );
+
+    setMeta(
+      'og:type',
+      type,
+      'property',
+    );
+
+    setMeta(
+      'og:url',
+      canonicalUrl,
+      'property',
+    );
+
     setMeta(
       'og:site_name',
       'Alvar Consultores Inmobiliarios',
       'property',
     );
-    setMeta('og:locale', 'es_ES', 'property');
-    setMeta('og:image', imageUrl, 'property');
+
+    setMeta(
+      'og:locale',
+      'es_ES',
+      'property',
+    );
+
+    setMeta(
+      'og:image',
+      imageUrl,
+      'property',
+    );
+
     setMeta(
       'og:image:alt',
-      'Alvar Consultores Inmobiliarios · Inmobiliaria en Madrid',
+      imageAlt,
       'property',
     );
 
     if (imageType) {
-      setMeta('og:image:type', imageType, 'property');
+      setMeta(
+        'og:image:type',
+        imageType,
+        'property',
+      );
     } else {
-      removeMeta('og:image:type', 'property');
+      removeMeta(
+        'og:image:type',
+        'property',
+      );
     }
 
-    if (image === DEFAULT_SOCIAL_IMAGE) {
-      setMeta('og:image:width', '1731', 'property');
-      setMeta('og:image:height', '909', 'property');
+    if (
+      image === DEFAULT_SOCIAL_IMAGE
+    ) {
+      setMeta(
+        'og:image:width',
+        '1731',
+        'property',
+      );
+
+      setMeta(
+        'og:image:height',
+        '909',
+        'property',
+      );
     } else {
-      removeMeta('og:image:width', 'property');
-      removeMeta('og:image:height', 'property');
+      removeMeta(
+        'og:image:width',
+        'property',
+      );
+
+      removeMeta(
+        'og:image:height',
+        'property',
+      );
     }
 
-    setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', title);
-    setMeta('twitter:description', description);
-    setMeta('twitter:image', imageUrl);
+    setMeta(
+      'twitter:card',
+      'summary_large_image',
+    );
+
+    setMeta(
+      'twitter:title',
+      title,
+    );
+
+    setMeta(
+      'twitter:description',
+      description,
+    );
+
+    setMeta(
+      'twitter:image',
+      imageUrl,
+    );
+
     setMeta(
       'twitter:image:alt',
-      'Alvar Consultores Inmobiliarios · Inmobiliaria en Madrid',
+      imageAlt,
     );
 
     let canonical =
@@ -144,15 +234,23 @@ export function SeoHead({
       );
 
     if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
+      canonical =
+        document.createElement('link');
+
+      canonical.rel =
+        'canonical';
+
+      document.head.appendChild(
+        canonical,
+      );
     }
 
-    canonical.href = canonicalUrl;
+    canonical.href =
+      canonicalUrl;
   }, [
     description,
     image,
+    imageAlt,
     noIndex,
     path,
     title,
