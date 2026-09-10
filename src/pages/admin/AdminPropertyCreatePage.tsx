@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 
@@ -35,6 +36,11 @@ export function AdminPropertyCreatePage() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/admin/login', { replace: true });
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -115,13 +121,22 @@ export function AdminPropertyCreatePage() {
     <main className="admin-property-form-page">
       <header className="admin-property-form__header">
         <div className="admin-property-form__header-inner">
-          <button
-            type="button"
-            className="admin-property-form__back"
-            onClick={() => navigate('/admin/inmuebles')}
-          >
-            <span aria-hidden="true">←</span> Volver a inmuebles
-          </button>
+          <div className="admin-property-form__header-top">
+            <button
+              type="button"
+              className="admin-property-form__back"
+              onClick={() => navigate('/admin/inmuebles')}
+            >
+              <span aria-hidden="true">←</span> Volver a inmuebles
+            </button>
+
+            <div className="admin-header-session">
+              <AdminCurrentUser />
+              <button type="button" onClick={handleLogout}>
+                Cerrar sesión
+              </button>
+            </div>
+          </div>
 
           <a
             href="/"

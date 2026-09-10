@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 
@@ -243,6 +244,11 @@ export function AdminPropertyEditPage() {
   const [statusError, setStatusError] = useState('');
   const [statusSuccess, setStatusSuccess] = useState('');
   const [deleteError, setDeleteError] = useState('');
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/admin/login', { replace: true });
+  };
 
   const refreshImages = async () => {
     if (!id) {
@@ -1243,6 +1249,13 @@ export function AdminPropertyEditPage() {
           <span>
             {statusLabels[property.status]}
           </span>
+
+          <div className="admin-header-session">
+            <AdminCurrentUser />
+            <button type="button" onClick={handleLogout}>
+              Cerrar sesión
+            </button>
+          </div>
 
           <div>
             <Link to="/admin/inmuebles">

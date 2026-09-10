@@ -333,6 +333,7 @@ export function AdminPropertiesPage() {
         <div className="admin-properties__actions">
           <button
             type="button"
+            className="admin-header__primary-action"
             onClick={() =>
               navigate(
                 '/admin/inmuebles/nuevo',

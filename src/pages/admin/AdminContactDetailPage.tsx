@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import {
   contactInterestLabels,
   contactSourceLabels,
@@ -16,6 +17,7 @@ import {
   type ContactSource,
   type ContactStatus,
 } from '../../lib/contacts';
+import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 
 type ContactFormState = {
@@ -106,6 +108,11 @@ export function AdminContactDetailPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/admin/login', { replace: true });
+  };
 
   const loadContact = useCallback(async () => {
     if (!id) return;
@@ -296,6 +303,12 @@ export function AdminContactDetailPage() {
 
         <div className="admin-property-edit__meta">
           <span>{contactStatusLabels[contact.status]}</span>
+          <div className="admin-header-session">
+            <AdminCurrentUser />
+            <button type="button" onClick={handleLogout}>
+              Cerrar sesión
+            </button>
+          </div>
           <div><Link to="/admin/contactos">← Volver a contactos</Link></div>
         </div>
       </header>

@@ -170,7 +170,11 @@ export function AdminContactsPage() {
         </div>
 
         <div className="admin-properties__actions">
-          <button type="button" onClick={() => navigate('/admin/contactos/nuevo')}>
+          <button
+            type="button"
+            className="admin-header__primary-action"
+            onClick={() => navigate('/admin/contactos/nuevo')}
+          >
             + Nuevo contacto
           </button>
           <button type="button" onClick={() => navigate('/admin/inmuebles')}>

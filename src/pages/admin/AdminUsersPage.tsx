@@ -6,6 +6,7 @@ import {
   type FormEvent,
 } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import {
   createAdminUser,
   deleteAdminUser,
@@ -427,6 +428,14 @@ export function AdminUsersPage() {
 
             <h1>Usuarios</h1>
           </div>
+
+          <div className="admin-properties__actions">
+            <AdminCurrentUser />
+
+            <button type="button" onClick={handleLogout}>
+              Cerrar sesión
+            </button>
+          </div>
         </header>
 
         <section className="admin-properties__content">
@@ -458,7 +467,7 @@ export function AdminUsersPage() {
             <h1>Usuarios</h1>
           </div>
 
-          <div>
+          <div className="admin-properties__actions">
             <button
               type="button"
               onClick={() =>
@@ -476,6 +485,8 @@ export function AdminUsersPage() {
             >
               Contactos
             </button>
+
+            <AdminCurrentUser />
 
             <button
               type="button"
@@ -545,7 +556,7 @@ export function AdminUsersPage() {
           <h1>Usuarios</h1>
         </div>
 
-        <div>
+        <div className="admin-properties__actions">
           <button
             type="button"
             onClick={() =>
@@ -580,6 +591,8 @@ export function AdminUsersPage() {
               ? 'Cancelar'
               : '+ Nuevo usuario'}
           </button>
+
+          <AdminCurrentUser />
 
           <button
             type="button"
