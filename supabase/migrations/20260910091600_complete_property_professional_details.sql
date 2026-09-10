@@ -174,7 +174,9 @@ as $$
             'is_cover', pi.is_cover,
             'media_type', pi.media_type
           )
-          order by pi.media_type asc, pi.position asc
+          order by
+  case when pi.media_type = 'photo' then 0 else 1 end,
+  pi.position asc
         )
         from public.property_images as pi
         where pi.property_id = p.id
