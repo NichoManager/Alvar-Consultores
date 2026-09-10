@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "composite": true,
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -8,5 +10,10 @@
     "strict": true,
     "noEmit": true
   },
-  "include": ["vite.config.ts"]
+  "include": [
+    "vite.config.ts",
+    "api/**/*.ts",
+    "src/data/articles.ts",
+    "src/types/content.ts"
+  ]
 }
