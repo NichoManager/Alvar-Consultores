@@ -66,6 +66,15 @@ export function PropertyFilters({
   const [priceError, setPriceError] =
     useState('');
 
+  const lockedOperation =
+    value.operation === 'venta' ||
+    value.operation === 'alquiler'
+      ? value.operation
+      : '';
+
+  const showOperationSelector =
+    lockedOperation === '';
+
   useEffect(() => {
     setDraft(value);
   }, [value]);
@@ -119,20 +128,40 @@ export function PropertyFilters({
       return;
     }
 
-    onChange(draft);
+    const nextFilters = lockedOperation
+      ? {
+          ...draft,
+          operation: lockedOperation,
+        }
+      : draft;
+
+    onChange(nextFilters);
 
     trackEvent('property_filter', {
-      filters: JSON.stringify(draft),
+      filters: JSON.stringify(nextFilters),
     });
 
     setMobileOpen(false);
   };
 
   const clear = () => {
-    setDraft(defaultPropertyFilters);
     setPriceError('');
-    onClear();
     setMobileOpen(false);
+
+    if (lockedOperation) {
+      const nextFilters: PropertyFilterState = {
+        ...defaultPropertyFilters,
+        operation: lockedOperation,
+      };
+
+      setDraft(nextFilters);
+      onChange(nextFilters);
+
+      return;
+    }
+
+    setDraft(defaultPropertyFilters);
+    onClear();
   };
 
   const selectedLocation =
@@ -141,15 +170,29 @@ export function PropertyFilters({
       locationOptions,
     );
 
+  const mobileEyebrow =
+    lockedOperation === 'venta'
+      ? 'COMPRAR'
+      : lockedOperation === 'alquiler'
+        ? 'ALQUILAR'
+        : 'BUSCAR INMUEBLES';
+
   return (
     <>
       <button
         className="property-filters__mobile-trigger"
         type="button"
-        onClick={() => setMobileOpen(true)}
+        onClick={() =>
+          setMobileOpen(true)
+        }
       >
-        <span>Filtrar inmuebles</span>
-        <span aria-hidden="true">＋</span>
+        <span>
+          Filtrar inmuebles
+        </span>
+
+        <span aria-hidden="true">
+          ＋
+        </span>
       </button>
 
       {mobileOpen ? (
@@ -168,11 +211,20 @@ export function PropertyFilters({
           mobileOpen ? ' is-open' : ''
         }`}
         onSubmit={submit}
-        aria-label="Filtros de inmuebles"
+        aria-label={
+          lockedOperation === 'venta'
+            ? 'Filtros de inmuebles en venta'
+            : lockedOperation === 'alquiler'
+              ? 'Filtros de inmuebles en alquiler'
+              : 'Filtros de inmuebles'
+        }
       >
         <header className="property-filters__mobile-header">
           <div>
-            <span>BUSCAR INMUEBLES</span>
+            <span>
+              {mobileEyebrow}
+            </span>
+
             <strong>
               Afina tu búsqueda
             </strong>
@@ -189,72 +241,74 @@ export function PropertyFilters({
           </button>
         </header>
 
-        <div className="property-filters__operation">
-          <span className="property-filters__field-label">
-            Operación
-          </span>
+        {showOperationSelector ? (
+          <div className="property-filters__operation">
+            <span className="property-filters__field-label">
+              Operación
+            </span>
 
-          <div
-            className="property-filters__operation-control"
-            role="group"
-            aria-label="Tipo de operación"
-          >
-            <button
-              type="button"
-              className={
-                draft.operation === ''
-                  ? 'is-active'
-                  : ''
-              }
-              aria-pressed={
-                draft.operation === ''
-              }
-              onClick={() =>
-                updateOperation('')
-              }
+            <div
+              className="property-filters__operation-control"
+              role="group"
+              aria-label="Tipo de operación"
             >
-              Todos
-            </button>
+              <button
+                type="button"
+                className={
+                  draft.operation === ''
+                    ? 'is-active'
+                    : ''
+                }
+                aria-pressed={
+                  draft.operation === ''
+                }
+                onClick={() =>
+                  updateOperation('')
+                }
+              >
+                Todos
+              </button>
 
-            <button
-              type="button"
-              className={
-                draft.operation === 'venta'
-                  ? 'is-active'
-                  : ''
-              }
-              aria-pressed={
-                draft.operation === 'venta'
-              }
-              onClick={() =>
-                updateOperation('venta')
-              }
-            >
-              Comprar
-            </button>
+              <button
+                type="button"
+                className={
+                  draft.operation === 'venta'
+                    ? 'is-active'
+                    : ''
+                }
+                aria-pressed={
+                  draft.operation === 'venta'
+                }
+                onClick={() =>
+                  updateOperation('venta')
+                }
+              >
+                Comprar
+              </button>
 
-            <button
-              type="button"
-              className={
-                draft.operation ===
-                'alquiler'
-                  ? 'is-active'
-                  : ''
-              }
-              aria-pressed={
-                draft.operation ===
-                'alquiler'
-              }
-              onClick={() =>
-                updateOperation(
-                  'alquiler',
-                )
-              }
-            >
-              Alquilar
-            </button>
+              <button
+                type="button"
+                className={
+                  draft.operation ===
+                  'alquiler'
+                    ? 'is-active'
+                    : ''
+                }
+                aria-pressed={
+                  draft.operation ===
+                  'alquiler'
+                }
+                onClick={() =>
+                  updateOperation(
+                    'alquiler',
+                  )
+                }
+              >
+                Alquilar
+              </button>
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <div className="property-filters__main">
           <PropertyLocationFilter
@@ -448,7 +502,8 @@ export function PropertyFilters({
 
               <p>
                 Selecciona solo las
-                características imprescindibles.
+                características
+                imprescindibles.
               </p>
             </div>
 
@@ -501,39 +556,13 @@ export function PropertyFilters({
         </details>
 
         <div className="property-filters__footer">
-          <label className="property-filters__sort">
-            Ordenar resultados
-
-            <select
-              name="order"
-              value={draft.order}
-              onChange={update}
-            >
-              <option value="featured">
-                Destacados
-              </option>
-
-              <option value="recent">
-                Más recientes
-              </option>
-
-              <option value="priceAsc">
-                Precio menor
-              </option>
-
-              <option value="priceDesc">
-                Precio mayor
-              </option>
-            </select>
-          </label>
-
           <div className="property-filters__footer-actions">
             <button
               className="property-filters__clear"
               type="button"
               onClick={clear}
             >
-              Limpiar
+              Limpiar filtros
             </button>
 
             <button
@@ -541,6 +570,7 @@ export function PropertyFilters({
               type="submit"
             >
               Aplicar filtros
+
               <span aria-hidden="true">
                 →
               </span>
