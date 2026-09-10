@@ -88,7 +88,7 @@ function getUniqueLocationParts(
   );
 }
 
-function getSeoTitle(
+function getAutomaticSeoTitle(
   title: string,
   city?: string | null,
   province?: string | null,
@@ -121,7 +121,23 @@ function getSeoTitle(
   return `${baseTitle} | Alvar Consultores`;
 }
 
-function getSeoDescription(
+function limitMetaDescription(
+  value: string,
+) {
+  const cleanValue = value
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (cleanValue.length <= 160) {
+    return cleanValue;
+  }
+
+  return `${cleanValue
+    .slice(0, 157)
+    .trimEnd()}...`;
+}
+
+function getAutomaticSeoDescription(
   title: string,
   description: string,
   location: string,
@@ -146,20 +162,9 @@ function getSeoDescription(
       ? `${title} en ${location}. `
       : `${title}. `;
 
-  const completeDescription =
-    `${intro}${description}`
-      .replace(/\s+/g, ' ')
-      .trim();
-
-  if (
-    completeDescription.length <= 160
-  ) {
-    return completeDescription;
-  }
-
-  return `${completeDescription
-    .slice(0, 157)
-    .trimEnd()}...`;
+  return limitMetaDescription(
+    `${intro}${description}`,
+  );
 }
 
 function toAbsoluteUrl(
@@ -358,19 +363,30 @@ export function PropertyDetailPage() {
   const seoLocationLabel =
     seoLocationParts.join(', ');
 
-  const seoTitle =
-    getSeoTitle(
+  const automaticSeoTitle =
+    getAutomaticSeoTitle(
       property.title,
       property.city,
       property.province,
     );
 
-  const seoDescription =
-    getSeoDescription(
+  const automaticSeoDescription =
+    getAutomaticSeoDescription(
       property.title,
       property.description,
       seoLocationLabel,
     );
+
+  const seoTitle =
+    property.seoTitle?.trim() ||
+    automaticSeoTitle;
+
+  const seoDescription =
+    property.seoDescription?.trim()
+      ? limitMetaDescription(
+          property.seoDescription,
+        )
+      : automaticSeoDescription;
 
   const propertyUrl =
     `${SITE_URL}/inmuebles/${property.slug}`;
@@ -382,10 +398,14 @@ export function PropertyDetailPage() {
         )
       : undefined;
 
-  const imageAlt =
+  const automaticImageAlt =
     seoLocationLabel
       ? `${property.title} en ${seoLocationLabel}`
       : property.title;
+
+  const imageAlt =
+    property.coverImage?.alt?.trim() ||
+    automaticImageAlt;
 
   const isReserved =
     property.status === 'Reservado';
@@ -451,15 +471,6 @@ export function PropertyDetailPage() {
     },
   ];
 
-  /*
-    Para el breadcrumb visible conservamos
-    Compra / Alquiler y su filtro, porque
-    mejora la navegación del usuario.
-
-    En el schema utilizamos /inmuebles como
-    URL intermedia canónica para no reforzar
-    las variantes con query params.
-  */
   const breadcrumbSchema = {
     '@context':
       'https://schema.org',
@@ -537,6 +548,7 @@ export function PropertyDetailPage() {
             price:
               property.price,
             priceCurrency:
+              property.currency ||
               'EUR',
             url: propertyUrl,
             businessFunction:
