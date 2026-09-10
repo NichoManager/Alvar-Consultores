@@ -1,34 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
-import { PropertyFilters, type FilterState } from '../components/properties/PropertyFilters';
+import { useSearchParams } from 'react-router-dom';
+import { PropertyActiveFilters } from '../components/properties/PropertyActiveFilters';
+import { PropertyFilters } from '../components/properties/PropertyFilters';
 import { PropertyGrid } from '../components/properties/PropertyGrid';
 import { SeoHead } from '../components/seo/SeoHead';
 import { Button } from '../components/ui/Button';
 import { Container } from '../components/ui/Container';
 import { InternalHero } from '../components/ui/InternalHero';
 import { business } from '../data/business';
+import {
+  buildPropertyLocationOptions,
+  buildPropertyTypeOptions,
+  defaultPropertyFilters,
+  filterProperties,
+  propertyFiltersFromSearchParams,
+  propertyFiltersToSearchParams,
+  sortProperties,
+  type PropertyFilterState,
+} from '../lib/propertyFilters';
 import { getPublishedProperties } from '../lib/properties';
 import type { Property } from '../types/content';
-
-type NormalizedOperation = 'venta' | 'alquiler' | '';
-
-function normalizeOperation(value: string): NormalizedOperation {
-  const normalized = value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .trim()
-    .toLowerCase();
-
-  if (['venta', 'vender', 'compra', 'comprar', 'en venta'].includes(normalized)) {
-    return 'venta';
-  }
-
-  if (['alquiler', 'alquilar', 'renta', 'arrendamiento', 'en alquiler'].includes(normalized)) {
-    return 'alquiler';
-  }
-
-  return '';
-}
 
 export function PropertiesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,227 +29,87 @@ export function PropertiesPage() {
 
   useEffect(() => {
     let isMounted = true;
-
-    const loadProperties = async () => {
-      try {
-        const publishedProperties = await getPublishedProperties();
-
+    getPublishedProperties()
+      .then((items) => {
         if (isMounted) {
-          setProperties(publishedProperties);
+          setProperties(items);
           setLoadError(false);
         }
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error('Error loading public properties:', error);
-
-        if (isMounted) {
-          setLoadError(true);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    void loadProperties();
-
-    return () => {
-      isMounted = false;
-    };
+        if (isMounted) setLoadError(true);
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+    return () => { isMounted = false; };
   }, []);
 
-  const filters: FilterState = useMemo(
-    () => ({
-      operation: searchParams.get('operation') ?? 'venta',
-      city: searchParams.get('city') ?? '',
-      type: searchParams.get('type') ?? '',
-      bedrooms: searchParams.get('bedrooms') ?? '',
-      minPrice: searchParams.get('minPrice') ?? '0',
-      maxPrice: searchParams.get('maxPrice') ?? '',
-      order: searchParams.get('order') ?? 'featured',
-    }),
-    [searchParams],
+  const filters = useMemo(() => propertyFiltersFromSearchParams(searchParams), [searchParams]);
+  const locationOptions = useMemo(() => buildPropertyLocationOptions(properties), [properties]);
+  const typeOptions = useMemo(() => buildPropertyTypeOptions(properties), [properties]);
+  const filtered = useMemo(
+    () => sortProperties(filterProperties(properties, filters), filters.order),
+    [filters, properties],
   );
 
-  const activeOperation = normalizeOperation(filters.operation);
-
-  const setFilters = (next: FilterState) => {
-    const params = new URLSearchParams();
-
-    Object.entries(next).forEach(([key, value]) => {
-      if (
-        value &&
-        !(key === 'minPrice' && value === '0') &&
-        !(key === 'order' && value === 'featured')
-      ) {
-        params.set(key, value);
-      }
-    });
-
-    setSearchParams(params, { replace: true });
+  const setFilters = (next: PropertyFilterState) => {
+    setSearchParams(propertyFiltersToSearchParams(next));
+  };
+  const clearFilters = () => setSearchParams(new URLSearchParams());
+  const removeFilter = (key: keyof PropertyFilterState | 'location') => {
+    const next = { ...filters };
+    if (key === 'location') {
+      next.province = '';
+      next.city = '';
+      next.area = '';
+    } else if (typeof next[key] === 'boolean') {
+      Object.assign(next, { [key]: false });
+    } else {
+      Object.assign(next, { [key]: key === 'order' ? 'featured' : '' });
+    }
+    setFilters(next);
   };
 
-  const filtered = useMemo(() => {
-    const normalize = (value: string) =>
-      value
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase();
-
-    const result = properties.filter((item) => {
-      const matchesPrice =
-        item.price === null
-          ? !filters.maxPrice && Number(filters.minPrice || 0) === 0
-          : item.price >= Number(filters.minPrice || 0) &&
-            (!filters.maxPrice || item.price <= Number(filters.maxPrice));
-
-      return (
-        (!activeOperation || normalizeOperation(item.operation) === activeOperation) &&
-        (!filters.city || item.city === filters.city) &&
-        (!filters.type || normalize(item.propertyType) === filters.type) &&
-        (!filters.bedrooms || (item.bedrooms ?? 0) >= Number(filters.bedrooms)) &&
-        matchesPrice
-      );
-    });
-
-    return [...result].sort((a, b) =>
-      filters.order === 'recent'
-        ? b.createdAt.localeCompare(a.createdAt)
-        : filters.order === 'priceAsc'
-          ? (a.price ?? Infinity) - (b.price ?? Infinity)
-          : filters.order === 'priceDesc'
-            ? (b.price ?? 0) - (a.price ?? 0)
-            : Number(b.featured) - Number(a.featured),
-    );
-  }, [activeOperation, filters, properties]);
-
-  const operationParam = searchParams.get('operation');
-
-  if (!operationParam || !activeOperation) {
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.set('operation', 'venta');
-
-    return <Navigate to={`/inmuebles?${nextParams.toString()}`} replace />;
-  }
-
-  const isRental = activeOperation === 'alquiler';
-
+  const isRental = filters.operation === 'alquiler';
+  const isSale = filters.operation === 'venta';
   const hero = isRental
-    ? {
-        eyebrow: 'ALQUILAR',
-        title: (
-          <>
-            Inmuebles en alquiler
-            <br />
-            <em>en Madrid y alrededores.</em>
-          </>
-        ),
-        text: 'Consulta viviendas y activos disponibles en alquiler. También podemos ayudarte si quieres alquilar tu propiedad.',
-      }
-    : {
-        eyebrow: 'COMPRAR',
-        title: (
-          <>
-            Inmuebles en venta
-            <br />
-            <em>en Madrid y alrededores.</em>
-          </>
-        ),
-        text: 'Explora propiedades disponibles para compra. Si no encuentras lo que buscas, podemos ayudarte a definir una búsqueda más precisa.',
-      };
-
-  const catalogueCopy = isRental
-    ? {
-        eyebrow: 'PROPIEDADES EN ALQUILER',
-        title: (
-          <>
-            Una selección para encontrar
-            <br />
-            <em>el alquiler adecuado.</em>
-          </>
-        ),
-        text: 'Filtra por zona, tipología, dormitorios y presupuesto para revisar las propiedades que mejor encajan con tu búsqueda.',
-      }
-    : {
-        eyebrow: 'PROPIEDADES EN VENTA',
-        title: (
-          <>
-            Encuentra una propiedad
-            <br />
-            <em>que tenga sentido para ti.</em>
-          </>
-        ),
-        text: 'Filtra por zona, tipología, dormitorios y presupuesto. Si buscas algo muy concreto, también podemos ayudarte de forma personalizada.',
-      };
+    ? { eyebrow: 'ALQUILAR', title: <>Inmuebles en alquiler<br /><em>seleccionados con criterio.</em></>, text: 'Consulta los inmuebles disponibles en alquiler y afina la búsqueda según tus necesidades.' }
+    : isSale
+      ? { eyebrow: 'COMPRAR', title: <>Inmuebles en venta<br /><em>seleccionados con criterio.</em></>, text: 'Explora propiedades disponibles para compra y combina ubicación, tipología, presupuesto y características.' }
+      : { eyebrow: 'INMUEBLES', title: <>Propiedades para encontrar<br /><em>tu próximo lugar.</em></>, text: 'Explora todo el inventario público y filtra por operación, ubicación, tipología y características.' };
 
   const seo = isRental
-    ? {
-        title: 'Inmuebles en alquiler en Madrid | Alvar Consultores',
-        description:
-          'Consulta viviendas y propiedades disponibles en alquiler en Madrid capital y alrededores con Alvar Consultores Inmobiliarios.',
-        path: '/inmuebles?operation=alquiler',
-      }
-    : {
-        title: 'Inmuebles en venta en Madrid | Alvar Consultores',
-        description:
-          'Explora viviendas y propiedades disponibles para comprar en Madrid capital y alrededores con Alvar Consultores Inmobiliarios.',
-        path: '/inmuebles?operation=venta',
-      };
+    ? { title: 'Inmuebles en alquiler | Alvar Consultores', description: 'Consulta inmuebles disponibles en alquiler con Alvar Consultores Inmobiliarios.', path: '/inmuebles?operation=alquiler' }
+    : isSale
+      ? { title: 'Inmuebles en venta | Alvar Consultores', description: 'Explora viviendas y propiedades disponibles para comprar con Alvar Consultores Inmobiliarios.', path: '/inmuebles?operation=venta' }
+      : { title: 'Catálogo de inmuebles | Alvar Consultores', description: 'Consulta el catálogo público de inmuebles de Alvar Consultores Inmobiliarios.', path: '/inmuebles' };
 
   return (
     <>
-      <SeoHead
-        title={seo.title}
-        description={seo.description}
-        path={seo.path}
-        image={
-          isRental
-            ? '/images/alvar/heroes/hero-alquilar-inmuebles-madrid.webp'
-            : '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp'
-        }
-      />
-
+      <SeoHead title={seo.title} description={seo.description} path={seo.path} image={isRental ? '/images/alvar/heroes/hero-alquilar-inmuebles-madrid.webp' : '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp'} />
       <InternalHero
         eyebrow={hero.eyebrow}
         title={hero.title}
         text={hero.text}
-        image={
-          isRental
-            ? '/images/alvar/heroes/hero-alquilar-inmuebles-madrid.webp'
-            : '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp'
-        }
-        aside={
-          <>
-            <strong>{filtered.length.toString().padStart(2, '0')}</strong>
-            <span>{filtered.length === 1 ? 'resultado' : 'resultados'}</span>
-          </>
-        }
+        image={isRental ? '/images/alvar/heroes/hero-alquilar-inmuebles-madrid.webp' : '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp'}
+        aside={<><strong>{filtered.length.toString().padStart(2, '0')}</strong><span>{filtered.length === 1 ? 'inmueble' : 'inmuebles'}</span></>}
       />
 
-      <section
-        className={`catalogue catalogue--${activeOperation} section-pad`}
-        aria-labelledby="catalogue-title"
-      >
+      <section className={`catalogue catalogue--${filters.operation || 'all'} section-pad`} aria-labelledby="catalogue-title">
         <Container>
           <header className="catalogue__intro">
             <div>
-              <p className="eyebrow">{catalogueCopy.eyebrow}</p>
-
-              <h2 id="catalogue-title">{catalogueCopy.title}</h2>
+              <p className="eyebrow">CATÁLOGO DE INMUEBLES</p>
+              <h2 id="catalogue-title">Una búsqueda precisa,<br /><em>sin limitar ubicaciones.</em></h2>
             </div>
-
             <div className="catalogue__intro-copy">
-              <p>{catalogueCopy.text}</p>
-
+              <p>Filtra el inventario real por ubicación, tipología, superficie, presupuesto y prestaciones.</p>
               <div className="catalogue__meta">
-                <span>
-                  <strong>{filtered.length}</strong>
-                  {filtered.length === 1 ? ' propiedad' : ' propiedades'}
-                </span>
-
+                <span><strong>{filtered.length}</strong>{filtered.length === 1 ? ' inmueble' : ' inmuebles'}</span>
                 <i aria-hidden="true" />
-
-                <span>Madrid capital y alrededores</span>
+                <span>Inventario público actualizado</span>
               </div>
             </div>
           </header>
@@ -268,118 +119,57 @@ export function PropertiesPage() {
               <span>FILTRAR BÚSQUEDA</span>
               <p>Afina los resultados según tus necesidades.</p>
             </div>
-
-            <PropertyFilters value={filters} onChange={setFilters} />
+            <PropertyFilters value={filters} locationOptions={locationOptions} typeOptions={typeOptions} onChange={setFilters} onClear={clearFilters} />
+            <PropertyActiveFilters filters={filters} onRemove={removeFilter} onClear={clearFilters} />
           </div>
 
           <div className="catalogue__status" aria-live="polite">
-            <span>
-              {filtered.length.toString().padStart(2, '0')}
-            </span>
-
-            <p>
-              {filtered.length === 1
-                ? 'propiedad disponible con los filtros seleccionados'
-                : 'propiedades disponibles con los filtros seleccionados'}
-            </p>
-
-            <small>
-              Inventario sujeto a disponibilidad y actualización.
-            </small>
+            <span>{filtered.length.toString().padStart(2, '0')}</span>
+            <p>{filtered.length === 1 ? 'inmueble disponible con los filtros seleccionados' : 'inmuebles disponibles con los filtros seleccionados'}</p>
+            <small>Inventario sujeto a disponibilidad y actualización.</small>
           </div>
 
           {isLoading ? (
-            <div className="empty-state" role="status">
-              <p>Cargando propiedades disponibles...</p>
-              <span>Estamos preparando el catálogo actualizado.</span>
-            </div>
+            <div className="empty-state" role="status"><p>Cargando inmuebles disponibles...</p><span>Estamos preparando el catálogo actualizado.</span></div>
           ) : loadError ? (
             <div className="empty-state" role="alert">
-              <p>No hemos podido cargar las propiedades.</p>
-              <span>
-                Inténtalo de nuevo en unos minutos o cuéntanos qué estás
-                buscando para ayudarte personalmente.
-              </span>
-              <Button to="/contacto" variant="secondary">
-                Contactar
-              </Button>
+              <p>No hemos podido cargar los inmuebles.</p>
+              <span>Inténtalo de nuevo en unos minutos o cuéntanos qué estás buscando.</span>
+              <Button to="/contacto" variant="secondary">Contactar</Button>
             </div>
-          ) : (
+          ) : filtered.length ? (
             <PropertyGrid properties={filtered} />
+          ) : (
+            <div className="empty-state">
+              <p>No hemos encontrado inmuebles con estos criterios.</p>
+              <span>Prueba a ampliar la ubicación, el presupuesto o las características seleccionadas.</span>
+              <button className="button button--secondary" type="button" onClick={clearFilters}>Limpiar filtros</button>
+            </div>
           )}
 
           {isRental ? (
-            <aside
-              className="rental-owner-cta"
-              aria-labelledby="rental-owner-title"
-            >
-              <span className="rental-owner-cta__eyebrow">
-                GESTIÓN DE ALQUILER
-              </span>
-
+            <aside className="rental-owner-cta" aria-labelledby="rental-owner-title">
+              <span className="rental-owner-cta__eyebrow">GESTIÓN DE ALQUILER</span>
               <div className="rental-owner-cta__content">
                 <h2 id="rental-owner-title">¿Quieres alquilar tu piso?</h2>
-
-                <p>
-                  Te ayudamos a preparar la vivienda, definir el posicionamiento,
-                  seleccionar inquilino, revisar documentación y gestionar el
-                  alquiler con seguridad.
-                </p>
+                <p>Te ayudamos a preparar la vivienda, definir el posicionamiento, seleccionar inquilino, revisar documentación y gestionar el alquiler con seguridad.</p>
               </div>
-
               <div className="rental-owner-cta__actions">
-                <a
-                  className="button button--light"
-                  href={`tel:${business.phoneMobileHref}`}
-                  aria-label={`Hablar con Alvar en el ${business.phoneMobile}`}
-                >
-                  <span>Hablar con Alvar</span>
-                  <span className="button__arrow" aria-hidden="true">
-                    ↗
-                  </span>
-                </a>
-
-                <Button to="/contacto" variant="secondary">
-                  Contactar
-                </Button>
-
+                <a className="button button--light" href={`tel:${business.phoneMobileHref}`} aria-label={`Hablar con Alvar en el ${business.phoneMobile}`}><span>Hablar con Alvar</span><span className="button__arrow" aria-hidden="true">↗</span></a>
+                <Button to="/contacto" variant="secondary">Contactar</Button>
                 <small>{business.phoneMobile}</small>
               </div>
             </aside>
           ) : (
-            <aside
-              className="catalogue-cta"
-              aria-labelledby="buyer-search-title"
-            >
+            <aside className="catalogue-cta" aria-labelledby="buyer-search-title">
               <div className="catalogue-cta__content">
                 <span>BÚSQUEDA PERSONALIZADA</span>
-
-                <h2 id="buyer-search-title">
-                  ¿No encuentras lo
-                  <br />
-                  <em>que estás buscando?</em>
-                </h2>
-
-                <p>
-                  Cuéntanos qué tipo de propiedad buscas, en qué zona y con qué
-                  presupuesto. Podemos ayudarte a enfocar la búsqueda y detectar
-                  oportunidades que encajen mejor contigo.
-                </p>
+                <h2 id="buyer-search-title">¿No encuentras lo<br /><em>que estás buscando?</em></h2>
+                <p>Cuéntanos qué tipo de propiedad buscas, en qué zona y con qué presupuesto. Podemos ayudarte a enfocar la búsqueda y detectar oportunidades que encajen mejor contigo.</p>
               </div>
-
               <div className="catalogue-cta__actions">
-                <Button to="/contacto" variant="light">
-                  Cuéntanos qué buscas
-                </Button>
-
-                <a
-                  href={`tel:${business.phoneMobileHref}`}
-                  className="catalogue-cta__phone"
-                  aria-label={`Hablar con Alvar en el ${business.phoneMobile}`}
-                >
-                  <span>Contacto directo</span>
-                  <strong>{business.phoneMobile}</strong>
-                </a>
+                <Button to="/contacto" variant="light">Cuéntanos qué buscas</Button>
+                <a href={`tel:${business.phoneMobileHref}`} className="catalogue-cta__phone" aria-label={`Hablar con Alvar en el ${business.phoneMobile}`}><span>Contacto directo</span><strong>{business.phoneMobile}</strong></a>
               </div>
             </aside>
           )}
