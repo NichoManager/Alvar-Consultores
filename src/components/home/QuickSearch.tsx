@@ -4,9 +4,9 @@ import { PropertyLocationFilter } from '../properties/PropertyLocationFilter';
 import '../properties/PropertyFilters.css';
 import {
   buildPropertyLocationOptions,
-  buildPropertyTypeOptions,
   type PropertyLocationOption,
 } from '../../lib/propertyFilters';
+import { propertyTypeOptions } from '../../data/propertyOptions';
 import { getPublishedProperties } from '../../lib/properties';
 import type { Property } from '../../types/content';
 import { Button } from '../ui/Button';
@@ -34,7 +34,6 @@ export function QuickSearch() {
   }, []);
 
   const locationOptions = useMemo(() => buildPropertyLocationOptions(properties), [properties]);
-  const typeOptions = useMemo(() => buildPropertyTypeOptions(properties), [properties]);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -85,7 +84,7 @@ export function QuickSearch() {
               <label htmlFor="quick-type">Tipo de inmueble</label>
               <select id="quick-type" value={type} onChange={(event) => setType(event.target.value)} disabled={loading}>
                 <option value="">Cualquier tipo</option>
-                {typeOptions.map((option) => <option key={option} value={option}>{option}</option>)}
+                {propertyTypeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
               </select>
             </div>
 

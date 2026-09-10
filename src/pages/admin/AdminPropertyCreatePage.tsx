@@ -10,6 +10,7 @@ import {
   parkingTypeOptions,
   propertyAmenityGroups,
   propertyConditionOptions,
+  propertyTypeOptions,
 } from '../../data/propertyOptions';
 import {
   FLOORPLAN_ACCEPT,
@@ -36,8 +37,6 @@ function nullableNumber(value: FormDataEntryValue | null) {
   const number = Number(normalized);
   return Number.isFinite(number) ? number : null;
 }
-
-const propertyTypes = ['Piso', 'Casa', 'Chalet', 'Ático', 'Dúplex', 'Estudio', 'Local', 'Oficina', 'Terreno', 'Otro'];
 
 export function AdminPropertyCreatePage() {
   const navigate = useNavigate();
@@ -189,7 +188,7 @@ export function AdminPropertyCreatePage() {
           <div><span>01</span><h2>Datos principales</h2></div>
           <div className="admin-property-form__grid">
             <label className="admin-property-form__field"><span>Operación *</span><select name="operation" defaultValue="venta" required><option value="venta">Venta</option><option value="alquiler">Alquiler</option></select></label>
-            <label className="admin-property-form__field"><span>Tipo de inmueble *</span><select name="property_type" defaultValue="Piso" required>{propertyTypes.map((type) => <option value={type} key={type}>{type}</option>)}</select></label>
+            <label className="admin-property-form__field"><span>Tipo de inmueble *</span><select name="property_type" defaultValue="Piso" required>{propertyTypeOptions.map((option) => <option value={option.value} key={option.value}>{option.label}</option>)}</select></label>
             <label className="admin-property-form__field"><span>Título *</span><input type="text" name="title" placeholder="Ej. Piso luminoso con terraza en Pinto" required /></label>
             <label className="admin-property-form__field"><span>Referencia</span><input type="text" name="reference" placeholder="Ej. ALV-001" /></label>
             <label className="admin-property-form__field"><span>Precio *</span><span className="admin-property-form__input-suffix"><input type="number" name="price" min="0" step="0.01" required /><span aria-hidden="true">€</span></span></label>

@@ -21,6 +21,21 @@ export const propertyAmenityGroups = [
   },
 ] as const;
 
+export const propertyTypeOptions = [
+  { value: 'Piso', label: 'Piso' },
+  { value: 'Casa', label: 'Casa' },
+  { value: 'Chalet', label: 'Chalet' },
+  { value: 'Ático', label: 'Ático' },
+  { value: 'Dúplex', label: 'Dúplex' },
+  { value: 'Estudio', label: 'Estudio' },
+  { value: 'Local', label: 'Local' },
+  { value: 'Oficina', label: 'Oficina' },
+  { value: 'Terreno', label: 'Terreno' },
+  { value: 'Otro', label: 'Otro' },
+] as const;
+
+export type PropertyType = (typeof propertyTypeOptions)[number]['value'];
+
 const amenityFeatures = propertyAmenityGroups.flatMap(
   (group) => group.options,
 );

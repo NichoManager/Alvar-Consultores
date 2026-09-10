@@ -1,6 +1,7 @@
 import {
   getOptionLabel,
   propertyConditionOptions,
+  propertyTypeOptions,
 } from '../data/propertyOptions';
 import type { Property } from '../types/content';
 
@@ -88,19 +89,6 @@ export function normalizePropertyFilterText(value: string) {
 
 function cleanDisplayValue(value: string | undefined) {
   return value?.trim().replace(/\s+/g, ' ') || '';
-}
-
-export function buildPropertyTypeOptions(properties: Property[]) {
-  const values = new Map<string, string>();
-
-  properties.forEach((property) => {
-    const label = cleanDisplayValue(property.propertyType);
-    if (label) values.set(normalizePropertyFilterText(label), label);
-  });
-
-  return [...values.values()].sort((a, b) =>
-    a.localeCompare(b, 'es', { sensitivity: 'base' }),
-  );
 }
 
 export function buildPropertyLocationOptions(properties: Property[]) {
@@ -297,7 +285,10 @@ export function getActivePropertyFilters(filters: PropertyFilterState) {
   if (filters.operation) chips.push({ key: 'operation', label: filters.operation === 'alquiler' ? 'Alquiler' : 'Venta' });
   const location = filters.area || filters.city || filters.province;
   if (location) chips.push({ key: 'location', label: location });
-  if (filters.type) chips.push({ key: 'type', label: filters.type });
+  if (filters.type) chips.push({
+    key: 'type',
+    label: getOptionLabel(propertyTypeOptions, filters.type) ?? filters.type,
+  });
   if (filters.minPrice) chips.push({ key: 'minPrice', label: `Desde ${Number(filters.minPrice).toLocaleString('es-ES')} €` });
   if (filters.maxPrice) chips.push({ key: 'maxPrice', label: `Hasta ${Number(filters.maxPrice).toLocaleString('es-ES')} €` });
   if (filters.bedrooms) chips.push({ key: 'bedrooms', label: `${filters.bedrooms}+ habitaciones` });

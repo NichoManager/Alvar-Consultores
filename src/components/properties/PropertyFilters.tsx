@@ -1,5 +1,8 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import { propertyConditionOptions } from '../../data/propertyOptions';
+import {
+  propertyConditionOptions,
+  type PropertyType,
+} from '../../data/propertyOptions';
 import {
   applyLocationOption,
   defaultPropertyFilters,
@@ -33,7 +36,7 @@ export function PropertyFilters({
 }: {
   value: PropertyFilterState;
   locationOptions: PropertyLocationOption[];
-  typeOptions: string[];
+  typeOptions: ReadonlyArray<{ value: PropertyType; label: string }>;
   onChange: (value: PropertyFilterState) => void;
   onClear: () => void;
 }) {
@@ -106,7 +109,7 @@ export function PropertyFilters({
           <label>Tipo de inmueble
             <select name="type" value={draft.type} onChange={update}>
               <option value="">Todos los tipos</option>
-              {typeOptions.map((type) => <option key={type} value={type}>{type}</option>)}
+              {typeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
           </label>
 

@@ -11,6 +11,7 @@ import {
   parkingTypeOptions,
   propertyAmenityGroups,
   propertyConditionOptions,
+  propertyTypeOptions,
   type EnergyRating,
   type CommunityFeePeriod,
   type EnergyCertificateStatus,
@@ -42,19 +43,6 @@ const ALLOWED_EXTENSIONS = new Set([
   'webp',
   'avif',
 ]);
-
-const PROPERTY_TYPES = [
-  'Piso',
-  'Casa',
-  'Chalet',
-  'Ático',
-  'Dúplex',
-  'Estudio',
-  'Local',
-  'Oficina',
-  'Terreno',
-  'Otro',
-];
 
 type PropertyStatus =
   | 'draft'
@@ -1371,10 +1359,10 @@ export function AdminPropertyEditPage() {
     );
   }
 
-  const propertyTypeOptions =
-    PROPERTY_TYPES.includes(form.propertyType)
-      ? PROPERTY_TYPES
-      : [form.propertyType, ...PROPERTY_TYPES];
+  const propertyTypeOptionsForForm =
+    propertyTypeOptions.some((option) => option.value === form.propertyType)
+      ? propertyTypeOptions
+      : [{ value: form.propertyType, label: form.propertyType }, ...propertyTypeOptions];
 
   const isPropertyPublic =
     property.status === 'published' ||
@@ -1478,12 +1466,12 @@ export function AdminPropertyEditPage() {
                 disabled={isDeletingProperty}
                 required
               >
-                {propertyTypeOptions.map((type) => (
+                {propertyTypeOptionsForForm.map((option) => (
                   <option
-                    value={type}
-                    key={type}
+                    value={option.value}
+                    key={option.value}
                   >
-                    {type}
+                    {option.label}
                   </option>
                 ))}
               </select>

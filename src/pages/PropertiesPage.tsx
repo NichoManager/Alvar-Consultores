@@ -8,9 +8,9 @@ import { Button } from '../components/ui/Button';
 import { Container } from '../components/ui/Container';
 import { InternalHero } from '../components/ui/InternalHero';
 import { business } from '../data/business';
+import { propertyTypeOptions } from '../data/propertyOptions';
 import {
   buildPropertyLocationOptions,
-  buildPropertyTypeOptions,
   filterProperties,
   propertyFiltersFromSearchParams,
   propertyFiltersToSearchParams,
@@ -47,7 +47,6 @@ export function PropertiesPage() {
 
   const filters = useMemo(() => propertyFiltersFromSearchParams(searchParams), [searchParams]);
   const locationOptions = useMemo(() => buildPropertyLocationOptions(properties), [properties]);
-  const typeOptions = useMemo(() => buildPropertyTypeOptions(properties), [properties]);
   const filtered = useMemo(
     () => sortProperties(filterProperties(properties, filters), filters.order),
     [filters, properties],
@@ -118,7 +117,7 @@ export function PropertiesPage() {
               <span>FILTRAR BÚSQUEDA</span>
               <p>Afina los resultados según tus necesidades.</p>
             </div>
-            <PropertyFilters value={filters} locationOptions={locationOptions} typeOptions={typeOptions} onChange={setFilters} onClear={clearFilters} />
+            <PropertyFilters value={filters} locationOptions={locationOptions} typeOptions={propertyTypeOptions} onChange={setFilters} onClear={clearFilters} />
             <PropertyActiveFilters filters={filters} onRemove={removeFilter} onClear={clearFilters} />
           </div>
 
