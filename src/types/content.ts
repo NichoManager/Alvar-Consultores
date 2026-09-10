@@ -1,4 +1,6 @@
-export type PropertyOperation = 'Comprar' | 'Alquilar';
+export type PropertyOperation =
+  | 'Comprar'
+  | 'Alquilar';
 
 export type PropertyStatus =
   | 'Disponible'
@@ -19,10 +21,15 @@ export interface Property {
   reference?: string;
   slug: string;
   title: string;
+
+  seoTitle?: string;
+  seoDescription?: string;
+
   operation: PropertyOperation;
   status: PropertyStatus;
   propertyType: string;
   price: number | null;
+
   city: string;
   area: string;
   province?: string;
@@ -30,17 +37,21 @@ export interface Property {
   address?: string;
   showExactAddress?: boolean;
   mapLocation?: string;
+
   bedrooms?: number;
   bathrooms?: number;
+
   builtArea?: number;
   usableArea?: number;
   plotArea?: number;
+
   floor?: string;
   floorsCount?: number;
   constructionYear?: number;
   propertyCondition?: string;
   orientations?: string[];
   heatingType?: string;
+
   elevator?: boolean;
   garage?: boolean;
   parkingType?: string;
@@ -49,31 +60,52 @@ export interface Property {
   furnished?: boolean;
   exterior?: boolean;
   pool?: boolean;
+
   videoUrl?: string;
   virtualTourUrl?: string;
+
   communityFeeAmount?: number;
-  communityFeePeriod?: 'monthly' | 'quarterly' | 'annual';
+  communityFeePeriod?:
+    | 'monthly'
+    | 'quarterly'
+    | 'annual';
+
   ibiAnnualAmount?: number;
-  energyCertificateStatus?: 'available' | 'pending' | 'exempt';
+
+  energyCertificateStatus?:
+    | 'available'
+    | 'pending'
+    | 'exempt';
+
   description: string;
   features: string[];
+
   energyRating?: string;
   energyConsumptionRating?: string;
   energyConsumptionValue?: number;
   energyEmissionsRating?: string;
   energyEmissionsValue?: number;
+
   amenities?: string[];
   characteristics?: string[];
   equipment?: string[];
+
   featured: boolean;
   published: boolean;
   publishedAt?: string;
   createdAt: string;
+
   currency?: string;
+
   images?: PropertyImage[];
   floorplans?: PropertyImage[];
   coverImage?: PropertyImage;
-  visual: 'arch' | 'courtyard' | 'facade';
+
+  visual:
+    | 'arch'
+    | 'courtyard'
+    | 'facade';
+
   isDemo: boolean;
 }
 
@@ -88,6 +120,7 @@ export interface Article {
 
   seoTitle?: string;
   seoDescription?: string;
+
   image?: string;
   imageAlt?: string;
 
