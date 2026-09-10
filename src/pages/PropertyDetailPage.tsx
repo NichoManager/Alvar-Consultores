@@ -32,6 +32,16 @@ function getSeoDescription(description: string) {
   return `${description.slice(0, 157).trimEnd()}...`;
 }
 
+function formatMoney(value: number) {
+  return `${value.toLocaleString('es-ES', { maximumFractionDigits: 2 })} €`;
+}
+
+const communityPeriodLabels = {
+  monthly: 'mes',
+  quarterly: 'trimestre',
+  annual: 'año',
+} as const;
+
 export function PropertyDetailPage() {
   const { slug = '' } = useParams();
   const [property, setProperty] = useState<Property | null>(null);
@@ -127,6 +137,14 @@ export function PropertyDetailPage() {
     .join(', ');
   const detailCharacteristics = property.characteristics ?? property.features;
   const detailEquipment = property.equipment ?? [];
+  const hasCosts = property.communityFeeAmount !== undefined || property.ibiAnnualAmount !== undefined;
+  const hasEnergyData = Boolean(
+    property.energyCertificateStatus ||
+    property.energyConsumptionRating ||
+    property.energyConsumptionValue !== undefined ||
+    property.energyEmissionsRating ||
+    property.energyEmissionsValue !== undefined,
+  );
   const encodedMapLocation = encodeURIComponent(mapLocation);
   const googleMapsEmbedUrl = `https://www.google.com/maps?q=${encodedMapLocation}&output=embed`;
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedMapLocation}`;
@@ -189,6 +207,7 @@ export function PropertyDetailPage() {
       />
 
       <section
+        id="property-photos"
         className="property-detail-gallery"
         aria-label={`Galería de ${property.title}`}
       >
@@ -203,6 +222,14 @@ export function PropertyDetailPage() {
               {locationLabel}
             </small>
           </div>
+
+          <nav className="property-media-nav" aria-label="Contenido multimedia del inmueble">
+            <a href="#property-photos">Fotos</a>
+            {property.videoUrl ? <a href={property.videoUrl} target="_blank" rel="noopener noreferrer">Vídeo <span aria-hidden="true">↗</span></a> : null}
+            {property.virtualTourUrl ? <a href={property.virtualTourUrl} target="_blank" rel="noopener noreferrer">Visita virtual <span aria-hidden="true">↗</span></a> : null}
+            {(property.floorplans ?? []).length ? <a href="#property-floorplans">Planos</a> : null}
+            <a href="#property-location">Mapa</a>
+          </nav>
 
           <PropertyGallery property={property} />
         </Container>
@@ -279,7 +306,38 @@ export function PropertyDetailPage() {
                 </div>
               </section> : null}
 
+              {hasCosts || hasEnergyData ? (
+                <div className="property-additional-details">
+                  {hasCosts ? (
+                    <section aria-labelledby="property-costs-title">
+                      <p>GASTOS DEL INMUEBLE</p>
+                      <h3 id="property-costs-title">Gastos recurrentes</h3>
+                      <dl>
+                        {property.communityFeeAmount !== undefined ? <div><dt>Comunidad</dt><dd>{formatMoney(property.communityFeeAmount)}{property.communityFeePeriod ? `/${communityPeriodLabels[property.communityFeePeriod]}` : ''}</dd></div> : null}
+                        {property.ibiAnnualAmount !== undefined ? <div><dt>IBI</dt><dd>{formatMoney(property.ibiAnnualAmount)}/año</dd></div> : null}
+                      </dl>
+                    </section>
+                  ) : null}
+
+                  {hasEnergyData ? (
+                    <section aria-labelledby="property-energy-title">
+                      <p>EFICIENCIA ENERGÉTICA</p>
+                      <h3 id="property-energy-title">Certificado energético</h3>
+                      {property.energyCertificateStatus === 'pending' ? <p className="property-additional-details__notice">Certificado energético pendiente.</p> : null}
+                      {property.energyCertificateStatus === 'exempt' ? <p className="property-additional-details__notice">Inmueble exento de certificado energético.</p> : null}
+                      {property.energyCertificateStatus !== 'pending' && property.energyCertificateStatus !== 'exempt' ? (
+                        property.energyConsumptionRating || property.energyConsumptionValue !== undefined || property.energyEmissionsRating || property.energyEmissionsValue !== undefined ? <dl>
+                          {property.energyConsumptionRating || property.energyConsumptionValue !== undefined ? <div><dt>Consumo</dt><dd>{[property.energyConsumptionRating, property.energyConsumptionValue !== undefined ? `${property.energyConsumptionValue.toLocaleString('es-ES')} kWh/m²/año` : null].filter(Boolean).join(' · ')}</dd></div> : null}
+                          {property.energyEmissionsRating || property.energyEmissionsValue !== undefined ? <div><dt>Emisiones</dt><dd>{[property.energyEmissionsRating, property.energyEmissionsValue !== undefined ? `${property.energyEmissionsValue.toLocaleString('es-ES')} kg CO₂/m²/año` : null].filter(Boolean).join(' · ')}</dd></div> : null}
+                        </dl> : <p className="property-additional-details__notice">Certificado energético disponible.</p>
+                      ) : null}
+                    </section>
+                  ) : null}
+                </div>
+              ) : null}
+
               <section
+                id="property-location"
                 className="property-location"
                 aria-labelledby="property-location-title"
               >

@@ -11,3 +11,118 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
+
+.property-media-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.property-media-nav a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(17, 24, 50, 0.18);
+  color: var(--forest);
+  background: transparent;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.property-media-nav a:focus-visible {
+  outline: 2px solid var(--sand);
+  outline-offset: 3px;
+}
+
+.property-additional-details {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+  padding-top: clamp(3rem, 5vw, 4.5rem);
+}
+
+.property-additional-details section {
+  padding: clamp(1.4rem, 3vw, 2rem);
+  border: 1px solid rgba(17, 24, 50, 0.14);
+  background: var(--white);
+}
+
+.property-additional-details section > p:first-child {
+  margin: 0 0 0.7rem;
+  color: var(--sand-dark);
+  font-size: 0.56rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.property-additional-details h3 {
+  margin: 0 0 1.4rem;
+  color: var(--forest);
+  font: 500 clamp(1.8rem, 3vw, 2.5rem) / 1 'Cormorant Garamond', serif;
+  letter-spacing: -0.025em;
+}
+
+.property-additional-details dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.property-additional-details dl > div {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.65fr) minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid rgba(17, 24, 50, 0.1);
+}
+
+.property-additional-details dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.property-additional-details dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--forest);
+  font-size: 0.82rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.property-additional-details__notice {
+  margin: 0;
+  color: var(--forest);
+  font: 500 1.2rem / 1.45 'Cormorant Garamond', serif;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .property-media-nav a:hover {
+    border-color: var(--sand);
+    background: rgba(184, 148, 77, 0.08);
+  }
+}
+
+@media (max-width: 520px) {
+  .property-media-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .property-media-nav a {
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .property-additional-details dl > div {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+}

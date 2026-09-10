@@ -2,7 +2,9 @@ import { FormEvent, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import {
+  communityFeePeriodOptions,
   energyRatingOptions,
+  energyCertificateStatusOptions,
   heatingTypeOptions,
   isManagedPropertyFeature,
   orientationOptions,
@@ -10,6 +12,8 @@ import {
   propertyAmenityGroups,
   propertyConditionOptions,
   type EnergyRating,
+  type CommunityFeePeriod,
+  type EnergyCertificateStatus,
   type HeatingType,
   type ManagedPropertyFeature,
   type ParkingType,
@@ -95,8 +99,16 @@ type AdminProperty = {
   terrace: boolean;
   furnished: boolean;
   exterior: boolean;
+  video_url: string | null;
+  virtual_tour_url: string | null;
+  community_fee_amount: number | null;
+  community_fee_period: CommunityFeePeriod | null;
+  ibi_annual_amount: number | null;
+  energy_certificate_status: EnergyCertificateStatus | null;
   energy_consumption_rating: EnergyRating | null;
+  energy_consumption_value: number | null;
   energy_emissions_rating: EnergyRating | null;
+  energy_emissions_value: number | null;
   features: string[];
   description: string | null;
   featured: boolean;
@@ -132,8 +144,16 @@ type PropertyFormState = {
   terrace: boolean;
   furnished: boolean;
   exposure: '' | 'exterior' | 'interior';
+  videoUrl: string;
+  virtualTourUrl: string;
+  communityFeeAmount: string;
+  communityFeePeriod: CommunityFeePeriod | '';
+  ibiAnnualAmount: string;
+  energyCertificateStatus: EnergyCertificateStatus | '';
   energyConsumptionRating: EnergyRating | '';
+  energyConsumptionValue: string;
   energyEmissionsRating: EnergyRating | '';
+  energyEmissionsValue: string;
   managedFeatures: ManagedPropertyFeature[];
   legacyFeatures: string[];
   description: string;
@@ -264,8 +284,16 @@ function createFormState(property: AdminProperty): PropertyFormState {
     terrace: property.terrace,
     furnished: property.furnished,
     exposure: property.exterior ? 'exterior' : property.features.includes('Interior') ? 'interior' : '',
+    videoUrl: property.video_url ?? '',
+    virtualTourUrl: property.virtual_tour_url ?? '',
+    communityFeeAmount: property.community_fee_amount !== null ? String(property.community_fee_amount) : '',
+    communityFeePeriod: property.community_fee_period ?? '',
+    ibiAnnualAmount: property.ibi_annual_amount !== null ? String(property.ibi_annual_amount) : '',
+    energyCertificateStatus: property.energy_certificate_status ?? '',
     energyConsumptionRating: property.energy_consumption_rating ?? '',
+    energyConsumptionValue: property.energy_consumption_value !== null ? String(property.energy_consumption_value) : '',
     energyEmissionsRating: property.energy_emissions_rating ?? '',
+    energyEmissionsValue: property.energy_emissions_value !== null ? String(property.energy_emissions_value) : '',
     managedFeatures: property.features.filter(isManagedPropertyFeature).filter((feature) => feature !== 'Interior'),
     legacyFeatures: property.features.filter((feature) => !isManagedPropertyFeature(feature)),
     description: property.description ?? '',
@@ -396,8 +424,16 @@ export function AdminPropertyEditPage() {
               terrace,
               furnished,
               exterior,
+              video_url,
+              virtual_tour_url,
+              community_fee_amount,
+              community_fee_period,
+              ibi_annual_amount,
+              energy_certificate_status,
               energy_consumption_rating,
+              energy_consumption_value,
               energy_emissions_rating,
+              energy_emissions_value,
               features,
               description,
               featured,
@@ -564,8 +600,16 @@ export function AdminPropertyEditPage() {
       terrace: form.terrace,
       furnished: form.furnished,
       exterior: form.exposure === 'exterior',
+      video_url: nullableText(form.videoUrl),
+      virtual_tour_url: nullableText(form.virtualTourUrl),
+      community_fee_amount: nullableNumber(form.communityFeeAmount),
+      community_fee_period: form.communityFeeAmount.trim() ? form.communityFeePeriod || null : null,
+      ibi_annual_amount: nullableNumber(form.ibiAnnualAmount),
+      energy_certificate_status: form.energyCertificateStatus || null,
       energy_consumption_rating: form.energyConsumptionRating || null,
+      energy_consumption_value: nullableNumber(form.energyConsumptionValue),
       energy_emissions_rating: form.energyEmissionsRating || null,
+      energy_emissions_value: nullableNumber(form.energyEmissionsValue),
       features: [...form.legacyFeatures, ...form.managedFeatures, ...(form.exposure === 'interior' ? ['Interior'] : [])],
       description: nullableText(form.description),
       featured: form.featured,
@@ -1799,11 +1843,6 @@ export function AdminPropertyEditPage() {
             {orientationOptions.map((option) => <label className="admin-property-form__check" key={option.value}><input type="checkbox" checked={form.orientations.includes(option.value)} onChange={(event) => updateForm('orientations', event.target.checked ? [...form.orientations, option.value] : form.orientations.filter((item) => item !== option.value))} disabled={isDeletingProperty} /><span>{option.label}</span></label>)}
           </div></div>
 
-          <div className="admin-property-subsection"><h3>Certificación energética</h3><div className="admin-property-form__grid">
-            <label className="admin-property-form__field"><span>Consumo</span><select value={form.energyConsumptionRating} onChange={(event) => updateForm('energyConsumptionRating', event.target.value as EnergyRating | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
-            <label className="admin-property-form__field"><span>Emisiones</span><select value={form.energyEmissionsRating} onChange={(event) => updateForm('energyEmissionsRating', event.target.value as EnergyRating | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
-          </div></div>
-
           <p className="admin-property-form__check-help">
             Los inmuebles destacados pueden aparecer
             en posiciones preferentes de la web.
@@ -1813,6 +1852,41 @@ export function AdminPropertyEditPage() {
         <section className="admin-property-form__section">
           <div>
             <span>04</span>
+            <h2>Información adicional</h2>
+          </div>
+
+          <div className="admin-property-subsection admin-property-subsection--first">
+            <h3>Multimedia adicional</h3>
+            <div className="admin-property-form__grid">
+              <label className="admin-property-form__field"><span>Vídeo</span><input type="url" value={form.videoUrl} onChange={(event) => updateForm('videoUrl', event.target.value)} disabled={isDeletingProperty} placeholder="https://..." /><small className="admin-property-form__helper">YouTube, Vimeo u otra URL pública compatible.</small></label>
+              <label className="admin-property-form__field"><span>Visita virtual</span><input type="url" value={form.virtualTourUrl} onChange={(event) => updateForm('virtualTourUrl', event.target.value)} disabled={isDeletingProperty} placeholder="https://..." /><small className="admin-property-form__helper">Matterport, tour virtual u otra URL pública.</small></label>
+            </div>
+          </div>
+
+          <div className="admin-property-subsection">
+            <h3>Gastos</h3>
+            <div className="admin-property-form__grid">
+              <label className="admin-property-form__field"><span>Comunidad (€)</span><input type="number" min="0" step="0.01" value={form.communityFeeAmount} onChange={(event) => updateForm('communityFeeAmount', event.target.value)} disabled={isDeletingProperty} /></label>
+              <label className="admin-property-form__field"><span>Periodicidad</span><select value={form.communityFeePeriod} onChange={(event) => updateForm('communityFeePeriod', event.target.value as CommunityFeePeriod | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{communityFeePeriodOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+              <label className="admin-property-form__field"><span>IBI anual (€)</span><input type="number" min="0" step="0.01" value={form.ibiAnnualAmount} onChange={(event) => updateForm('ibiAnnualAmount', event.target.value)} disabled={isDeletingProperty} /></label>
+            </div>
+          </div>
+
+          <div className="admin-property-subsection">
+            <h3>Eficiencia energética</h3>
+            <div className="admin-property-form__grid">
+              <label className="admin-property-form__field"><span>Estado del certificado</span><select value={form.energyCertificateStatus} onChange={(event) => updateForm('energyCertificateStatus', event.target.value as EnergyCertificateStatus | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyCertificateStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+              <label className="admin-property-form__field"><span>Letra de consumo</span><select value={form.energyConsumptionRating} onChange={(event) => updateForm('energyConsumptionRating', event.target.value as EnergyRating | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
+              <label className="admin-property-form__field"><span>Consumo (kWh/m²/año)</span><input type="number" min="0" step="0.01" value={form.energyConsumptionValue} onChange={(event) => updateForm('energyConsumptionValue', event.target.value)} disabled={isDeletingProperty} /></label>
+              <label className="admin-property-form__field"><span>Letra de emisiones</span><select value={form.energyEmissionsRating} onChange={(event) => updateForm('energyEmissionsRating', event.target.value as EnergyRating | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
+              <label className="admin-property-form__field"><span>Emisiones (kg CO₂/m²/año)</span><input type="number" min="0" step="0.01" value={form.energyEmissionsValue} onChange={(event) => updateForm('energyEmissionsValue', event.target.value)} disabled={isDeletingProperty} /></label>
+            </div>
+          </div>
+        </section>
+
+        <section className="admin-property-form__section">
+          <div>
+            <span>05</span>
             <h2>Descripción</h2>
           </div>
 
@@ -2107,7 +2181,7 @@ export function AdminPropertyEditPage() {
       >
         <section className="admin-property-form__section">
           <div>
-            <span>05</span>
+            <span>06</span>
             <h2>Estado y publicación</h2>
           </div>
 

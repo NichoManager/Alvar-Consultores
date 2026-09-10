@@ -41,6 +41,7 @@ export function PropertyFloorplans({
 
   return (
     <section
+      id="property-floorplans"
       className="property-floorplans"
       aria-labelledby="property-floorplans-title"
     >
