@@ -23,28 +23,53 @@ import { getFeaturedProperties } from '../lib/properties';
 import type { Property } from '../types/content';
 
 const services = [
-  ['01', 'Comprar', 'Búsqueda, análisis de mercado, negociación y acompañamiento hasta la firma.'],
-  ['02', 'Vender', 'Valoración profesional, estrategia de comercialización, gestión de visitas y negociación.'],
-  ['03', 'Alquilar', 'Selección de inquilinos, formalización del contrato y asesoramiento durante la operación.'],
-  ['04', 'Consultoría', 'Trámites, inversión inmobiliaria, herencias, documentación y análisis de oportunidades.'],
+  [
+    '01',
+    'Comprar',
+    'Búsqueda, análisis de mercado, negociación y acompañamiento hasta la firma.',
+  ],
+  [
+    '02',
+    'Vender',
+    'Valoración profesional, estrategia de comercialización, gestión de visitas y negociación.',
+  ],
+  [
+    '03',
+    'Alquilar',
+    'Selección de inquilinos, formalización del contrato y asesoramiento durante la operación.',
+  ],
+  [
+    '04',
+    'Consultoría',
+    'Trámites, inversión inmobiliaria, herencias, documentación y análisis de oportunidades.',
+  ],
 ];
 
 export function HomePage() {
-  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
-  const [isLoadingFeatured, setIsLoadingFeatured] = useState(true);
+  const [featuredProperties, setFeaturedProperties] =
+    useState<Property[]>([]);
+
+  const [isLoadingFeatured, setIsLoadingFeatured] =
+    useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
     const loadFeaturedProperties = async () => {
       try {
-        const publishedFeatured = await getFeaturedProperties(3);
+        const publishedFeatured =
+          await getFeaturedProperties(3);
 
         if (isMounted) {
-          setFeaturedProperties(publishedFeatured);
+          setFeaturedProperties(
+            publishedFeatured,
+          );
         }
       } catch (error) {
-        console.error('Error loading featured properties:', error);
+        console.error(
+          'Error loading featured properties:',
+          error,
+        );
       } finally {
         if (isMounted) {
           setIsLoadingFeatured(false);
@@ -62,75 +87,126 @@ export function HomePage() {
   return (
     <>
       <SeoHead
-        title="Alvar Consultores Inmobiliarios | Inmobiliaria en Madrid"
-        description="Compra, vende o alquila tu inmueble con Alvar Consultores Inmobiliarios. Más de 18 años de experiencia en Madrid, Pinto, Móstoles y alrededores."
+        title="Inmobiliaria en Madrid | Alvar Consultores Inmobiliarios"
+        description="Inmobiliaria en Madrid para comprar, vender, alquilar e invertir con asesoramiento personal. Más de 18 años de experiencia y atención a operaciones en otras ubicaciones."
+        imageAlt="Alvar Consultores Inmobiliarios, inmobiliaria en Madrid"
       />
 
       <JsonLd
         data={{
           '@context': 'https://schema.org',
-          '@type': ['RealEstateAgent', 'LocalBusiness'],
+          '@type': [
+            'RealEstateAgent',
+            'LocalBusiness',
+          ],
           name: business.name,
           address: {
             '@type': 'PostalAddress',
-            streetAddress: 'Calle Ríos Rosas 42, Planta 1',
+            streetAddress:
+              'Calle Ríos Rosas 42, Planta 1',
             postalCode: '28003',
             addressLocality: 'Madrid',
             addressCountry: 'ES',
           },
-          telephone: business.phoneMobileHref,
+          telephone:
+            business.phoneMobileHref,
           areaServed: business.areas,
         }}
       />
 
       <Hero />
+
       <TrustBar />
+
       <QuickSearch />
 
-      <section id="inmuebles-destacados" className="featured-properties section-pad">
+      <section
+        id="inmuebles-destacados"
+        className="featured-properties section-pad"
+      >
         <Container>
           <Reveal className="featured-properties__intro">
             <div className="featured-properties__heading">
-              <p className="eyebrow">Propiedades seleccionadas</p>
+              <p className="eyebrow">
+                Propiedades seleccionadas
+              </p>
+
               <h2>
                 Inmuebles que merecen
                 <br />
-                <em>una mirada pausada.</em>
+
+                <em>
+                  una mirada pausada.
+                </em>
               </h2>
             </div>
 
             <div className="featured-properties__copy">
               <p>
-                Una selección inicial de referencias para mostrar el tipo de operación
-                que podemos gestionar en Madrid capital y alrededores: viviendas,
-                oportunidades residenciales y activos con criterio comercial.
+                Una selección de propiedades
+                disponibles para mostrar el tipo
+                de operaciones que gestionamos:
+                vivienda habitual, oportunidades
+                residenciales y activos con
+                potencial según cada ubicación.
               </p>
 
               <div className="featured-properties__actions">
-                <Button to="/inmuebles?operation=venta" variant="secondary">
+                <Button
+                  to="/inmuebles?operation=venta"
+                  variant="secondary"
+                >
                   Ver inmuebles en venta
                 </Button>
-                <a href="/contacto" className="featured-properties__link">
-                  Busco algo concreto <span aria-hidden="true">↗</span>
+
+                <a
+                  href="/contacto"
+                  className="featured-properties__link"
+                >
+                  Busco algo concreto{' '}
+
+                  <span aria-hidden="true">
+                    ↗
+                  </span>
                 </a>
               </div>
             </div>
           </Reveal>
 
           <Reveal className="featured-properties__bar">
-            <span>Madrid capital y alrededores</span>
+            <span>
+              Selección de propiedades
+            </span>
+
             <i aria-hidden="true" />
-            <span>Compra · venta · alquiler</span>
+
+            <span>
+              Compra · venta · alquiler
+            </span>
+
             <i aria-hidden="true" />
-            <span>Selección actualizada de nuestro catálogo</span>
+
+            <span>
+              Inventario público actualizado
+            </span>
           </Reveal>
 
           {isLoadingFeatured ? (
-            <p className="selection-note" role="status">
-              Cargando propiedades seleccionadas...
+            <p
+              className="selection-note"
+              role="status"
+            >
+              Cargando propiedades
+              seleccionadas...
             </p>
-          ) : featuredProperties.length > 0 ? (
-            <PropertyGrid properties={featuredProperties} editorial />
+          ) : featuredProperties.length >
+            0 ? (
+            <PropertyGrid
+              properties={
+                featuredProperties
+              }
+              editorial
+            />
           ) : null}
         </Container>
       </section>
@@ -143,91 +219,162 @@ export function HomePage() {
               eyebrow="¿ESTÁS PENSANDO EN VENDER?"
               title={
                 <>
-                  Vender tu propiedad exige algo más que <em>publicarla.</em>
+                  Vender tu propiedad
+                  exige algo más que{' '}
+
+                  <em>
+                    publicarla.
+                  </em>
                 </>
               }
               text="Definimos una estrategia de venta con valoración profesional, posicionamiento, gestión de visitas, negociación y acompañamiento documental hasta la firma."
             />
 
             <ul className="check-list seller-section__check-list">
-              <li>Valoración personalizada</li>
-              <li>Estrategia de precio</li>
-              <li>Gestión de visitas</li>
-              <li>Negociación y cierre</li>
-              <li>Documentación coordinada</li>
-              <li>Acompañamiento hasta la firma</li>
+              <li>
+                Valoración personalizada
+              </li>
+
+              <li>
+                Estrategia de precio
+              </li>
+
+              <li>
+                Gestión de visitas
+              </li>
+
+              <li>
+                Negociación y cierre
+              </li>
+
+              <li>
+                Documentación coordinada
+              </li>
+
+              <li>
+                Acompañamiento hasta la
+                firma
+              </li>
             </ul>
 
             <div className="seller-section__actions">
-              <Button to="/#valoracion" variant="light">
+              <Button
+                to="/#valoracion"
+                variant="light"
+              >
                 Solicitar valoración
               </Button>
+
               <a
                 href={`tel:${business.phoneMobileHref}`}
                 className="seller-section__phone"
                 aria-label={`Hablar con Alvar en el ${business.phoneMobile}`}
               >
-                <span>Hablar con Alvar</span>
-                <small>{business.phoneMobile}</small>
+                <span>
+                  Hablar con Alvar
+                </span>
+
+                <small>
+                  {business.phoneMobile}
+                </small>
               </a>
             </div>
           </Reveal>
 
-<Reveal className="seller-section__visual">
-  <div className="seller-section__media-card">
-    <img
-      className="seller-section__image"
-      src="/images/alvar/vender/vender-inmueble-estrategia-valoracion-madrid.webp"
-      alt="Estrategia de venta y valoración inmobiliaria en Madrid"
-      loading="lazy"
-      decoding="async"
-    />
+          <Reveal className="seller-section__visual">
+            <div className="seller-section__media-card">
+              <img
+                className="seller-section__image"
+                src="/images/alvar/vender/vender-inmueble-estrategia-valoracion-madrid.webp"
+                alt="Estrategia de venta y valoración inmobiliaria en Madrid"
+                loading="lazy"
+                decoding="async"
+              />
 
-    <div className="seller-section__panel">
-      <span>Servicio a propietarios</span>
-      <p>Estrategia, negociación y firma.</p>
+              <div className="seller-section__panel">
+                <span>
+                  Servicio a propietarios
+                </span>
 
-      <div
-        className="seller-section__stats"
-        aria-label="Experiencia y ámbito del servicio de venta"
-      >
-        <div>
-          <strong>18+</strong>
-          <small>años de experiencia</small>
-        </div>
+                <p>
+                  Estrategia, negociación y
+                  firma.
+                </p>
 
-        <div>
-          <strong>Madrid</strong>
-          <small>capital y alrededores</small>
-        </div>
+                <div
+                  className="seller-section__stats"
+                  aria-label="Experiencia y ámbito del servicio de venta"
+                >
+                  <div>
+                    <strong>
+                      18+
+                    </strong>
 
-        <div>
-          <strong>Valoración</strong>
-          <small>profesional</small>
-        </div>
-      </div>
-    </div>
-  </div>
-</Reveal>
+                    <small>
+                      años de experiencia
+                    </small>
+                  </div>
+
+                  <div>
+                    <strong>
+                      Madrid
+                    </strong>
+
+                    <small>
+                      mercado principal
+                    </small>
+                  </div>
+
+                  <div>
+                    <strong>
+                      Valoración
+                    </strong>
+
+                    <small>
+                      profesional
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </Container>
       </section>
 
-      <section id="valoracion" className="valuation-section section-pad">
+      <section
+        id="valoracion"
+        className="valuation-section section-pad"
+      >
         <Container className="valuation-section__grid">
           <Reveal className="valuation-section__content">
             <div className="valuation-section__intro">
-              <p className="eyebrow">VALORACIÓN PROFESIONAL</p>
-              <h2>
-                Vender bien empieza por <em>valorar bien.</em>
-              </h2>
-              <p className="valuation-section__lead">
-                Cuéntanos los datos básicos de tu inmueble y prepararemos una primera
-                orientación con criterio: ubicación, estado, demanda, operaciones
-                comparables y estrategia de salida al mercado.
+              <p className="eyebrow">
+                VALORACIÓN PROFESIONAL
               </p>
+
+              <h2>
+                Vender bien empieza por{' '}
+
+                <em>
+                  valorar bien.
+                </em>
+              </h2>
+
+              <p className="valuation-section__lead">
+                Cuéntanos los datos básicos
+                de tu inmueble y prepararemos
+                una primera orientación con
+                criterio: ubicación, estado,
+                demanda, operaciones
+                comparables y estrategia de
+                salida al mercado.
+              </p>
+
               <p className="valuation-section__note">
-                Sin compromiso inicial. Sin valoraciones automáticas infladas. Con
-                criterio inmobiliario real.
+                Sin compromiso inicial. Sin
+                valoraciones automáticas
+                infladas. Con criterio
+                inmobiliario real.
               </p>
             </div>
 
@@ -237,27 +384,56 @@ export function HomePage() {
               role="list"
             >
               {[
-                ['01', 'Análisis de zona'],
-                ['02', 'Precio de mercado'],
-                ['03', 'Estrategia de venta'],
-                ['04', 'Próximos pasos claros'],
-              ].map(([number, label]) => (
-                <div key={number} role="listitem">
-                  <span>{number}</span>
-                  <strong>{label}</strong>
-                </div>
-              ))}
-            </div>
+                [
+                  '01',
+                  'Análisis de zona',
+                ],
+                [
+                  '02',
+                  'Precio de mercado',
+                ],
+                [
+                  '03',
+                  'Estrategia de venta',
+                ],
+                [
+                  '04',
+                  'Próximos pasos claros',
+                ],
+              ].map(
+                ([number, label]) => (
+                  <div
+                    key={number}
+                    role="listitem"
+                  >
+                    <span>
+                      {number}
+                    </span>
 
+                    <strong>
+                      {label}
+                    </strong>
+                  </div>
+                ),
+              )}
+            </div>
           </Reveal>
 
           <Reveal className="valuation-section__form-panel">
             <div className="valuation-section__form-heading">
-              <span>Orientación personalizada</span>
-              <h3>Solicita tu valoración</h3>
+              <span>
+                Orientación personalizada
+              </span>
+
+              <h3>
+                Solicita tu valoración
+              </h3>
+
               <p>
-                Te responderemos para concretar los datos necesarios antes de darte una
-                orientación.
+                Te responderemos para
+                concretar los datos
+                necesarios antes de darte
+                una orientación.
               </p>
             </div>
 
@@ -266,7 +442,10 @@ export function HomePage() {
         </Container>
       </section>
 
-      <section id="servicios" className="services-home section-pad">
+      <section
+        id="servicios"
+        className="services-home section-pad"
+      >
         <Container>
           <Reveal>
             <SectionHeading
@@ -275,16 +454,27 @@ export function HomePage() {
                 <>
                   Una operación.
                   <br />
-                  <em>Cada decisión coordinada.</em>
+
+                  <em>
+                    Cada decisión
+                    coordinada.
+                  </em>
                 </>
               }
             />
           </Reveal>
 
           <div className="services-list">
-            {services.map(([number, title, text]) => (
-              <ServiceBlock key={number} number={number} title={title} text={text} />
-            ))}
+            {services.map(
+              ([number, title, text]) => (
+                <ServiceBlock
+                  key={number}
+                  number={number}
+                  title={title}
+                  text={text}
+                />
+              ),
+            )}
           </div>
         </Container>
       </section>
@@ -300,20 +490,41 @@ export function HomePage() {
                 label="Composición editorial inspirada en arquitectura residencial"
               />
 
-              <div className="about-home__seal" aria-hidden="true">
-                <strong>18+</strong>
-                <span>años</span>
+              <div
+                className="about-home__seal"
+                aria-hidden="true"
+              >
+                <strong>
+                  18+
+                </strong>
+
+                <span>
+                  años
+                </span>
               </div>
 
               <div className="about-home__caption">
-                <span>Madrid capital y alrededores</span>
-                <p>Valoración, estrategia, negociación y firma.</p>
+                <span>
+                  Base en Madrid
+                </span>
+
+                <p>
+                  Valoración, estrategia,
+                  negociación y firma.
+                </p>
               </div>
             </div>
 
             <div className="about-home__note">
-              <span>ALVAR CONSULTORES</span>
-              <p>Criterio inmobiliario, trato directo y acompañamiento real.</p>
+              <span>
+                ALVAR CONSULTORES
+              </span>
+
+              <p>
+                Criterio inmobiliario,
+                trato directo y
+                acompañamiento real.
+              </p>
             </div>
           </Reveal>
 
@@ -322,46 +533,89 @@ export function HomePage() {
               eyebrow="ALVAR CONSULTORES"
               title={
                 <>
-                  Experiencia inmobiliaria.
+                  Experiencia
+                  inmobiliaria.
                   <br />
-                  <em>Trato personal.</em>
+
+                  <em>
+                    Trato personal.
+                  </em>
                 </>
               }
             />
 
             <p>
-              Comprar, vender o alquilar una propiedad no debería sentirse como una
-              sucesión de dudas. En Alvar Consultores Inmobiliarios ordenamos el
-              proceso desde el primer contacto: valoración, estrategia, visitas,
-              negociación, documentación y firma.
+              Comprar, vender o alquilar
+              una propiedad no debería
+              sentirse como una sucesión
+              de dudas. En Alvar
+              Consultores Inmobiliarios
+              ordenamos el proceso desde
+              el primer contacto:
+              valoración, estrategia,
+              visitas, negociación,
+              documentación y firma.
             </p>
 
             <p>
-              Más de 18 años de experiencia nos permiten combinar conocimiento del
-              mercado con una forma de trabajar cercana, transparente y centrada en
-              proteger cada decisión importante.
+              Más de 18 años de
+              experiencia nos permiten
+              combinar conocimiento del
+              mercado con una forma de
+              trabajar cercana,
+              transparente y centrada en
+              proteger cada decisión
+              importante.
             </p>
 
-            <div className="about-home__facts" aria-label="Datos destacados de Alvar Consultores">
+            <div
+              className="about-home__facts"
+              aria-label="Datos destacados de Alvar Consultores"
+            >
               <div>
-                <strong>18+</strong>
-                <span>años de experiencia</span>
+                <strong>
+                  18+
+                </strong>
+
+                <span>
+                  años de experiencia
+                </span>
               </div>
+
               <div>
-                <strong>5,0</strong>
-                <span>valoración en Google</span>
+                <strong>
+                  5,0
+                </strong>
+
+                <span>
+                  valoración en Google
+                </span>
               </div>
+
               <div>
-                <strong>1</strong>
-                <span>interlocutor de confianza</span>
+                <strong>
+                  1
+                </strong>
+
+                <span>
+                  interlocutor de
+                  confianza
+                </span>
               </div>
             </div>
 
             <div className="about-home__actions">
-              <Button to="/nosotros" variant="secondary">
+              <Button
+                to="/nosotros"
+                variant="secondary"
+              >
                 Conoce nuestro enfoque
               </Button>
-              <a href={`tel:${business.phoneMobileHref}`} className="text-link">
+
+              <a
+                href={`tel:${business.phoneMobileHref}`}
+                className="text-link"
+              >
                 Hablar con Alvar ↗
               </a>
             </div>
@@ -369,22 +623,39 @@ export function HomePage() {
         </Container>
       </section>
 
-      <section id="proceso" className="process-section section-pad">
+      <section
+        id="proceso"
+        className="process-section section-pad"
+      >
         <Container>
           <Reveal className="process-section__intro">
             <div className="process-section__heading">
-              <p className="eyebrow">NUESTRO PROCESO</p>
+              <p className="eyebrow">
+                NUESTRO PROCESO
+              </p>
+
               <h2>
-                De la primera conversación <em>a la firma.</em>
+                De la primera conversación{' '}
+
+                <em>
+                  a la firma.
+                </em>
               </h2>
             </div>
 
             <div className="process-section__copy">
               <p>
-                Ordenamos cada fase para que sepas qué toca decidir, qué documentación
-                preparar y cómo avanzar con seguridad.
+                Ordenamos cada fase para
+                que sepas qué toca decidir,
+                qué documentación preparar
+                y cómo avanzar con
+                seguridad.
               </p>
-              <span>Madrid capital y alrededores · Acompañamiento de principio a fin</span>
+
+              <span>
+                Acompañamiento de principio
+                a fin · Trato directo
+              </span>
             </div>
           </Reveal>
 
@@ -415,96 +686,167 @@ export function HomePage() {
                 'Firmamos',
                 'Acompañamos el cierre de la operación para que llegues a la firma con todo claro.',
               ],
-            ].map(([number, title, text]) => (
-              <li key={number} className="process-section__item">
-                <Reveal className="process-section__item-inner">
-                  <span>{number}</span>
-                  <h3>{title}</h3>
-                  <p>{text}</p>
-                </Reveal>
-              </li>
-            ))}
+            ].map(
+              ([number, title, text]) => (
+                <li
+                  key={number}
+                  className="process-section__item"
+                >
+                  <Reveal className="process-section__item-inner">
+                    <span>
+                      {number}
+                    </span>
+
+                    <h3>
+                      {title}
+                    </h3>
+
+                    <p>
+                      {text}
+                    </p>
+                  </Reveal>
+                </li>
+              ),
+            )}
           </ol>
 
           <Reveal className="process-section__footer">
-            <p>Cada operación tiene matices. El método ayuda a tomar mejores decisiones.</p>
-            <Button to="/contacto" variant="secondary">
+            <p>
+              Cada operación tiene
+              matices. El método ayuda a
+              tomar mejores decisiones.
+            </p>
+
+            <Button
+              to="/contacto"
+              variant="secondary"
+            >
               Hablar del proceso
             </Button>
           </Reveal>
         </Container>
       </section>
 
-      <section id="zonas" className="areas-section section-pad">
+      <section
+        id="zonas"
+        className="areas-section section-pad"
+      >
         <Container className="areas-section__grid">
           <Reveal className="areas-section__content">
-            <p className="eyebrow">CONOCIMIENTO LOCAL</p>
-            <h2>
-              Madrid capital y alrededores, <em>analizados con criterio.</em>
-            </h2>
-            <p className="areas-section__lead">
-              Cada zona tiene una lógica distinta: demanda, precio, tiempos de venta,
-              perfil comprador, comunicaciones y potencial de revalorización. Por eso
-              no trabajamos con respuestas genéricas.
+            <p className="eyebrow">
+              ÁMBITO DE ACTUACIÓN
             </p>
 
-            <div className="areas-section__coverage" aria-label="Ámbito geográfico de trabajo">
-              <span>Madrid capital</span>
+            <h2>
+              Madrid como punto de partida.{' '}
+
+              <em>
+                Una visión que va más allá.
+              </em>
+            </h2>
+
+            <p className="areas-section__lead">
+              Nuestro conocimiento
+              principal está en Madrid y su
+              mercado inmobiliario. Cuando
+              una operación lo requiere,
+              estudiamos también
+              propiedades y oportunidades
+              en otras ubicaciones,
+              adaptando el análisis a la
+              realidad de cada mercado.
+            </p>
+
+            <div
+              className="areas-section__coverage"
+              aria-label="Ámbito geográfico de trabajo"
+            >
+              <span>
+                Madrid
+              </span>
+
               <i aria-hidden="true" />
-              <span>Área metropolitana</span>
+
+              <span>
+                Comunidad de Madrid
+              </span>
+
               <i aria-hidden="true" />
-              <span>Municipios próximos</span>
+
+              <span>
+                Otras ubicaciones
+              </span>
             </div>
 
             <p className="areas-section__map-note">
-              Lectura residencial, patrimonial y de inversión para cada ubicación.
+              Analizamos cada operación por
+              su ubicación, demanda,
+              comparables, precio y objetivo
+              comercial.
             </p>
 
-            <Button to="/contacto" variant="secondary">
-              Cuéntanos qué zona buscas
+            <Button
+              to="/contacto"
+              variant="secondary"
+            >
+              Cuéntanos dónde está tu
+              inmueble
             </Button>
 
-            <span className="areas-section__index">05 / ZONAS</span>
+            <span className="areas-section__index">
+              05 / ÁMBITO
+            </span>
           </Reveal>
 
-          <ol className="area-list" aria-label="Zonas de conocimiento inmobiliario">
+          <ol
+            className="area-list"
+            aria-label="Ámbito de actuación inmobiliaria"
+          >
             {[
               [
                 '01',
                 'Madrid capital',
-                'Barrios consolidados, demanda activa y operaciones con lectura patrimonial.',
+                'Nuestro mercado principal, con análisis de barrios, demanda, precios, comparables y posicionamiento.',
               ],
               [
                 '02',
-                'Norte de Madrid',
-                'Zonas residenciales, familias, comunicación y búsqueda de vivienda principal.',
+                'Comunidad de Madrid',
+                'Municipios y áreas metropolitanas con dinámicas propias de vivienda habitual, inversión y movilidad.',
               ],
               [
                 '03',
-                'Sur de Madrid',
-                'Municipios próximos, vivienda habitual, rotación y oportunidades de precio.',
+                'Entorno de Madrid',
+                'Estudiamos operaciones en localidades próximas cuando el inmueble y el objetivo requieren una lectura específica del mercado.',
               ],
               [
                 '04',
-                'Este y oeste',
-                'Áreas metropolitanas con perfiles diversos y potencial según ubicación concreta.',
+                'Otras ubicaciones',
+                'Valoramos operaciones fuera de Madrid según el activo, el servicio necesario y la viabilidad de ofrecer un acompañamiento adecuado.',
               ],
-              [
-                '05',
-                'Pinto y Móstoles',
-                'Conocimiento cercano de municipios donde cada barrio marca diferencias.',
-              ],
-            ].map(([number, place, detail]) => (
-              <li className="area-list__item" key={number}>
-                <Reveal className="area-list__item-inner">
-                  <span>{number}</span>
-                  <div>
-                    <h3>{place}</h3>
-                    <p>{detail}</p>
-                  </div>
-                </Reveal>
-              </li>
-            ))}
+            ].map(
+              ([number, place, detail]) => (
+                <li
+                  className="area-list__item"
+                  key={number}
+                >
+                  <Reveal className="area-list__item-inner">
+                    <span>
+                      {number}
+                    </span>
+
+                    <div>
+                      <h3>
+                        {place}
+                      </h3>
+
+                      <p>
+                        {detail}
+                      </p>
+                    </div>
+                  </Reveal>
+                </li>
+              ),
+            )}
           </ol>
         </Container>
       </section>
@@ -512,34 +854,64 @@ export function HomePage() {
       <section className="investment-section section-pad">
         <Container className="investment-section__grid">
           <Reveal className="investment-section__content">
-            <p className="eyebrow">INVERSIÓN INMOBILIARIA</p>
+            <p className="eyebrow">
+              INVERSIÓN INMOBILIARIA
+            </p>
+
             <h2>
-              Decisiones inmobiliarias con <em>mirada patrimonial.</em>
+              Decisiones inmobiliarias con{' '}
+
+              <em>
+                mirada patrimonial.
+              </em>
             </h2>
+
             <p className="investment-section__lead">
-              Asesoramos a clientes que buscan comprar, vender o invertir con una lectura
-              clara del activo, la zona, el precio de mercado y el potencial real de cada
+              Asesoramos a clientes que
+              buscan comprar, vender o
+              invertir con una lectura
+              clara del activo, la zona, el
+              precio de mercado y el
+              potencial real de cada
               operación.
             </p>
+
             <p className="investment-section__microcopy">
-              No se trata de comprar rápido. Se trata de comprar bien.
+              No se trata de comprar
+              rápido. Se trata de comprar
+              bien.
             </p>
 
             <div className="investment-section__actions">
-              <Button to="/contacto" variant="light">
+              <Button
+                to="/contacto"
+                variant="light"
+              >
                 Consultar una oportunidad
               </Button>
-              <span>06 / INVERSIÓN</span>
+
+              <span>
+                06 / INVERSIÓN
+              </span>
             </div>
           </Reveal>
 
           <Reveal className="investment-section__panel">
             <div className="investment-section__highlight">
-              <span>Consultoría inmobiliaria</span>
-              <h3>Criterio antes de decidir</h3>
+              <span>
+                Consultoría inmobiliaria
+              </span>
+
+              <h3>
+                Criterio antes de decidir
+              </h3>
+
               <p>
-                Antes de avanzar, revisamos ubicación, estado del inmueble, comparables,
-                documentación y objetivo de la operación.
+                Antes de avanzar, revisamos
+                ubicación, estado del
+                inmueble, comparables,
+                documentación y objetivo de
+                la operación.
               </p>
             </div>
 
@@ -548,29 +920,65 @@ export function HomePage() {
               aria-label="Factores del análisis de inversión inmobiliaria"
             >
               {[
-                ['01', 'Análisis de oportunidad'],
-                ['02', 'Precio de mercado'],
-                ['03', 'Potencial de alquiler'],
-                ['04', 'Perfil de demanda'],
-                ['05', 'Rentabilidad estimada'],
-                ['06', 'Riesgos y próximos pasos'],
-              ].map(([number, factor]) => (
-                <li key={number}>
-                  <span>{number}</span>
-                  <strong>{factor}</strong>
-                </li>
-              ))}
+                [
+                  '01',
+                  'Análisis de oportunidad',
+                ],
+                [
+                  '02',
+                  'Precio de mercado',
+                ],
+                [
+                  '03',
+                  'Potencial de alquiler',
+                ],
+                [
+                  '04',
+                  'Perfil de demanda',
+                ],
+                [
+                  '05',
+                  'Rentabilidad estimada',
+                ],
+                [
+                  '06',
+                  'Riesgos y próximos pasos',
+                ],
+              ].map(
+                ([number, factor]) => (
+                  <li key={number}>
+                    <span>
+                      {number}
+                    </span>
+
+                    <strong>
+                      {factor}
+                    </strong>
+                  </li>
+                ),
+              )}
             </ul>
 
             <div className="investment-section__panel-footer">
-              <span>Madrid capital y alrededores</span>
-              <small>Estimaciones orientativas sujetas al análisis de cada operación.</small>
+              <span>
+                Análisis según activo y
+                ubicación
+              </span>
+
+              <small>
+                Estimaciones orientativas
+                sujetas al análisis de cada
+                operación.
+              </small>
             </div>
           </Reveal>
         </Container>
       </section>
 
-      <section id="opiniones" className="reviews-section section-pad">
+      <section
+        id="opiniones"
+        className="reviews-section section-pad"
+      >
         <Container>
           <Reveal className="reviews-section__header">
             <div
@@ -578,78 +986,161 @@ export function HomePage() {
               role="img"
               aria-label="Valoración media de 5 sobre 5 en Google, basada en 12 reseñas"
             >
-              <span className="rating__label" aria-hidden="true">
+              <span
+                className="rating__label"
+                aria-hidden="true"
+              >
                 Valoración media
               </span>
-              <strong>5,0</strong>
-              <span className="rating__stars" aria-hidden="true">
+
+              <strong>
+                5,0
+              </strong>
+
+              <span
+                className="rating__stars"
+                aria-hidden="true"
+              >
                 ★★★★★
               </span>
-              <small>Google · 12 reseñas</small>
+
+              <small>
+                Google · 12 reseñas
+              </small>
             </div>
 
             <div className="reviews-section__intro">
-              <p className="eyebrow">OPINIONES</p>
+              <p className="eyebrow">
+                OPINIONES
+              </p>
+
               <h2>
-                Confianza en operaciones <em>que importan.</em>
+                Confianza en operaciones{' '}
+
+                <em>
+                  que importan.
+                </em>
               </h2>
+
               <p>
-                Comprar, vender o alquilar una propiedad implica decisiones relevantes.
-                Por eso el trato, la claridad y el acompañamiento pesan tanto como el
-                resultado.
+                Comprar, vender o alquilar
+                una propiedad implica
+                decisiones relevantes. Por
+                eso el trato, la claridad y
+                el acompañamiento pesan
+                tanto como el resultado.
               </p>
             </div>
           </Reveal>
 
-          <p className="reviews-disclaimer" role="note">
-            Opiniones de clientes · síntesis de experiencias, no citas literales verificadas
+          <p
+            className="reviews-disclaimer"
+            role="note"
+          >
+            Opiniones de clientes · síntesis
+            de experiencias, no citas
+            literales verificadas
           </p>
 
           <div className="review-grid">
-            {reviews.map((review, index) => (
-              <ReviewCard key={review.source} review={review} index={index} />
-            ))}
+            {reviews.map(
+              (review, index) => (
+                <ReviewCard
+                  key={review.source}
+                  review={review}
+                  index={index}
+                />
+              ),
+            )}
           </div>
         </Container>
       </section>
 
       <CTASection variant="home" />
+
       <LocationBlock />
 
-      <section className="home-contact-form section-pad" aria-labelledby="home-contact-title">
+      <section
+        className="home-contact-form section-pad"
+        aria-labelledby="home-contact-title"
+      >
         <Container className="home-contact-form__grid">
           <Reveal className="home-contact-form__content">
-            <p className="eyebrow">CONTACTO</p>
-            <h2 id="home-contact-title">Explícanos tu caso y te orientamos.</h2>
+            <p className="eyebrow">
+              CONTACTO
+            </p>
+
+            <h2 id="home-contact-title">
+              Explícanos tu caso y te
+              orientamos.
+            </h2>
+
             <p className="home-contact-form__lead">
-              Cuanto más contexto nos des, mejor podremos ayudarte: tipo de operación, zona, situación del inmueble y
+              Cuanto más contexto nos des,
+              mejor podremos ayudarte: tipo
+              de operación, ubicación,
+              situación del inmueble y
               objetivo.
             </p>
 
             <div className="home-contact-form__details">
               <div>
-                <span>Habla con nosotros</span>
-                <a href={`tel:${business.phoneMobileHref}`}>{business.phoneMobile}</a>
-                <small>Contacto móvil</small>
+                <span>
+                  Habla con nosotros
+                </span>
+
+                <a
+                  href={`tel:${business.phoneMobileHref}`}
+                >
+                  {business.phoneMobile}
+                </a>
+
+                <small>
+                  Contacto móvil
+                </small>
               </div>
+
               <div>
-                <span>Área de trabajo</span>
-                <strong>Madrid capital y alrededores</strong>
-                <small>Compra · Venta · Alquiler · Inversión</small>
+                <span>
+                  Área principal
+                </span>
+
+                <strong>
+                  Madrid y Comunidad de
+                  Madrid
+                </strong>
+
+                <small>
+                  Consultamos también
+                  operaciones en otras
+                  ubicaciones
+                </small>
               </div>
             </div>
 
             <p className="home-contact-form__note">
-              Trato directo, información clara y próximos pasos adaptados a tu operación.
+              Trato directo, información
+              clara y próximos pasos
+              adaptados a tu operación.
             </p>
           </Reveal>
 
           <Reveal className="home-contact-form__panel">
             <div className="home-contact-form__panel-heading">
-              <p className="eyebrow">CONTACTO DIRECTO</p>
-              <h3>Cuéntanos qué necesitas.</h3>
-              <p>Responderemos para ordenar contigo los próximoEs pasos.</p>
+              <p className="eyebrow">
+                CONTACTO DIRECTO
+              </p>
+
+              <h3>
+                Cuéntanos qué necesitas.
+              </h3>
+
+              <p>
+                Responderemos para ordenar
+                contigo los próximos pasos.
+              </p>
             </div>
+
             <ContactForm />
           </Reveal>
         </Container>
