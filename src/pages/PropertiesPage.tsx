@@ -11,7 +11,6 @@ import { business } from '../data/business';
 import {
   buildPropertyLocationOptions,
   buildPropertyTypeOptions,
-  defaultPropertyFilters,
   filterProperties,
   propertyFiltersFromSearchParams,
   propertyFiltersToSearchParams,
