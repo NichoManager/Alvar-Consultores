@@ -13,16 +13,17 @@ export const business = {
   postalAddress: '28003 Madrid',
 
   instagram: '@alvarconsultoresinmobiliarios',
-  instagramUrl: 'https://www.instagram.com/alvarconsultoresinmobiliarios/',
+  instagramUrl:
+    'https://www.instagram.com/alvarconsultoresinmobiliarios/',
 
   tiktok: '@alvarconsultores',
-  tiktokUrl: 'https://www.tiktok.com/@alvarconsultores',
+  tiktokUrl:
+    'https://www.tiktok.com/@alvarconsultores',
 
   areas: [
     'Madrid',
-    'Pinto',
-    'Móstoles',
-    'Sur de Madrid',
+    'Comunidad de Madrid',
+    'España',
   ],
 } as const;
 
