@@ -124,7 +124,9 @@ export function PropertyDetailPage() {
     property.mapLocation ||
     [property.area, property.city, property.province]
       .filter(Boolean)
-      .join(', ');
+    .join(', ');
+  const detailCharacteristics = property.characteristics ?? property.features;
+  const detailEquipment = property.equipment ?? [];
   const encodedMapLocation = encodeURIComponent(mapLocation);
   const googleMapsEmbedUrl = `https://www.google.com/maps?q=${encodedMapLocation}&output=embed`;
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedMapLocation}`;
@@ -268,11 +270,11 @@ export function PropertyDetailPage() {
                 </div>
 
                 <div className="property-feature-groups">
-                  {(property.characteristics ?? []).length ? (
-                    <div><h4>Características</h4><ul className="feature-grid">{property.characteristics?.map((feature, index) => <li key={feature}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{feature}</li>)}</ul></div>
+                  {detailCharacteristics.length ? (
+                    <div><h4>Características</h4><ul className="feature-grid">{detailCharacteristics.map((feature, index) => <li key={feature}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{feature}</li>)}</ul></div>
                   ) : null}
-                  {(property.equipment ?? []).length ? (
-                    <div><h4>Equipamiento</h4><ul className="feature-grid">{property.equipment?.map((feature, index) => <li key={feature}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{feature}</li>)}</ul></div>
+                  {detailEquipment.length ? (
+                    <div><h4>Equipamiento</h4><ul className="feature-grid">{detailEquipment.map((feature, index) => <li key={feature}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{feature}</li>)}</ul></div>
                   ) : null}
                 </div>
               </section>
