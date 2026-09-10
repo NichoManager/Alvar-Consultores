@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom';
+import { WhatsAppFloatingButton } from '../WhatsAppFloatingButton';
 import { Footer } from './Footer';
 import { Header } from './Header';
 
@@ -18,6 +19,7 @@ export function SiteLayout() {
       <Header />
       <main id="main-content"><Outlet /></main>
       <Footer />
+      <WhatsAppFloatingButton />
       <ScrollRestoration />
     </>
   );
