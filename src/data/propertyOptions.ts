@@ -30,6 +30,7 @@ export const propertyTypeOptions = [
   { value: 'Estudio', label: 'Estudio' },
   { value: 'Local', label: 'Local' },
   { value: 'Oficina', label: 'Oficina' },
+  { value: 'Garaje', label: 'Garaje' },
   { value: 'Terreno', label: 'Terreno' },
   { value: 'Otro', label: 'Otro' },
 ] as const;
