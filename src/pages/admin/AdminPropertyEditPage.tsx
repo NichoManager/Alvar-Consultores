@@ -290,6 +290,7 @@ export function AdminPropertyEditPage() {
   const [isSavingData, setIsSavingData] = useState(false);
   const [isSavingStatus, setIsSavingStatus] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingFloorplans, setIsUploadingFloorplans] = useState(false);
   const [isManaging, setIsManaging] = useState(false);
   const [isDeletingProperty, setIsDeletingProperty] = useState(false);
 
@@ -634,6 +635,7 @@ export function AdminPropertyEditPage() {
       !property ||
       selectedFiles.length === 0 ||
       isUploading ||
+      isUploadingFloorplans ||
       isManaging ||
       isDeletingProperty
     ) {
@@ -808,6 +810,7 @@ export function AdminPropertyEditPage() {
     if (
       isManaging ||
       isUploading ||
+      isUploadingFloorplans ||
       isDeletingProperty
     ) {
       return;
@@ -882,6 +885,7 @@ export function AdminPropertyEditPage() {
     if (
       isManaging ||
       isUploading ||
+      isUploadingFloorplans ||
       isDeletingProperty ||
       nextIndex < 0 ||
       nextIndex >= mediaItems.length
@@ -944,6 +948,7 @@ export function AdminPropertyEditPage() {
     if (
       isManaging ||
       isUploading ||
+      isUploadingFloorplans ||
       isDeletingProperty ||
       !window.confirm(
         '¿Seguro que quieres eliminar esta fotografía?',
@@ -1054,14 +1059,14 @@ export function AdminPropertyEditPage() {
   };
 
   const handleFloorplanUpload = async (selectedFiles: File[]) => {
-    if (!property || !selectedFiles.length || isUploading || isManaging || isDeletingProperty) return;
+    if (!property || !selectedFiles.length || isUploading || isUploadingFloorplans || isManaging || isDeletingProperty) return;
     const validation = validateFloorplanFiles(selectedFiles);
     if (!validation.validFiles.length) {
       setFloorplanError(validation.errors.join(' '));
       return;
     }
     setFloorplanError('');
-    setIsUploading(true);
+    setIsUploadingFloorplans(true);
     try {
       const result = await uploadPropertyFloorplans({
         propertyId: property.id,
@@ -1076,7 +1081,7 @@ export function AdminPropertyEditPage() {
       console.error('Unexpected floorplan upload error:', unexpectedError);
       setFloorplanError('No se han podido completar las subidas de planos. Inténtalo de nuevo.');
     } finally {
-      setIsUploading(false);
+      setIsUploadingFloorplans(false);
     }
   };
 
@@ -1200,6 +1205,7 @@ export function AdminPropertyEditPage() {
       isSavingData ||
       isSavingStatus ||
       isUploading ||
+      isUploadingFloorplans ||
       isManaging
     ) {
       return;
@@ -1908,6 +1914,7 @@ export function AdminPropertyEditPage() {
               accept="image/jpeg,image/png,image/webp,image/avif"
               disabled={
                 isUploading ||
+                isUploadingFloorplans ||
                 isManaging ||
                 isDeletingProperty
               }
@@ -2067,8 +2074,8 @@ export function AdminPropertyEditPage() {
             <p>Gestiona los planos por separado de la galería de fotografías.</p>
           </div>
           <label>
-            <span>{isUploading ? 'Subiendo planos...' : 'Añadir planos'}</span>
-            <input type="file" multiple accept={FLOORPLAN_ACCEPT} disabled={isUploading || isManaging || isDeletingProperty} onChange={(event) => { const files = Array.from(event.target.files ?? []); event.target.value = ''; void handleFloorplanUpload(files); }} />
+            <span>{isUploadingFloorplans ? 'Subiendo planos...' : 'Añadir planos'}</span>
+            <input type="file" multiple accept={FLOORPLAN_ACCEPT} disabled={isUploading || isUploadingFloorplans || isManaging || isDeletingProperty} onChange={(event) => { const files = Array.from(event.target.files ?? []); event.target.value = ''; void handleFloorplanUpload(files); }} />
             <small>JPG, PNG o WEBP · Máximo 10 MB por archivo</small>
           </label>
         </div>
@@ -2083,9 +2090,9 @@ export function AdminPropertyEditPage() {
                 <div>
                   <span>Plano {index + 1}</span>
                   <span>
-                    <button type="button" onClick={() => void handleMove(index, -1, floorplans)} disabled={isManaging || isUploading || isDeletingProperty || index === 0} aria-label={`Subir plano ${index + 1}`}>↑</button>
-                    <button type="button" onClick={() => void handleMove(index, 1, floorplans)} disabled={isManaging || isUploading || isDeletingProperty || index === floorplans.length - 1} aria-label={`Bajar plano ${index + 1}`}>↓</button>
-                    <button type="button" onClick={() => void handleDelete(image)} disabled={isManaging || isUploading || isDeletingProperty}>Eliminar</button>
+                    <button type="button" onClick={() => void handleMove(index, -1, floorplans)} disabled={isManaging || isUploading || isUploadingFloorplans || isDeletingProperty || index === 0} aria-label={`Subir plano ${index + 1}`}>↑</button>
+                    <button type="button" onClick={() => void handleMove(index, 1, floorplans)} disabled={isManaging || isUploading || isUploadingFloorplans || isDeletingProperty || index === floorplans.length - 1} aria-label={`Bajar plano ${index + 1}`}>↓</button>
+                    <button type="button" onClick={() => void handleDelete(image)} disabled={isManaging || isUploading || isUploadingFloorplans || isDeletingProperty}>Eliminar</button>
                   </span>
                 </div>
               </article>
@@ -2174,6 +2181,7 @@ export function AdminPropertyEditPage() {
             disabled={
               isSavingStatus ||
               isUploading ||
+              isUploadingFloorplans ||
               isManaging ||
               isDeletingProperty
             }

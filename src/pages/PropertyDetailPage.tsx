@@ -254,7 +254,7 @@ export function PropertyDetailPage() {
                 </div>
               </div>
 
-              <section
+              {detailCharacteristics.length || detailEquipment.length ? <section
                 className="property-features"
                 aria-labelledby="property-features-title"
               >
@@ -277,7 +277,7 @@ export function PropertyDetailPage() {
                     <div><h4>Equipamiento</h4><ul className="feature-grid">{detailEquipment.map((feature, index) => <li key={feature}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{feature}</li>)}</ul></div>
                   ) : null}
                 </div>
-              </section>
+              </section> : null}
 
               <section
                 className="property-location"
