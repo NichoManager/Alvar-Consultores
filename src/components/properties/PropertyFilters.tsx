@@ -41,6 +41,15 @@ const featureFilters: Array<{
   },
 ];
 
+const minimumRoomOptions = [
+  { value: '', label: 'Cualquiera' },
+  { value: '1', label: '1 o más' },
+  { value: '2', label: '2 o más' },
+  { value: '3', label: '3 o más' },
+  { value: '4', label: '4 o más' },
+  { value: '5', label: '5 o más' },
+] as const;
+
 export function PropertyFilters({
   value,
   locationOptions,
@@ -61,6 +70,9 @@ export function PropertyFilters({
     useState<PropertyFilterState>(value);
 
   const [mobileOpen, setMobileOpen] =
+    useState(false);
+
+  const [advancedOpen, setAdvancedOpen] =
     useState(false);
 
   const [priceError, setPriceError] =
@@ -146,6 +158,7 @@ export function PropertyFilters({
 
   const clear = () => {
     setPriceError('');
+    setAdvancedOpen(false);
     setMobileOpen(false);
 
     if (lockedOperation) {
@@ -176,6 +189,43 @@ export function PropertyFilters({
       : lockedOperation === 'alquiler'
         ? 'ALQUILAR'
         : 'BUSCAR INMUEBLES';
+
+  const hasActiveDraftFilters =
+    (!lockedOperation &&
+      draft.operation !== '') ||
+    draft.province !== '' ||
+    draft.city !== '' ||
+    draft.area !== '' ||
+    draft.type !== '' ||
+    draft.minPrice !== '' ||
+    draft.maxPrice !== '' ||
+    draft.bedrooms !== '' ||
+    draft.bathrooms !== '' ||
+    draft.minArea !== '' ||
+    draft.terrace ||
+    draft.pool ||
+    draft.parking ||
+    draft.elevator ||
+    draft.garden ||
+    draft.patio ||
+    draft.storage ||
+    draft.balcony ||
+    draft.airConditioning ||
+    draft.accessible ||
+    draft.condition !== '';
+
+  const hasAdvancedFilters =
+    draft.terrace ||
+    draft.pool ||
+    draft.parking ||
+    draft.elevator ||
+    draft.garden ||
+    draft.patio ||
+    draft.storage ||
+    draft.balcony ||
+    draft.airConditioning ||
+    draft.accessible ||
+    draft.condition !== '';
 
   return (
     <>
@@ -310,237 +360,39 @@ export function PropertyFilters({
           </div>
         ) : null}
 
-        <div className="property-filters__main">
-          <PropertyLocationFilter
-            id="catalogue-location"
-            options={locationOptions}
-            value={selectedLocation}
-            onChange={(option) =>
-              setDraft((current) =>
-                applyLocationOption(
-                  current,
-                  option,
-                ),
-              )
-            }
-          />
-
-          <label>
-            Tipo de inmueble
-
-            <select
-              name="type"
-              value={draft.type}
-              onChange={update}
-            >
-              <option value="">
-                Todos los tipos
-              </option>
-
-              {typeOptions.map(
-                (option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ),
-              )}
-            </select>
-          </label>
-
-          <div className="property-filters__price">
-            <span className="property-filters__field-label">
-              Precio
-            </span>
-
-            <div className="property-filters__price-controls">
-              <label>
-                <span className="property-filters__visually-hidden">
-                  Precio mínimo
-                </span>
-
-                <input
-                  name="minPrice"
-                  type="number"
-                  inputMode="numeric"
-                  min="0"
-                  step="1000"
-                  value={draft.minPrice}
-                  onChange={update}
-                  placeholder="Desde"
-                />
-              </label>
-
-              <span
-                className="property-filters__price-separator"
-                aria-hidden="true"
+        <div className="property-filters__search-shell">
+          <div className="property-filters__main">
+            <div className="property-filters__main-field property-filters__main-field--location">
+              <PropertyLocationFilter
+                id="catalogue-location"
+                options={locationOptions}
+                value={selectedLocation}
+                onChange={(option) =>
+                  setDraft((current) =>
+                    applyLocationOption(
+                      current,
+                      option,
+                    ),
+                  )
+                }
               />
-
-              <label>
-                <span className="property-filters__visually-hidden">
-                  Precio máximo
-                </span>
-
-                <input
-                  name="maxPrice"
-                  type="number"
-                  inputMode="numeric"
-                  min="0"
-                  step="1000"
-                  value={draft.maxPrice}
-                  onChange={update}
-                  placeholder="Hasta"
-                />
-              </label>
             </div>
-          </div>
 
-          <button
-            className="property-filters__apply property-filters__apply--desktop"
-            type="submit"
-          >
-            <span>
-              Buscar inmuebles
-            </span>
-
-            <span aria-hidden="true">
-              →
-            </span>
-          </button>
-        </div>
-
-        {priceError ? (
-          <p
-            className="property-filters__error"
-            role="alert"
-          >
-            {priceError}
-          </p>
-        ) : null}
-
-        <div className="property-filters__secondary">
-          <label>
-            Habitaciones
-
-            <input
-              name="bedrooms"
-              type="number"
-              inputMode="numeric"
-              min="0"
-              step="1"
-              value={draft.bedrooms}
-              onChange={update}
-              placeholder="Cualquiera"
-            />
-          </label>
-
-          <label>
-            Baños
-
-            <input
-              name="bathrooms"
-              type="number"
-              inputMode="numeric"
-              min="0"
-              step="1"
-              value={draft.bathrooms}
-              onChange={update}
-              placeholder="Cualquiera"
-            />
-          </label>
-
-          <label>
-            Superficie mínima
-
-            <div className="property-filters__area-field">
-              <input
-                name="minArea"
-                type="number"
-                inputMode="numeric"
-                min="0"
-                step="1"
-                value={draft.minArea}
-                onChange={update}
-                placeholder="Sin mínimo"
-              />
-
+            <label className="property-filters__main-field">
               <span>
-                m²
+                Tipo de inmueble
               </span>
-            </div>
-          </label>
-        </div>
-
-        <details className="property-filters__more">
-          <summary>
-            <span>
-              Más filtros
-            </span>
-
-            <span
-              className="property-filters__more-icon"
-              aria-hidden="true"
-            >
-              +
-            </span>
-          </summary>
-
-          <div className="property-filters__more-content">
-            <div className="property-filters__advanced-heading">
-              <div>
-                <span>
-                  CARACTERÍSTICAS
-                </span>
-
-                <strong>
-                  Encuentra exactamente
-                  lo que buscas.
-                </strong>
-              </div>
-
-              <p>
-                Selecciona solo las
-                características
-                imprescindibles.
-              </p>
-            </div>
-
-            <div className="property-filters__features">
-              {featureFilters.map(
-                ({ key, label }) => (
-                  <label key={key}>
-                    <input
-                      name={key}
-                      type="checkbox"
-                      checked={Boolean(
-                        draft[key],
-                      )}
-                      onChange={update}
-                    />
-
-                    <span>
-                      {label}
-                    </span>
-                  </label>
-                ),
-              )}
-            </div>
-
-            <label className="property-filters__condition">
-              Estado del inmueble
 
               <select
-                name="condition"
-                value={draft.condition}
+                name="type"
+                value={draft.type}
                 onChange={update}
               >
                 <option value="">
-                  Cualquier estado
+                  Todos los tipos
                 </option>
 
-                {propertyConditionOptions.map(
+                {typeOptions.map(
                   (option) => (
                     <option
                       key={option.value}
@@ -552,30 +404,290 @@ export function PropertyFilters({
                 )}
               </select>
             </label>
-          </div>
-        </details>
 
-        <div className="property-filters__footer">
-          <div className="property-filters__footer-actions">
-            <button
-              className="property-filters__clear"
-              type="button"
-              onClick={clear}
-            >
-              Limpiar filtros
-            </button>
+            <div className="property-filters__main-field property-filters__price">
+              <span className="property-filters__field-label">
+                Precio
+              </span>
+
+              <div className="property-filters__price-controls">
+                <label>
+                  <span className="property-filters__visually-hidden">
+                    Precio mínimo
+                  </span>
+
+                  <input
+                    name="minPrice"
+                    type="number"
+                    inputMode="numeric"
+                    min="0"
+                    step="1000"
+                    value={draft.minPrice}
+                    onChange={update}
+                    placeholder="Desde"
+                  />
+                </label>
+
+                <span
+                  className="property-filters__price-separator"
+                  aria-hidden="true"
+                />
+
+                <label>
+                  <span className="property-filters__visually-hidden">
+                    Precio máximo
+                  </span>
+
+                  <input
+                    name="maxPrice"
+                    type="number"
+                    inputMode="numeric"
+                    min="0"
+                    step="1000"
+                    value={draft.maxPrice}
+                    onChange={update}
+                    placeholder="Hasta"
+                  />
+                </label>
+              </div>
+            </div>
 
             <button
-              className="property-filters__apply property-filters__apply--mobile"
+              className="property-filters__apply property-filters__apply--desktop"
               type="submit"
             >
-              Aplicar filtros
+              <span>
+                Buscar
+              </span>
 
               <span aria-hidden="true">
                 →
               </span>
             </button>
           </div>
+
+          {priceError ? (
+            <p
+              className="property-filters__error"
+              role="alert"
+            >
+              {priceError}
+            </p>
+          ) : null}
+
+          <div className="property-filters__secondary">
+            <label className="property-filters__secondary-field">
+              <span>
+                Habitaciones
+              </span>
+
+              <select
+                name="bedrooms"
+                value={draft.bedrooms}
+                onChange={update}
+              >
+                {minimumRoomOptions.map(
+                  (option) => (
+                    <option
+                      key={
+                        option.value ||
+                        'any-bedroom'
+                      }
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
+
+            <label className="property-filters__secondary-field">
+              <span>
+                Baños
+              </span>
+
+              <select
+                name="bathrooms"
+                value={draft.bathrooms}
+                onChange={update}
+              >
+                {minimumRoomOptions.map(
+                  (option) => (
+                    <option
+                      key={
+                        option.value ||
+                        'any-bathroom'
+                      }
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
+
+            <label className="property-filters__secondary-field">
+              <span>
+                Superficie
+              </span>
+
+              <div className="property-filters__area-field">
+                <input
+                  name="minArea"
+                  type="number"
+                  inputMode="numeric"
+                  min="0"
+                  step="1"
+                  value={draft.minArea}
+                  onChange={update}
+                  placeholder="Mínima"
+                />
+
+                <span>
+                  m²
+                </span>
+              </div>
+            </label>
+
+            <button
+              className={`property-filters__advanced-trigger${
+                advancedOpen
+                  ? ' is-open'
+                  : ''
+              }${
+                hasAdvancedFilters
+                  ? ' has-active-filters'
+                  : ''
+              }`}
+              type="button"
+              aria-expanded={advancedOpen}
+              aria-controls="property-advanced-filters"
+              onClick={() =>
+                setAdvancedOpen(
+                  (current) => !current,
+                )
+              }
+            >
+              <span>
+                Más filtros
+              </span>
+
+              {hasAdvancedFilters ? (
+                <i aria-hidden="true" />
+              ) : null}
+
+              <span
+                className="property-filters__advanced-trigger-icon"
+                aria-hidden="true"
+              >
+                +
+              </span>
+            </button>
+          </div>
+
+          {advancedOpen ? (
+            <div
+              id="property-advanced-filters"
+              className="property-filters__advanced"
+            >
+              <div className="property-filters__advanced-heading">
+                <div>
+                  <span>
+                    CARACTERÍSTICAS
+                  </span>
+
+                  <strong>
+                    Los detalles que importan.
+                  </strong>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setAdvancedOpen(false)
+                  }
+                >
+                  Cerrar
+                  <span aria-hidden="true">
+                    ↑
+                  </span>
+                </button>
+              </div>
+
+              <div className="property-filters__features">
+                {featureFilters.map(
+                  ({ key, label }) => (
+                    <label key={key}>
+                      <input
+                        name={key}
+                        type="checkbox"
+                        checked={Boolean(
+                          draft[key],
+                        )}
+                        onChange={update}
+                      />
+
+                      <span>
+                        {label}
+                      </span>
+                    </label>
+                  ),
+                )}
+              </div>
+
+              <label className="property-filters__condition">
+                <span>
+                  Estado del inmueble
+                </span>
+
+                <select
+                  name="condition"
+                  value={draft.condition}
+                  onChange={update}
+                >
+                  <option value="">
+                    Cualquier estado
+                  </option>
+
+                  {propertyConditionOptions.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+            </div>
+          ) : null}
+        </div>
+
+        <div className="property-filters__mobile-actions">
+          {hasActiveDraftFilters ? (
+            <button
+              className="property-filters__clear"
+              type="button"
+              onClick={clear}
+            >
+              Limpiar
+            </button>
+          ) : null}
+
+          <button
+            className="property-filters__apply property-filters__apply--mobile"
+            type="submit"
+          >
+            Aplicar filtros
+
+            <span aria-hidden="true">
+              →
+            </span>
+          </button>
         </div>
       </form>
     </>
