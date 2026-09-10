@@ -1,4 +1,9 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+} from 'react';
 import {
   propertyConditionOptions,
   type PropertyType,
@@ -14,7 +19,10 @@ import { trackEvent } from '../../utils/analytics';
 import { PropertyLocationFilter } from './PropertyLocationFilter';
 import './PropertyFilters.css';
 
-const featureFilters: Array<{ key: keyof PropertyFilterState; label: string }> = [
+const featureFilters: Array<{
+  key: keyof PropertyFilterState;
+  label: string;
+}> = [
   { key: 'terrace', label: 'Terraza' },
   { key: 'pool', label: 'Piscina' },
   { key: 'parking', label: 'Garaje' },
@@ -23,8 +31,14 @@ const featureFilters: Array<{ key: keyof PropertyFilterState; label: string }> =
   { key: 'patio', label: 'Patio' },
   { key: 'storage', label: 'Trastero' },
   { key: 'balcony', label: 'Balcón' },
-  { key: 'airConditioning', label: 'Aire acondicionado' },
-  { key: 'accessible', label: 'Acceso adaptado' },
+  {
+    key: 'airConditioning',
+    label: 'Aire acondicionado',
+  },
+  {
+    key: 'accessible',
+    label: 'Acceso adaptado',
+  },
 ];
 
 export function PropertyFilters({
@@ -36,36 +50,81 @@ export function PropertyFilters({
 }: {
   value: PropertyFilterState;
   locationOptions: PropertyLocationOption[];
-  typeOptions: ReadonlyArray<{ value: PropertyType; label: string }>;
+  typeOptions: ReadonlyArray<{
+    value: PropertyType;
+    label: string;
+  }>;
   onChange: (value: PropertyFilterState) => void;
   onClear: () => void;
 }) {
-  const [draft, setDraft] = useState(value);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [priceError, setPriceError] = useState('');
+  const [draft, setDraft] =
+    useState<PropertyFilterState>(value);
 
-  useEffect(() => setDraft(value), [value]);
+  const [mobileOpen, setMobileOpen] =
+    useState(false);
 
-  const update = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const [priceError, setPriceError] =
+    useState('');
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  const update = (
+    event: ChangeEvent<
+      HTMLInputElement | HTMLSelectElement
+    >,
+  ) => {
     const target = event.target;
+
     const next = {
       ...draft,
-      [target.name]: target instanceof HTMLInputElement && target.type === 'checkbox'
-        ? target.checked
-        : target.value,
+      [target.name]:
+        target instanceof HTMLInputElement &&
+        target.type === 'checkbox'
+          ? target.checked
+          : target.value,
     };
+
     setDraft(next);
     setPriceError('');
   };
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const updateOperation = (
+    operation: PropertyFilterState['operation'],
+  ) => {
+    setDraft((current) => ({
+      ...current,
+      operation,
+    }));
+
+    setPriceError('');
+  };
+
+  const submit = (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
-    if (draft.minPrice && draft.maxPrice && Number(draft.minPrice) > Number(draft.maxPrice)) {
-      setPriceError('El precio mínimo no puede superar al máximo.');
+
+    if (
+      draft.minPrice &&
+      draft.maxPrice &&
+      Number(draft.minPrice) >
+        Number(draft.maxPrice)
+    ) {
+      setPriceError(
+        'El precio mínimo no puede superar al máximo.',
+      );
+
       return;
     }
+
     onChange(draft);
-    trackEvent('property_filter', { filters: JSON.stringify(draft) });
+
+    trackEvent('property_filter', {
+      filters: JSON.stringify(draft),
+    });
+
     setMobileOpen(false);
   };
 
@@ -76,90 +135,417 @@ export function PropertyFilters({
     setMobileOpen(false);
   };
 
-  const selectedLocation = findSelectedLocation(draft, locationOptions);
+  const selectedLocation =
+    findSelectedLocation(
+      draft,
+      locationOptions,
+    );
 
   return (
     <>
-      <button className="property-filters__mobile-trigger" type="button" onClick={() => setMobileOpen(true)}>
-        Filtros
+      <button
+        className="property-filters__mobile-trigger"
+        type="button"
+        onClick={() => setMobileOpen(true)}
+      >
+        <span>Filtrar inmuebles</span>
+        <span aria-hidden="true">＋</span>
       </button>
-      {mobileOpen ? <button className="property-filters__backdrop" type="button" aria-label="Cerrar filtros" onClick={() => setMobileOpen(false)} /> : null}
-      <form className={`property-filters${mobileOpen ? ' is-open' : ''}`} onSubmit={submit} aria-label="Filtros de inmuebles">
+
+      {mobileOpen ? (
+        <button
+          className="property-filters__backdrop"
+          type="button"
+          aria-label="Cerrar filtros"
+          onClick={() =>
+            setMobileOpen(false)
+          }
+        />
+      ) : null}
+
+      <form
+        className={`property-filters${
+          mobileOpen ? ' is-open' : ''
+        }`}
+        onSubmit={submit}
+        aria-label="Filtros de inmuebles"
+      >
         <header className="property-filters__mobile-header">
-          <strong>Filtrar inmuebles</strong>
-          <button type="button" aria-label="Cerrar filtros" onClick={() => setMobileOpen(false)}>×</button>
+          <div>
+            <span>BUSCAR INMUEBLES</span>
+            <strong>
+              Afina tu búsqueda
+            </strong>
+          </div>
+
+          <button
+            type="button"
+            aria-label="Cerrar filtros"
+            onClick={() =>
+              setMobileOpen(false)
+            }
+          >
+            ×
+          </button>
         </header>
 
-        <div className="property-filters__primary">
-          <label>Operación
-            <select name="operation" value={draft.operation} onChange={update}>
-              <option value="">Comprar y alquilar</option>
-              <option value="venta">Comprar</option>
-              <option value="alquiler">Alquilar</option>
-            </select>
-          </label>
+        <div className="property-filters__operation">
+          <span className="property-filters__field-label">
+            Operación
+          </span>
 
+          <div
+            className="property-filters__operation-control"
+            role="group"
+            aria-label="Tipo de operación"
+          >
+            <button
+              type="button"
+              className={
+                draft.operation === ''
+                  ? 'is-active'
+                  : ''
+              }
+              aria-pressed={
+                draft.operation === ''
+              }
+              onClick={() =>
+                updateOperation('')
+              }
+            >
+              Todos
+            </button>
+
+            <button
+              type="button"
+              className={
+                draft.operation === 'venta'
+                  ? 'is-active'
+                  : ''
+              }
+              aria-pressed={
+                draft.operation === 'venta'
+              }
+              onClick={() =>
+                updateOperation('venta')
+              }
+            >
+              Comprar
+            </button>
+
+            <button
+              type="button"
+              className={
+                draft.operation ===
+                'alquiler'
+                  ? 'is-active'
+                  : ''
+              }
+              aria-pressed={
+                draft.operation ===
+                'alquiler'
+              }
+              onClick={() =>
+                updateOperation(
+                  'alquiler',
+                )
+              }
+            >
+              Alquilar
+            </button>
+          </div>
+        </div>
+
+        <div className="property-filters__main">
           <PropertyLocationFilter
             id="catalogue-location"
             options={locationOptions}
             value={selectedLocation}
-            onChange={(option) => setDraft((current) => applyLocationOption(current, option))}
+            onChange={(option) =>
+              setDraft((current) =>
+                applyLocationOption(
+                  current,
+                  option,
+                ),
+              )
+            }
           />
 
-          <label>Tipo de inmueble
-            <select name="type" value={draft.type} onChange={update}>
-              <option value="">Todos los tipos</option>
-              {typeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+          <label>
+            Tipo de inmueble
+
+            <select
+              name="type"
+              value={draft.type}
+              onChange={update}
+            >
+              <option value="">
+                Todos los tipos
+              </option>
+
+              {typeOptions.map(
+                (option) => (
+                  <option
+                    key={option.value}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </option>
+                ),
+              )}
             </select>
           </label>
 
-          <label>Precio mínimo
-            <input name="minPrice" type="number" inputMode="numeric" min="0" step="1000" value={draft.minPrice} onChange={update} placeholder="Sin mínimo" />
+          <div className="property-filters__price">
+            <span className="property-filters__field-label">
+              Precio
+            </span>
+
+            <div className="property-filters__price-controls">
+              <label>
+                <span className="property-filters__visually-hidden">
+                  Precio mínimo
+                </span>
+
+                <input
+                  name="minPrice"
+                  type="number"
+                  inputMode="numeric"
+                  min="0"
+                  step="1000"
+                  value={draft.minPrice}
+                  onChange={update}
+                  placeholder="Desde"
+                />
+              </label>
+
+              <span
+                className="property-filters__price-separator"
+                aria-hidden="true"
+              />
+
+              <label>
+                <span className="property-filters__visually-hidden">
+                  Precio máximo
+                </span>
+
+                <input
+                  name="maxPrice"
+                  type="number"
+                  inputMode="numeric"
+                  min="0"
+                  step="1000"
+                  value={draft.maxPrice}
+                  onChange={update}
+                  placeholder="Hasta"
+                />
+              </label>
+            </div>
+          </div>
+
+          <button
+            className="property-filters__apply property-filters__apply--desktop"
+            type="submit"
+          >
+            <span>
+              Buscar inmuebles
+            </span>
+
+            <span aria-hidden="true">
+              →
+            </span>
+          </button>
+        </div>
+
+        {priceError ? (
+          <p
+            className="property-filters__error"
+            role="alert"
+          >
+            {priceError}
+          </p>
+        ) : null}
+
+        <div className="property-filters__secondary">
+          <label>
+            Habitaciones
+
+            <input
+              name="bedrooms"
+              type="number"
+              inputMode="numeric"
+              min="0"
+              step="1"
+              value={draft.bedrooms}
+              onChange={update}
+              placeholder="Cualquiera"
+            />
           </label>
-          <label>Precio máximo
-            <input name="maxPrice" type="number" inputMode="numeric" min="0" step="1000" value={draft.maxPrice} onChange={update} placeholder="Sin máximo" />
+
+          <label>
+            Baños
+
+            <input
+              name="bathrooms"
+              type="number"
+              inputMode="numeric"
+              min="0"
+              step="1"
+              value={draft.bathrooms}
+              onChange={update}
+              placeholder="Cualquiera"
+            />
           </label>
-          <label>Habitaciones mínimas
-            <input name="bedrooms" type="number" inputMode="numeric" min="0" step="1" value={draft.bedrooms} onChange={update} placeholder="Cualquiera" />
-          </label>
-          <label>Baños mínimos
-            <input name="bathrooms" type="number" inputMode="numeric" min="0" step="1" value={draft.bathrooms} onChange={update} placeholder="Cualquiera" />
-          </label>
-          <label>Superficie construida mínima
-            <input name="minArea" type="number" inputMode="numeric" min="0" step="1" value={draft.minArea} onChange={update} placeholder="m²" />
+
+          <label>
+            Superficie mínima
+
+            <div className="property-filters__area-field">
+              <input
+                name="minArea"
+                type="number"
+                inputMode="numeric"
+                min="0"
+                step="1"
+                value={draft.minArea}
+                onChange={update}
+                placeholder="Sin mínimo"
+              />
+
+              <span>
+                m²
+              </span>
+            </div>
           </label>
         </div>
 
         <details className="property-filters__more">
-          <summary>Más filtros</summary>
-          <div className="property-filters__features">
-            {featureFilters.map(({ key, label }) => (
-              <label key={key}>
-                <input name={key} type="checkbox" checked={Boolean(draft[key])} onChange={update} />
-                <span>{label}</span>
-              </label>
-            ))}
+          <summary>
+            <span>
+              Más filtros
+            </span>
+
+            <span
+              className="property-filters__more-icon"
+              aria-hidden="true"
+            >
+              +
+            </span>
+          </summary>
+
+          <div className="property-filters__more-content">
+            <div className="property-filters__advanced-heading">
+              <div>
+                <span>
+                  CARACTERÍSTICAS
+                </span>
+
+                <strong>
+                  Encuentra exactamente
+                  lo que buscas.
+                </strong>
+              </div>
+
+              <p>
+                Selecciona solo las
+                características imprescindibles.
+              </p>
+            </div>
+
+            <div className="property-filters__features">
+              {featureFilters.map(
+                ({ key, label }) => (
+                  <label key={key}>
+                    <input
+                      name={key}
+                      type="checkbox"
+                      checked={Boolean(
+                        draft[key],
+                      )}
+                      onChange={update}
+                    />
+
+                    <span>
+                      {label}
+                    </span>
+                  </label>
+                ),
+              )}
+            </div>
+
+            <label className="property-filters__condition">
+              Estado del inmueble
+
+              <select
+                name="condition"
+                value={draft.condition}
+                onChange={update}
+              >
+                <option value="">
+                  Cualquier estado
+                </option>
+
+                {propertyConditionOptions.map(
+                  (option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
           </div>
-          <label className="property-filters__condition">Estado del inmueble
-            <select name="condition" value={draft.condition} onChange={update}>
-              <option value="">Cualquier estado</option>
-              {propertyConditionOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-            </select>
-          </label>
         </details>
 
         <div className="property-filters__footer">
-          <label>Ordenar por
-            <select name="order" value={draft.order} onChange={update}>
-              <option value="featured">Destacados</option>
-              <option value="recent">Más recientes</option>
-              <option value="priceAsc">Precio menor</option>
-              <option value="priceDesc">Precio mayor</option>
+          <label className="property-filters__sort">
+            Ordenar resultados
+
+            <select
+              name="order"
+              value={draft.order}
+              onChange={update}
+            >
+              <option value="featured">
+                Destacados
+              </option>
+
+              <option value="recent">
+                Más recientes
+              </option>
+
+              <option value="priceAsc">
+                Precio menor
+              </option>
+
+              <option value="priceDesc">
+                Precio mayor
+              </option>
             </select>
           </label>
-          {priceError ? <p role="alert">{priceError}</p> : null}
-          <button className="property-filters__clear" type="button" onClick={clear}>Limpiar filtros</button>
-          <button className="property-filters__apply" type="submit">Aplicar filtros</button>
+
+          <div className="property-filters__footer-actions">
+            <button
+              className="property-filters__clear"
+              type="button"
+              onClick={clear}
+            >
+              Limpiar
+            </button>
+
+            <button
+              className="property-filters__apply property-filters__apply--mobile"
+              type="submit"
+            >
+              Aplicar filtros
+              <span aria-hidden="true">
+                →
+              </span>
+            </button>
+          </div>
         </div>
       </form>
     </>
