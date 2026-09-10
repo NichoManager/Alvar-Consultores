@@ -2,7 +2,9 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import {
+  communityFeePeriodOptions,
   energyRatingOptions,
+  energyCertificateStatusOptions,
   heatingTypeOptions,
   orientationOptions,
   parkingTypeOptions,
@@ -81,6 +83,7 @@ export function AdminPropertyCreatePage() {
     const price = nullableNumber(formData.get('price'));
     const hasParking = formData.has('parking');
     const exposure = String(formData.get('exposure') ?? '');
+    const communityFeeAmount = nullableNumber(formData.get('community_fee_amount'));
 
     if (!slug || price === null) {
       setError('Revisa el título y el precio antes de guardar el inmueble.');
@@ -123,8 +126,16 @@ export function AdminPropertyCreatePage() {
         terrace: formData.has('terrace'),
         furnished: formData.has('furnished'),
         exterior: exposure === 'exterior',
+        video_url: nullableText(formData.get('video_url')),
+        virtual_tour_url: nullableText(formData.get('virtual_tour_url')),
+        community_fee_amount: communityFeeAmount,
+        community_fee_period: communityFeeAmount !== null ? nullableText(formData.get('community_fee_period')) : null,
+        ibi_annual_amount: nullableNumber(formData.get('ibi_annual_amount')),
+        energy_certificate_status: nullableText(formData.get('energy_certificate_status')),
         energy_consumption_rating: nullableText(formData.get('energy_consumption_rating')),
+        energy_consumption_value: nullableNumber(formData.get('energy_consumption_value')),
         energy_emissions_rating: nullableText(formData.get('energy_emissions_rating')),
+        energy_emissions_value: nullableNumber(formData.get('energy_emissions_value')),
         features: [...formData.getAll('features').map(String), ...(exposure === 'interior' ? ['Interior'] : [])],
         description: String(formData.get('description') ?? '').trim(),
         featured: formData.has('featured'),
@@ -228,15 +239,34 @@ export function AdminPropertyCreatePage() {
 
           <div className="admin-property-subsection"><h3>Orientación</h3><div className="admin-property-form__checks">{orientationOptions.map((option) => <label className="admin-property-form__check" key={option.value}><input type="checkbox" name="orientations" value={option.value} /><span>{option.label}</span></label>)}</div></div>
 
-          <div className="admin-property-subsection"><h3>Certificación energética</h3><div className="admin-property-form__grid">
-            <label className="admin-property-form__field"><span>Consumo</span><select name="energy_consumption_rating" defaultValue=""><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
-            <label className="admin-property-form__field"><span>Emisiones</span><select name="energy_emissions_rating" defaultValue=""><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
-          </div></div>
           <p className="admin-property-form__check-help">Los campos específicos de casas, chalets o fincas son opcionales y no impiden guardar otros tipos de inmueble.</p>
         </section>
 
         <section className="admin-property-form__section">
-          <div><span>04</span><h2>Planos</h2></div>
+          <div><span>04</span><h2>Información adicional</h2></div>
+
+          <div className="admin-property-subsection admin-property-subsection--first"><h3>Multimedia adicional</h3><div className="admin-property-form__grid">
+            <label className="admin-property-form__field"><span>Vídeo</span><input type="url" name="video_url" placeholder="https://..." /><small className="admin-property-form__helper">YouTube, Vimeo u otra URL pública compatible.</small></label>
+            <label className="admin-property-form__field"><span>Visita virtual</span><input type="url" name="virtual_tour_url" placeholder="https://..." /><small className="admin-property-form__helper">Matterport, tour virtual u otra URL pública.</small></label>
+          </div></div>
+
+          <div className="admin-property-subsection"><h3>Gastos</h3><div className="admin-property-form__grid">
+            <label className="admin-property-form__field"><span>Comunidad (€)</span><input type="number" name="community_fee_amount" min="0" step="0.01" /></label>
+            <label className="admin-property-form__field"><span>Periodicidad</span><select name="community_fee_period" defaultValue=""><option value="">Sin especificar</option>{communityFeePeriodOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+            <label className="admin-property-form__field"><span>IBI anual (€)</span><input type="number" name="ibi_annual_amount" min="0" step="0.01" /></label>
+          </div></div>
+
+          <div className="admin-property-subsection"><h3>Eficiencia energética</h3><div className="admin-property-form__grid">
+            <label className="admin-property-form__field"><span>Estado del certificado</span><select name="energy_certificate_status" defaultValue=""><option value="">Sin especificar</option>{energyCertificateStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+            <label className="admin-property-form__field"><span>Letra de consumo</span><select name="energy_consumption_rating" defaultValue=""><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
+            <label className="admin-property-form__field"><span>Consumo (kWh/m²/año)</span><input type="number" name="energy_consumption_value" min="0" step="0.01" /></label>
+            <label className="admin-property-form__field"><span>Letra de emisiones</span><select name="energy_emissions_rating" defaultValue=""><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
+            <label className="admin-property-form__field"><span>Emisiones (kg CO₂/m²/año)</span><input type="number" name="energy_emissions_value" min="0" step="0.01" /></label>
+          </div></div>
+        </section>
+
+        <section className="admin-property-form__section">
+          <div><span>05</span><h2>Planos</h2></div>
           <div className="admin-floorplans-editor">
             <label className="admin-floorplans-editor__picker"><span>Añadir planos</span><input type="file" multiple accept={FLOORPLAN_ACCEPT} onChange={(event) => { addFloorplans(Array.from(event.target.files ?? [])); event.target.value = ''; }} /><small>JPG, PNG o WEBP · Máximo 10 MB por archivo</small></label>
             {floorplans.length ? <div className="admin-floorplans-editor__grid">{floorplans.map((floorplan, index) => <article key={floorplan.preview}><img src={floorplan.preview} alt={`Vista previa del plano ${index + 1}`} /><div><span>Plano {index + 1}</span><button type="button" onClick={() => removeFloorplan(index)}>Eliminar</button></div></article>)}</div> : <p className="admin-images__empty">Puedes añadir los planos ahora o desde la edición del inmueble.</p>}
@@ -244,7 +274,7 @@ export function AdminPropertyCreatePage() {
         </section>
 
         <section className="admin-property-form__section">
-          <div><span>05</span><h2>Descripción</h2></div>
+          <div><span>06</span><h2>Descripción</h2></div>
           <label className="admin-property-form__field"><span>Descripción</span><small className="admin-property-form__helper">Describe los puntos fuertes del inmueble, distribución, estado, ubicación y cualquier detalle relevante.</small><textarea name="description" rows={8} required /></label>
         </section>
 
