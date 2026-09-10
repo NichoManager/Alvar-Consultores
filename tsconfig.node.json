@@ -6,14 +6,11 @@
     "skipLibCheck": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "allowImportingTsExtensions": true,
     "strict": true,
     "noEmit": true
   },
   "include": [
     "vite.config.ts",
-    "api/**/*.ts",
-    "src/data/articles.ts",
-    "src/types/content.ts"
+    "api/**/*.ts"
   ]
 }
