@@ -21,12 +21,17 @@ export const propertyAmenityGroups = [
   },
 ] as const;
 
-export const managedPropertyFeatures = propertyAmenityGroups.flatMap(
+const amenityFeatures = propertyAmenityGroups.flatMap(
   (group) => group.options,
 );
 
 export type ManagedPropertyFeature =
-  (typeof managedPropertyFeatures)[number];
+  (typeof amenityFeatures)[number] | 'Interior';
+
+export const managedPropertyFeatures: readonly ManagedPropertyFeature[] = [
+  ...amenityFeatures,
+  'Interior',
+];
 
 export const propertyConditionOptions = [
   { value: 'new_build', label: 'Obra nueva' },
