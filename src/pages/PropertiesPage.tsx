@@ -170,6 +170,9 @@ export function PropertiesPage() {
   const isSale =
     filters.operation === 'venta';
 
+  const hasSearchParams =
+    searchParams.toString().length > 0;
+
   const hero = isRental
     ? {
         eyebrow: 'ALQUILAR',
@@ -183,7 +186,7 @@ export function PropertiesPage() {
           </>
         ),
         text:
-          'Consulta los inmuebles disponibles en alquiler y afina la búsqueda según tus necesidades.',
+          'Consulta las propiedades disponibles en alquiler y afina la búsqueda por ubicación, tipología, presupuesto y características.',
       }
     : isSale
       ? {
@@ -198,7 +201,7 @@ export function PropertiesPage() {
             </>
           ),
           text:
-            'Explora propiedades disponibles para compra y combina ubicación, tipología, presupuesto y características.',
+            'Explora propiedades disponibles para comprar en Madrid y otras ubicaciones, y combina zona, tipología, presupuesto y características.',
         }
       : {
           eyebrow: 'INMUEBLES',
@@ -212,33 +215,34 @@ export function PropertiesPage() {
             </>
           ),
           text:
-            'Explora todo el inventario público y filtra por operación, ubicación, tipología y características.',
+            'Consulta nuestro catálogo de inmuebles en Madrid y otras ubicaciones y filtra por operación, zona, tipología y características.',
         };
 
   const seo = isRental
     ? {
         title:
-          'Inmuebles en alquiler | Alvar Consultores',
+          'Inmuebles en alquiler | Alvar Consultores Inmobiliarios',
         description:
-          'Consulta inmuebles disponibles en alquiler con Alvar Consultores Inmobiliarios.',
-        path:
-          '/inmuebles?operation=alquiler',
+          'Consulta inmuebles y viviendas disponibles en alquiler con Alvar Consultores Inmobiliarios y filtra por ubicación, tipología y características.',
+        imageAlt:
+          'Catálogo de inmuebles en alquiler de Alvar Consultores Inmobiliarios',
       }
     : isSale
       ? {
           title:
-            'Inmuebles en venta | Alvar Consultores',
+            'Inmuebles en venta | Alvar Consultores Inmobiliarios',
           description:
-            'Explora viviendas y propiedades disponibles para comprar con Alvar Consultores Inmobiliarios.',
-          path:
-            '/inmuebles?operation=venta',
+            'Consulta viviendas e inmuebles en venta en Madrid y otras ubicaciones con Alvar Consultores Inmobiliarios.',
+          imageAlt:
+            'Catálogo de inmuebles en venta de Alvar Consultores Inmobiliarios',
         }
       : {
           title:
-            'Catálogo de inmuebles | Alvar Consultores',
+            'Inmuebles en Madrid y otras ubicaciones | Alvar Consultores',
           description:
-            'Consulta el catálogo público de inmuebles de Alvar Consultores Inmobiliarios.',
-          path: '/inmuebles',
+            'Consulta inmuebles en venta y alquiler en Madrid y otras ubicaciones. Filtra el catálogo por zona, tipología, precio y características.',
+          imageAlt:
+            'Catálogo de propiedades de Alvar Consultores Inmobiliarios',
         };
 
   return (
@@ -246,12 +250,14 @@ export function PropertiesPage() {
       <SeoHead
         title={seo.title}
         description={seo.description}
-        path={seo.path}
+        path="/inmuebles"
+        noIndex={hasSearchParams}
         image={
           isRental
             ? '/images/alvar/heroes/hero-alquilar-inmuebles-madrid.webp'
             : '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp'
         }
+        imageAlt={seo.imageAlt}
       />
 
       <InternalHero
@@ -305,10 +311,14 @@ export function PropertiesPage() {
 
             <div className="catalogue__intro-copy">
               <p>
-                Filtra el inventario real
-                por ubicación, tipología,
-                superficie, presupuesto y
-                prestaciones.
+                Filtra nuestro inventario
+                real por ubicación,
+                tipología, superficie,
+                presupuesto y
+                prestaciones. Las zonas
+                disponibles se actualizan
+                según las propiedades
+                publicadas.
               </p>
 
               <div className="catalogue__meta">
@@ -549,7 +559,9 @@ export function PropertiesPage() {
                   ayudarte a enfocar la
                   búsqueda y detectar
                   oportunidades que
-                  encajen mejor contigo.
+                  encajen mejor contigo,
+                  también cuando buscas
+                  fuera de Madrid.
                 </p>
               </div>
 
