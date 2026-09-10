@@ -20,6 +20,7 @@ type PropertyImage = {
   storage_path: string;
   is_cover: boolean;
   position: number;
+  media_type: 'photo' | 'floorplan';
 };
 
 type Property = {
@@ -103,9 +104,10 @@ function normalizeSearch(value: string) {
 }
 
 function getCoverImage(images: PropertyImage[]) {
+  const photos = images.filter((image) => image.media_type === 'photo');
   return (
-    images.find((image) => image.is_cover) ??
-    [...images].sort(
+    photos.find((image) => image.is_cover) ??
+    [...photos].sort(
       (a, b) => a.position - b.position,
     )[0]
   );
@@ -167,7 +169,8 @@ export function AdminPropertiesPage() {
               id,
               storage_path,
               is_cover,
-              position
+              position,
+              media_type
             )
           `,
         )

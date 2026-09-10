@@ -124,6 +124,8 @@ function buildFeatureGroups(row: PublicPropertyRow) {
     row.parking
       ? `Garaje${parkingType ? ` ${parkingType.toLowerCase()}` : ''}${row.parking_spaces ? ` · ${row.parking_spaces} ${row.parking_spaces === 1 ? 'plaza' : 'plazas'}` : ''}`
       : null,
+    row.energy_consumption_rating ? `Consumo energético ${row.energy_consumption_rating}` : null,
+    row.energy_emissions_rating ? `Emisiones ${row.energy_emissions_rating}` : null,
   ]);
 
   return { characteristics, equipment };

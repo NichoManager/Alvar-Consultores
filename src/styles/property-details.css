@@ -1,0 +1,13 @@
+.property-feature-groups {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+}
+
+.property-feature-groups h4 {
+  margin: 0 0 1rem;
+  color: var(--sand-dark);
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}

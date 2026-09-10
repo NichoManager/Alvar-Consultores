@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import {
@@ -42,10 +42,15 @@ export function AdminPropertyCreatePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [floorplans, setFloorplans] = useState<Array<{ file: File; preview: string }>>([]);
+  const floorplanPreviewsRef = useRef<string[]>([]);
+
+  useEffect(() => {
+    floorplanPreviewsRef.current = floorplans.map(({ preview }) => preview);
+  }, [floorplans]);
 
   useEffect(() => () => {
-    floorplans.forEach(({ preview }) => URL.revokeObjectURL(preview));
-  }, [floorplans]);
+    floorplanPreviewsRef.current.forEach((preview) => URL.revokeObjectURL(preview));
+  }, []);
 
   const addFloorplans = (files: File[]) => {
     const result = validateFloorplanFiles(files);

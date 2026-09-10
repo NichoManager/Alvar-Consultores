@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { PropertyLeadForm } from '../components/forms/PropertyLeadForm';
 import { PropertyGallery } from '../components/properties/PropertyGallery';
+import { PropertyFloorplans } from '../components/properties/PropertyFloorplans';
 import { Breadcrumbs } from '../components/seo/Breadcrumbs';
 import { JsonLd } from '../components/seo/JsonLd';
 import { SeoHead } from '../components/seo/SeoHead';
@@ -11,6 +12,7 @@ import { business } from '../data/business';
 import { getPublishedPropertyBySlug } from '../lib/properties';
 import type { Property } from '../types/content';
 import { whatsappUrl } from '../utils/contact';
+import '../styles/property-details.css';
 
 function isRentalOperation(value: string) {
   const normalized = value
@@ -204,6 +206,11 @@ export function PropertyDetailPage() {
         </Container>
       </section>
 
+      <PropertyFloorplans
+        floorplans={property.floorplans ?? []}
+        propertyTitle={property.title}
+      />
+
       <section
         className="property-content section-pad"
         aria-labelledby="property-content-title"
@@ -260,17 +267,14 @@ export function PropertyDetailPage() {
                   </div>
                 </div>
 
-                <ul className="feature-grid">
-                  {property.features.map((feature, index) => (
-                    <li key={feature}>
-                      <span aria-hidden="true">
-                        {String(index + 1).padStart(2, '0')}
-                      </span>
-
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                <div className="property-feature-groups">
+                  {(property.characteristics ?? []).length ? (
+                    <div><h4>Características</h4><ul className="feature-grid">{property.characteristics?.map((feature, index) => <li key={feature}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{feature}</li>)}</ul></div>
+                  ) : null}
+                  {(property.equipment ?? []).length ? (
+                    <div><h4>Equipamiento</h4><ul className="feature-grid">{property.equipment?.map((feature, index) => <li key={feature}><span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>{feature}</li>)}</ul></div>
+                  ) : null}
+                </div>
               </section>
 
               <section

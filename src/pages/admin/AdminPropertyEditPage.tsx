@@ -1598,7 +1598,7 @@ export function AdminPropertyEditPage() {
         <section className="admin-property-form__section">
           <div>
             <span>03</span>
-            <h2>Características</h2>
+            <h2>Datos del inmueble</h2>
           </div>
 
           <div className="admin-property-form__grid">
@@ -1693,25 +1693,60 @@ export function AdminPropertyEditPage() {
                 disabled={isDeletingProperty}
               />
             </label>
+
+            <label className="admin-property-form__field">
+              <span>Superficie de parcela (m²)</span>
+              <input type="number" min="0" step="0.01" value={form.plotArea} onChange={(event) => updateForm('plotArea', event.target.value)} disabled={isDeletingProperty} />
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>Número de plantas</span>
+              <input type="number" min="1" step="1" value={form.floorsCount} onChange={(event) => updateForm('floorsCount', event.target.value)} disabled={isDeletingProperty} />
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>Año de construcción</span>
+              <input type="number" min="1800" max="2200" step="1" value={form.constructionYear} onChange={(event) => updateForm('constructionYear', event.target.value)} disabled={isDeletingProperty} />
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>Estado</span>
+              <select value={form.propertyCondition} onChange={(event) => updateForm('propertyCondition', event.target.value as PropertyCondition | '')} disabled={isDeletingProperty}>
+                <option value="">Sin especificar</option>
+                {propertyConditionOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>Exterior / interior</span>
+              <select value={form.exposure} onChange={(event) => updateForm('exposure', event.target.value as PropertyFormState['exposure'])} disabled={isDeletingProperty}>
+                <option value="">Sin especificar</option><option value="exterior">Exterior</option><option value="interior">Interior</option>
+              </select>
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>Calefacción</span>
+              <select value={form.heatingType} onChange={(event) => updateForm('heatingType', event.target.value as HeatingType | '')} disabled={isDeletingProperty}>
+                <option value="">Sin especificar</option>{heatingTypeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+              </select>
+            </label>
           </div>
 
-          <div className="admin-property-form__checks">
+          <div className="admin-property-subsection">
+            <h3>Características</h3>
+            <div className="admin-property-form__checks">
             {[
               ['elevator', 'Ascensor'],
-              ['parking', 'Garaje'],
               ['terrace', 'Terraza'],
               ['furnished', 'Amueblado'],
-              ['exterior', 'Exterior'],
               ['featured', 'Destacado'],
             ].map(([key, label]) => {
               const field =
                 key as keyof Pick<
                   PropertyFormState,
                   | 'elevator'
-                  | 'parking'
                   | 'terrace'
                   | 'furnished'
-                  | 'exterior'
                   | 'featured'
                 >;
 
@@ -1736,7 +1771,32 @@ export function AdminPropertyEditPage() {
                 </label>
               );
             })}
+            {propertyAmenityGroups.flatMap((group) => group.options).map((feature) => (
+              <label className="admin-property-form__check" key={feature}>
+                <input type="checkbox" checked={form.managedFeatures.includes(feature)} onChange={(event) => updateForm('managedFeatures', event.target.checked ? [...form.managedFeatures, feature] : form.managedFeatures.filter((item) => item !== feature))} disabled={isDeletingProperty} />
+                <span>{feature}</span>
+              </label>
+            ))}
+            </div>
           </div>
+
+          <div className="admin-property-subsection">
+            <h3>Garaje</h3>
+            <div className="admin-property-form__checks"><label className="admin-property-form__check"><input type="checkbox" checked={form.parking} onChange={(event) => updateForm('parking', event.target.checked)} disabled={isDeletingProperty} /><span>Tiene garaje</span></label></div>
+            <div className="admin-property-form__grid">
+              <label className="admin-property-form__field"><span>Modalidad</span><select value={form.parkingType} onChange={(event) => updateForm('parkingType', event.target.value as ParkingType | '')} disabled={!form.parking || isDeletingProperty}><option value="">Sin especificar</option>{parkingTypeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+              <label className="admin-property-form__field"><span>Número de plazas</span><input type="number" min="1" step="1" value={form.parkingSpaces} onChange={(event) => updateForm('parkingSpaces', event.target.value)} disabled={!form.parking || isDeletingProperty} /></label>
+            </div>
+          </div>
+
+          <div className="admin-property-subsection"><h3>Orientación</h3><div className="admin-property-form__checks">
+            {orientationOptions.map((option) => <label className="admin-property-form__check" key={option.value}><input type="checkbox" checked={form.orientations.includes(option.value)} onChange={(event) => updateForm('orientations', event.target.checked ? [...form.orientations, option.value] : form.orientations.filter((item) => item !== option.value))} disabled={isDeletingProperty} /><span>{option.label}</span></label>)}
+          </div></div>
+
+          <div className="admin-property-subsection"><h3>Certificación energética</h3><div className="admin-property-form__grid">
+            <label className="admin-property-form__field"><span>Consumo</span><select value={form.energyConsumptionRating} onChange={(event) => updateForm('energyConsumptionRating', event.target.value as EnergyRating | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
+            <label className="admin-property-form__field"><span>Emisiones</span><select value={form.energyEmissionsRating} onChange={(event) => updateForm('energyEmissionsRating', event.target.value as EnergyRating | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
+          </div></div>
 
           <p className="admin-property-form__check-help">
             Los inmuebles destacados pueden aparecer
@@ -1997,6 +2057,41 @@ export function AdminPropertyEditPage() {
             Todavía no hay fotografías para este inmueble.
           </p>
         )}
+      </section>
+
+      <section className="admin-images" aria-labelledby="admin-floorplans-title">
+        <div className="admin-images__upload">
+          <div>
+            <span>PLANOS</span>
+            <h2 id="admin-floorplans-title">Planos del inmueble</h2>
+            <p>Gestiona los planos por separado de la galería de fotografías.</p>
+          </div>
+          <label>
+            <span>{isUploading ? 'Subiendo planos...' : 'Añadir planos'}</span>
+            <input type="file" multiple accept={FLOORPLAN_ACCEPT} disabled={isUploading || isManaging || isDeletingProperty} onChange={(event) => { const files = Array.from(event.target.files ?? []); event.target.value = ''; void handleFloorplanUpload(files); }} />
+            <small>JPG, PNG o WEBP · Máximo 10 MB por archivo</small>
+          </label>
+        </div>
+
+        {floorplanError ? <p className="admin-images__error" role="alert">{floorplanError}</p> : null}
+
+        {floorplans.length ? (
+          <div className="admin-floorplans-editor__grid">
+            {floorplans.map((image, index) => (
+              <article key={image.id}>
+                <img src={getPublicImageUrl(image.storage_path)} alt={image.alt_text ?? `Plano ${index + 1} de ${property.title}`} loading="lazy" />
+                <div>
+                  <span>Plano {index + 1}</span>
+                  <span>
+                    <button type="button" onClick={() => void handleMove(index, -1, floorplans)} disabled={isManaging || isUploading || isDeletingProperty || index === 0} aria-label={`Subir plano ${index + 1}`}>↑</button>
+                    <button type="button" onClick={() => void handleMove(index, 1, floorplans)} disabled={isManaging || isUploading || isDeletingProperty || index === floorplans.length - 1} aria-label={`Bajar plano ${index + 1}`}>↓</button>
+                    <button type="button" onClick={() => void handleDelete(image)} disabled={isManaging || isUploading || isDeletingProperty}>Eliminar</button>
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : <p className="admin-images__empty">Todavía no hay planos para este inmueble.</p>}
       </section>
 
       <form
