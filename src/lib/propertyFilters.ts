@@ -197,9 +197,15 @@ export function applyLocationOption(
 }
 
 export function propertyFiltersFromSearchParams(params: URLSearchParams): PropertyFilterState {
+  const requestedOperation = normalizePropertyFilterText(params.get('operation') ?? '');
+  const operation = ['alquiler', 'alquilar', 'renta'].includes(requestedOperation)
+    ? 'alquiler'
+    : ['venta', 'vender', 'compra', 'comprar'].includes(requestedOperation)
+      ? 'venta'
+      : '';
   const result: PropertyFilterState = {
     ...defaultPropertyFilters,
-    operation: params.get('operation') ?? '',
+    operation,
     province: params.get('province') ?? '',
     city: params.get('city') ?? '',
     area: params.get('area') ?? '',
@@ -235,7 +241,7 @@ export function propertyFiltersToSearchParams(filters: PropertyFilterState) {
 
 function hasFeature(property: Property, label: string) {
   const expected = normalizePropertyFilterText(label);
-  return (property.amenities ?? property.features).some(
+  return [...(property.amenities ?? []), ...(property.features ?? [])].some(
     (feature) => normalizePropertyFilterText(feature) === expected,
   );
 }

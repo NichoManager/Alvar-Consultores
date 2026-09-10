@@ -1,0 +1,69 @@
+.property-location-filter { position: relative; min-width: 0; }
+.property-location-filter > label,
+.property-filters label { display: grid; gap: .45rem; color: #111832; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.property-location-filter__control { position: relative; }
+.property-location-filter input,
+.property-filters input:not([type="checkbox"]),
+.property-filters select { box-sizing: border-box; width: 100%; min-height: 3rem; border: 1px solid rgba(17, 24, 50, .18); border-radius: 0; background: #fff; color: #111832; padding: .7rem .8rem; font: inherit; text-transform: none; letter-spacing: normal; }
+.property-location-filter input { padding-right: 2.7rem; }
+.property-location-filter input:focus,
+.property-filters input:focus,
+.property-filters select:focus { outline: 2px solid #b8944d; outline-offset: 2px; }
+.property-location-filter__clear { position: absolute; top: 50%; right: .55rem; translate: 0 -50%; width: 2rem; height: 2rem; border: 0; background: transparent; color: #111832; font-size: 1.3rem; cursor: pointer; }
+.property-location-filter__options { position: absolute; z-index: 30; top: calc(100% + .4rem); left: 0; right: 0; max-height: 18rem; overflow-y: auto; border: 1px solid rgba(17, 24, 50, .14); background: #f8f6f0; box-shadow: 0 16px 35px rgba(17, 24, 50, .13); }
+.property-location-filter__options button { display: grid; width: 100%; gap: .15rem; padding: .75rem .9rem; border: 0; border-bottom: 1px solid rgba(17, 24, 50, .08); background: transparent; color: #111832; text-align: left; cursor: pointer; }
+.property-location-filter__options button:hover,
+.property-location-filter__options button.is-active { background: rgba(184, 148, 77, .13); }
+.property-location-filter__options strong { font-size: .92rem; font-weight: 600; }
+.property-location-filter__options span { color: rgba(17, 24, 50, .65); font-size: .72rem; }
+.property-location-filter__options p { margin: 0; padding: 1rem; color: rgba(17, 24, 50, .68); font-size: .85rem; }
+
+.property-filters { display: grid; gap: 1.25rem; }
+.property-filters__primary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; align-items: end; }
+.property-filters__more { border-top: 1px solid rgba(17, 24, 50, .14); padding-top: 1rem; }
+.property-filters__more summary { width: fit-content; color: #0f4c84; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+.property-filters__features { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .65rem; margin-top: 1rem; }
+.property-filters__features label { display: flex; align-items: center; gap: .55rem; min-height: 2.8rem; border: 1px solid rgba(17, 24, 50, .14); padding: .55rem .7rem; font-size: .72rem; cursor: pointer; }
+.property-filters__features input { width: 1rem; height: 1rem; accent-color: #b8944d; }
+.property-filters__condition { max-width: 18rem; margin-top: 1rem; }
+.property-filters__footer { display: flex; align-items: end; justify-content: flex-end; gap: .8rem; }
+.property-filters__footer > label { width: min(14rem, 100%); margin-right: auto; }
+.property-filters__footer > p { margin: 0; color: #9b2c2c; font-size: .82rem; }
+.property-filters__apply,
+.property-filters__clear,
+.property-filters__mobile-trigger { min-height: 2.9rem; border: 1px solid #111832; padding: .65rem 1rem; font: inherit; font-size: .76rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.property-filters__apply { background: #111832; color: #f8f6f0; }
+.property-filters__clear { background: transparent; color: #111832; }
+.property-filters__mobile-trigger,
+.property-filters__mobile-header,
+.property-filters__backdrop { display: none; }
+
+.property-active-filters { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem; margin-top: 1rem; }
+.property-active-filters > span { color: rgba(17, 24, 50, .65); font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.property-active-filters > div { display: flex; flex-wrap: wrap; gap: .45rem; }
+.property-active-filters button { border: 1px solid rgba(17, 24, 50, .17); background: #f8f6f0; color: #111832; padding: .45rem .65rem; font: inherit; font-size: .76rem; cursor: pointer; }
+.property-active-filters button span { margin-left: .45rem; }
+.property-active-filters .property-active-filters__clear { border: 0; background: transparent; color: #0f4c84; text-decoration: underline; text-underline-offset: .2rem; }
+
+@media (max-width: 960px) {
+  .property-filters__primary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .property-filters__features { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .property-filters__mobile-trigger { display: block; width: 100%; background: #111832; color: #f8f6f0; }
+  .property-filters__backdrop { display: block; position: fixed; z-index: 79; inset: 0; border: 0; background: rgba(17, 24, 50, .56); }
+  .property-filters { position: fixed; z-index: 80; inset: auto 0 0; display: none; max-height: min(88dvh, 48rem); overflow-y: auto; background: #f8f6f0; padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom)); box-shadow: 0 -16px 45px rgba(17, 24, 50, .2); }
+  .property-filters.is-open { display: grid; }
+  .property-filters__mobile-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(17, 24, 50, .14); padding-bottom: .8rem; }
+  .property-filters__mobile-header strong { font-family: inherit; color: #111832; }
+  .property-filters__mobile-header button { width: 2.75rem; height: 2.75rem; border: 0; background: transparent; color: #111832; font-size: 1.5rem; }
+  .property-filters__primary,
+  .property-filters__features { grid-template-columns: 1fr; }
+  .property-filters__footer { position: sticky; bottom: calc(-1rem - env(safe-area-inset-bottom)); flex-wrap: wrap; background: #f8f6f0; padding: .8rem 0 calc(1rem + env(safe-area-inset-bottom)); }
+  .property-filters__footer > label { width: 100%; }
+  .property-filters__apply,
+  .property-filters__clear { flex: 1; }
+  .property-active-filters { align-items: flex-start; }
+  .property-active-filters > div { width: 100%; }
+}
