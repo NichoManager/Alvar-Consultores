@@ -1569,39 +1569,26 @@ export function AdminPropertyEditPage() {
         </div>
 
         <div className="admin-property-edit__meta">
-          <button
-            type="submit"
-            form="admin-property-edit-form"
-            className="admin-property-edit__save"
-            disabled={
-              isSaving ||
-              isUploading ||
-              isUploadingFloorplans ||
-              isManaging ||
-              isDeletingProperty
-            }
-          >
-            {isSaving
-              ? 'Guardando...'
-              : 'Guardar cambios'}
-          </button>
-
-          <span>
-            {statusLabels[property.status]}
-          </span>
-
-          <div className="admin-header-session">
+          <div className="admin-property-edit__meta-top">
             <AdminCurrentUser />
+
+            <span className="admin-property-edit__status">
+              {statusLabels[property.status]}
+            </span>
 
             <button
               type="button"
+              className="admin-property-edit__logout"
               onClick={handleLogout}
             >
               Cerrar sesión
             </button>
           </div>
 
-          <div>
+          <nav
+            className="admin-property-edit__navigation"
+            aria-label="Navegación del inmueble"
+          >
             <Link to="/admin/inmuebles">
               ← Volver a inmuebles
             </Link>
@@ -1615,9 +1602,28 @@ export function AdminPropertyEditPage() {
                 Ver inmueble en web ↗
               </Link>
             ) : null}
-          </div>
+          </nav>
         </div>
       </header>
+
+      <div className="admin-property-edit__top-actions">
+        <button
+          type="submit"
+          form="admin-property-edit-form"
+          className="admin-property-edit__save"
+          disabled={
+            isSaving ||
+            isUploading ||
+            isUploadingFloorplans ||
+            isManaging ||
+            isDeletingProperty
+          }
+        >
+          {isSaving
+            ? 'Guardando...'
+            : 'Guardar cambios'}
+        </button>
+      </div>
 
       <form
         id="admin-property-edit-form"
