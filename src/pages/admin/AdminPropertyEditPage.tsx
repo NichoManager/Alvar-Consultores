@@ -367,19 +367,19 @@ export function AdminPropertyEditPage() {
     useState<PropertyStatus>('draft');
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isSavingData, setIsSavingData] = useState(false);
-  const [isSavingStatus, setIsSavingStatus] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isUploadingFloorplans, setIsUploadingFloorplans] =
     useState(false);
   const [isManaging, setIsManaging] = useState(false);
   const [isDeletingProperty, setIsDeletingProperty] =
     useState(false);
+  const isSavingRef = useRef(false);
   const isReorderingRef = useRef(false);
 
   const [pageError, setPageError] = useState('');
-  const [dataError, setDataError] = useState('');
-  const [dataSuccess, setDataSuccess] = useState('');
+  const [saveError, setSaveError] = useState('');
+  const [saveSuccess, setSaveSuccess] = useState('');
   const [imageError, setImageError] = useState('');
   const [floorplanError, setFloorplanError] = useState(
     (
@@ -388,8 +388,6 @@ export function AdminPropertyEditPage() {
       } | null
     )?.floorplanUploadWarning ?? '',
   );
-  const [statusError, setStatusError] = useState('');
-  const [statusSuccess, setStatusSuccess] = useState('');
   const [deleteError, setDeleteError] = useState('');
 
   const handleLogout = async () => {
@@ -579,10 +577,10 @@ export function AdminPropertyEditPage() {
       };
     });
 
-    setDataSuccess('');
+    setSaveSuccess('');
   };
 
-  const handleDataSave = async (
+  const handleSaveAll = async (
     event: FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
@@ -590,21 +588,24 @@ export function AdminPropertyEditPage() {
     if (
       !property ||
       !form ||
-      isSavingData ||
+      isSavingRef.current ||
+      isUploading ||
+      isUploadingFloorplans ||
+      isManaging ||
       isDeletingProperty
     ) {
       return;
     }
 
-    setDataError('');
-    setDataSuccess('');
+    setSaveError('');
+    setSaveSuccess('');
 
     const title = form.title.trim();
     const city = form.city.trim();
     const price = parsePrice(form.price);
 
     if (!title) {
-      setDataError(
+      setSaveError(
         'Introduce un título para el inmueble.',
       );
 
@@ -612,7 +613,7 @@ export function AdminPropertyEditPage() {
     }
 
     if (!city) {
-      setDataError(
+      setSaveError(
         'Introduce la ciudad del inmueble.',
       );
 
@@ -623,14 +624,58 @@ export function AdminPropertyEditPage() {
       price === null ||
       price < 0
     ) {
-      setDataError(
+      setSaveError(
         'Introduce un precio válido.',
       );
 
       return;
     }
 
-    setIsSavingData(true);
+    const isPublicStatus =
+      selectedStatus === 'published' ||
+      selectedStatus === 'reserved';
+
+    if (
+      isPublicStatus &&
+      photos.length === 0
+    ) {
+      setSaveError(
+        'Añade al menos una fotografía antes de mostrar el inmueble en la web.',
+      );
+
+      return;
+    }
+
+    if (
+      selectedStatus === 'sold' &&
+      form.operation !== 'venta'
+    ) {
+      setSaveError(
+        'El estado Vendido solo corresponde a inmuebles en venta.',
+      );
+
+      return;
+    }
+
+    if (
+      selectedStatus === 'rented' &&
+      form.operation !== 'alquiler'
+    ) {
+      setSaveError(
+        'El estado Alquilado solo corresponde a inmuebles en alquiler.',
+      );
+
+      return;
+    }
+
+    isSavingRef.current = true;
+    setIsSaving(true);
+
+    const publishedAt =
+      isPublicStatus
+        ? property.published_at ??
+          new Date().toISOString()
+        : property.published_at;
 
     const updatePayload = {
       reference: nullableText(form.reference),
@@ -698,6 +743,8 @@ export function AdminPropertyEditPage() {
       ],
       description: nullableText(form.description),
       featured: form.featured,
+      status: selectedStatus,
+      published_at: publishedAt,
     };
 
     try {
@@ -712,25 +759,19 @@ export function AdminPropertyEditPage() {
           updateError,
         );
 
-        setDataError(
-          'No se han podido guardar los cambios del inmueble.',
+        setSaveError(
+          'No se han podido guardar los cambios del inmueble. Inténtalo de nuevo.',
         );
 
         return;
       }
 
-      setProperty((currentProperty) => {
-        if (!currentProperty) {
-          return currentProperty;
-        }
-
-        return {
-          ...currentProperty,
-          ...updatePayload,
-        };
+      setProperty({
+        ...property,
+        ...updatePayload,
       });
 
-      setDataSuccess(
+      setSaveSuccess(
         'Cambios guardados correctamente.',
       );
     } catch (unexpectedError) {
@@ -739,11 +780,12 @@ export function AdminPropertyEditPage() {
         unexpectedError,
       );
 
-      setDataError(
-        'No se han podido guardar los cambios. Inténtalo de nuevo.',
+      setSaveError(
+        'No se han podido guardar los cambios del inmueble. Inténtalo de nuevo.',
       );
     } finally {
-      setIsSavingData(false);
+      isSavingRef.current = false;
+      setIsSaving(false);
     }
   };
 
@@ -753,8 +795,9 @@ export function AdminPropertyEditPage() {
     }
 
     setForm(createFormState(property));
-    setDataError('');
-    setDataSuccess('');
+    setSelectedStatus(property.status);
+    setSaveError('');
+    setSaveSuccess('');
   };
 
   const handleUpload = async (
@@ -1350,125 +1393,11 @@ export function AdminPropertyEditPage() {
     }
   };
 
-  const handleStatusSave = async (
-    event: FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault();
-
-    if (
-      !property ||
-      isSavingStatus ||
-      isDeletingProperty
-    ) {
-      return;
-    }
-
-    setStatusError('');
-    setStatusSuccess('');
-
-    const isPublicStatus =
-      selectedStatus === 'published' ||
-      selectedStatus === 'reserved';
-
-    if (
-      isPublicStatus &&
-      photos.length === 0
-    ) {
-      setStatusError(
-        'Añade al menos una fotografía antes de mostrar el inmueble en la web.',
-      );
-
-      return;
-    }
-
-    if (
-      selectedStatus === 'sold' &&
-      property.operation !== 'venta'
-    ) {
-      setStatusError(
-        'El estado Vendido solo corresponde a inmuebles en venta.',
-      );
-
-      return;
-    }
-
-    if (
-      selectedStatus === 'rented' &&
-      property.operation !== 'alquiler'
-    ) {
-      setStatusError(
-        'El estado Alquilado solo corresponde a inmuebles en alquiler.',
-      );
-
-      return;
-    }
-
-    setIsSavingStatus(true);
-
-    const publishedAt =
-      isPublicStatus
-        ? property.published_at ??
-          new Date().toISOString()
-        : property.published_at;
-
-    try {
-      const { error: statusUpdateError } =
-        await supabase
-          .from('properties')
-          .update({
-            status: selectedStatus,
-            published_at: publishedAt,
-          })
-          .eq('id', property.id);
-
-      if (statusUpdateError) {
-        console.error(
-          'Error updating property status:',
-          statusUpdateError,
-        );
-
-        setStatusError(
-          'No se ha podido actualizar el estado del inmueble.',
-        );
-
-        return;
-      }
-
-      setProperty((currentProperty) => {
-        if (!currentProperty) {
-          return currentProperty;
-        }
-
-        return {
-          ...currentProperty,
-          status: selectedStatus,
-          published_at: publishedAt,
-        };
-      });
-
-      setStatusSuccess(
-        `Estado actualizado a ${statusLabels[selectedStatus]}.`,
-      );
-    } catch (unexpectedError) {
-      console.error(
-        'Unexpected property status update error:',
-        unexpectedError,
-      );
-
-      setStatusError(
-        'No se ha podido actualizar el estado. Inténtalo de nuevo.',
-      );
-    } finally {
-      setIsSavingStatus(false);
-    }
-  };
-
   const handleDeleteProperty = async () => {
     if (
       !property ||
       isDeletingProperty ||
-      isSavingData ||
-      isSavingStatus ||
+      isSavingRef.current ||
       isUploading ||
       isUploadingFloorplans ||
       isManaging
