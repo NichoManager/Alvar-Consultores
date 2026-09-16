@@ -922,7 +922,7 @@ export async function getPublishedPropertyBySlug(
 }
 
 export function getFeaturedProperties(
-  limit = 3,
+  limit: number | null = null,
 ) {
   return getPublicProperties({
     p_slug: null,

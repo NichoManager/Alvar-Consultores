@@ -58,7 +58,7 @@ export function HomePage() {
     const loadFeaturedProperties = async () => {
       try {
         const publishedFeatured =
-          await getFeaturedProperties(3);
+  await getFeaturedProperties();
 
         if (isMounted) {
           setFeaturedProperties(
