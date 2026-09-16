@@ -2065,8 +2065,7 @@
 }
 
 .admin-property-edit__logout:focus-visible,
-.admin-property-edit__navigation a:focus-visible,
-.admin-property-edit__save:focus-visible {
+.admin-property-edit__navigation a:focus-visible {
   outline: 2px solid var(--admin-gold);
   outline-offset: 3px;
 }
@@ -2142,6 +2141,11 @@
   border-color: #c6a45e;
   background: #c6a45e;
   transform: translateY(-1px);
+}
+
+.admin-property-edit__save:focus-visible {
+  outline: 2px solid var(--admin-blue);
+  outline-offset: 3px;
 }
 
 .admin-property-edit__save:disabled {

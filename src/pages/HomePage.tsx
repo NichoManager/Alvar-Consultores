@@ -317,7 +317,7 @@ export function HomePage() {
 
                   <div>
                     <strong>
-                      Madrid
+                      Zona Sur de Madrid
                     </strong>
 
                     <small>
