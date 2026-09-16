@@ -821,7 +821,7 @@ em {
 .hero::before {
   content: '';
   position: absolute;
-  inset: 6.95rem clamp(1.25rem, 4vw, 4rem) auto;
+  inset: 6.25rem clamp(1.25rem, 4vw, 4rem) auto;
   z-index: -1;
   height: 1px;
   background: linear-gradient(90deg, rgba(184, 148, 77, 0.58), transparent);
