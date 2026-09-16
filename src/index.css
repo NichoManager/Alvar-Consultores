@@ -421,6 +421,36 @@ em {
   filter: drop-shadow(0 8px 18px rgba(16, 20, 38, 0.2));
 }
 
+.brand-mark.brand-mark--image.brand-mark--plain {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 0;
+  width: clamp(5.375rem, 6.5vw, 6.5rem);
+  height: clamp(5.375rem, 6.5vw, 6.5rem);
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.3s var(--ease),
+    height 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+
+.brand-mark--plain img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(16, 20, 38, 0.2));
+}
+
+.brand-mark--plain:focus-visible {
+  border-radius: 0.25rem;
+}
+
 .site-header.is-scrolled .brand-mark--circular {
   width: 5.25rem;
   height: 5.25rem;
@@ -5678,6 +5708,7 @@ em {
   }
 
   .brand-mark.brand-mark--image.brand-mark--circular,
+  .brand-mark.brand-mark--image.brand-mark--plain,
   .site-header.is-scrolled .brand-mark--circular {
     position: static;
     width: 4.75rem;
@@ -5966,6 +5997,7 @@ em {
   }
 
   .brand-mark.brand-mark--image.brand-mark--circular,
+  .brand-mark.brand-mark--image.brand-mark--plain,
   .site-header.is-scrolled .brand-mark--circular {
     width: 3.8rem;
     height: 3.8rem;
