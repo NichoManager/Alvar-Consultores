@@ -423,7 +423,7 @@ em {
 
 .brand-mark.brand-mark--image.brand-mark--plain {
   position: absolute;
-  top: 50%;
+  top: calc(50% + 0.4rem);
   left: 50%;
   min-width: 0;
   width: clamp(5.375rem, 6.5vw, 6.5rem);
@@ -435,11 +435,14 @@ em {
   border-radius: 50%;
   background: #ffffff;
   box-shadow: 0 8px 18px rgba(16, 20, 38, 0.2);
+  padding: 0.35rem 0.35rem 0.5rem;
+  box-sizing: border-box;
   transform: translate(-50%, -50%);
   transition:
     width 0.3s var(--ease),
     height 0.3s var(--ease),
-    transform 0.3s var(--ease);
+    transform 0.3s var(--ease),
+    top 0.3s var(--ease);
 }
 
 .brand-mark--plain img {
