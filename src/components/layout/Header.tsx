@@ -120,6 +120,11 @@ export function Header() {
                 ? 'brand-mark--plain'
                 : 'brand-mark--circular'
             }`}
+            style={
+              showPlainLogo
+                ? { borderRadius: '50%', overflow: 'hidden' }
+                : undefined
+            }
             aria-label="Ir a la página de inicio de Alvar Consultores Inmobiliarios"
           >
             <img
