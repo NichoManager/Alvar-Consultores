@@ -1569,6 +1569,23 @@ export function AdminPropertyEditPage() {
         </div>
 
         <div className="admin-property-edit__meta">
+          <button
+            type="submit"
+            form="admin-property-edit-form"
+            className="admin-property-edit__save"
+            disabled={
+              isSaving ||
+              isUploading ||
+              isUploadingFloorplans ||
+              isManaging ||
+              isDeletingProperty
+            }
+          >
+            {isSaving
+              ? 'Guardando...'
+              : 'Guardar cambios'}
+          </button>
+
           <span>
             {statusLabels[property.status]}
           </span>
@@ -1603,8 +1620,9 @@ export function AdminPropertyEditPage() {
       </header>
 
       <form
+        id="admin-property-edit-form"
         className="admin-property-form"
-        onSubmit={handleDataSave}
+        onSubmit={handleSaveAll}
       >
         <p className="admin-property-form__required-note">
           Los campos marcados con * son obligatorios.
@@ -2662,48 +2680,6 @@ export function AdminPropertyEditPage() {
           </div>
         </section>
 
-        {dataError ? (
-          <p
-            className="admin-property-form__error"
-            role="alert"
-          >
-            {dataError}
-          </p>
-        ) : null}
-
-        {dataSuccess ? (
-          <p
-            className="admin-images__status"
-            aria-live="polite"
-          >
-            {dataSuccess}
-          </p>
-        ) : null}
-
-        <div className="admin-property-form__actions">
-          <button
-            type="button"
-            disabled={
-              isSavingData ||
-              isDeletingProperty
-            }
-            onClick={handleResetData}
-          >
-            Deshacer cambios
-          </button>
-
-          <button
-            type="submit"
-            disabled={
-              isSavingData ||
-              isDeletingProperty
-            }
-          >
-            {isSavingData
-              ? 'Guardando...'
-              : 'Guardar cambios'}
-          </button>
-        </div>
       </form>
 
       <section
@@ -2929,9 +2905,8 @@ export function AdminPropertyEditPage() {
         )}
       </section>
 
-      <form
+      <div
         className="admin-property-form"
-        onSubmit={handleStatusSave}
       >
         <section className="admin-property-form__section">
           <div>
@@ -2954,6 +2929,7 @@ export function AdminPropertyEditPage() {
                 >
                   <input
                     type="radio"
+                    form="admin-property-edit-form"
                     name="property-status"
                     value={value}
                     checked={
@@ -2965,8 +2941,8 @@ export function AdminPropertyEditPage() {
                       setSelectedStatus(
                         value,
                       );
-                      setStatusError('');
-                      setStatusSuccess('');
+                      setSaveError('');
+                      setSaveSuccess('');
                     }}
                   />
 
@@ -2990,41 +2966,53 @@ export function AdminPropertyEditPage() {
           ) : null}
         </section>
 
-        {statusError ? (
+        {saveError ? (
           <p
             className="admin-property-form__error"
             role="alert"
           >
-            {statusError}
+            {saveError}
           </p>
         ) : null}
 
-        {statusSuccess ? (
+        {saveSuccess ? (
           <p
             className="admin-images__status"
             aria-live="polite"
           >
-            {statusSuccess}
+            {saveSuccess}
           </p>
         ) : null}
 
         <div className="admin-property-form__actions">
           <button
-            type="submit"
+            type="button"
             disabled={
-              isSavingStatus ||
+              isSaving ||
+              isDeletingProperty
+            }
+            onClick={handleResetData}
+          >
+            Deshacer cambios
+          </button>
+
+          <button
+            type="submit"
+            form="admin-property-edit-form"
+            disabled={
+              isSaving ||
               isUploading ||
               isUploadingFloorplans ||
               isManaging ||
               isDeletingProperty
             }
           >
-            {isSavingStatus
-              ? 'Actualizando...'
-              : 'Guardar estado'}
+            {isSaving
+              ? 'Guardando...'
+              : 'Guardar cambios'}
           </button>
         </div>
-      </form>
+      </div>
 
       <section
         className="admin-property-danger"
@@ -3050,9 +3038,9 @@ export function AdminPropertyEditPage() {
             className="admin-property-danger__button"
             disabled={
               isDeletingProperty ||
-              isSavingData ||
-              isSavingStatus ||
+              isSaving ||
               isUploading ||
+              isUploadingFloorplans ||
               isManaging
             }
             onClick={() =>
