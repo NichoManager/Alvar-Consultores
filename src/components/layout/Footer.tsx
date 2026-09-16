@@ -74,6 +74,8 @@ export function Footer() {
                 {business.addressLine2}
                 <br />
                 {business.postalAddress}
+                <br />
+                <small>{business.appointmentNote}</small>
               </p>
             </address>
           </div>

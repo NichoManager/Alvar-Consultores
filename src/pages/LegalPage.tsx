@@ -1,6 +1,7 @@
 import { SeoHead } from '../components/seo/SeoHead';
 import { Container } from '../components/ui/Container';
 import { InternalHero } from '../components/ui/InternalHero';
+import { business } from '../data/business';
 
 type LegalKind = 'legal' | 'privacy' | 'cookies';
 
@@ -28,8 +29,7 @@ const content: Record<LegalKind, LegalContent> = {
     sections: [
       {
         title: 'Titular del sitio',
-        text:
-          'Alvar Consultores Inmobiliarios, S.L. Domicilio comunicado: Calle Ríos Rosas 42, planta 1, 28003 Madrid. Los datos registrales, fiscales y el correo electrónico de contacto deberán incorporarse una vez hayan sido confirmados antes de la publicación definitiva del sitio.',
+        text: `Alvar Consultores Inmobiliarios, S.L. Domicilio comunicado: Calle Ríos Rosas 42, planta 1, 28003 Madrid. ${business.appointmentNote} Los datos registrales, fiscales y el correo electrónico de contacto deberán incorporarse una vez hayan sido confirmados antes de la publicación definitiva del sitio.`,
       },
       {
         title: 'Uso del sitio web',

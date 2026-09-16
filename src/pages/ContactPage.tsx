@@ -87,6 +87,8 @@ export function ContactPage() {
                     {business.addressLine2}
                     <br />
                     {business.postalAddress}
+                    <br />
+                    <small>{business.appointmentNote}</small>
                   </p>
                 </address>
               </div>
@@ -163,6 +165,8 @@ export function ContactPage() {
                     <strong>
                       Ríos Rosas · Madrid
                     </strong>
+
+                    <small>{business.appointmentNote}</small>
                   </div>
 
                   <a

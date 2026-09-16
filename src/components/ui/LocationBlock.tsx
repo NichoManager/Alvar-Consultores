@@ -21,6 +21,7 @@ export function LocationBlock() {
               <strong>{business.addressLine1}</strong>
               <span>{business.addressLine2}</span>
               <span>{business.postalAddress}</span>
+              <small>{business.appointmentNote}</small>
             </address>
 
             <div className="location-block__contact">

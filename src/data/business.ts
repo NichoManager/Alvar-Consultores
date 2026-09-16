@@ -11,6 +11,8 @@ export const business = {
   addressLine1: 'Calle Ríos Rosas 42',
   addressLine2: 'Planta 1 · CINK Coworking',
   postalAddress: '28003 Madrid',
+  appointmentNote:
+    'Atención presencial exclusivamente con cita previa.',
 
   instagram: '@alvarconsultoresinmobiliarios',
   instagramUrl:
