@@ -25,7 +25,11 @@ import {
   type PropertyCondition,
   type PropertyOrientation,
 } from '../../data/propertyOptions';
-import { FLOORPLAN_ACCEPT, uploadPropertyFloorplans, validateFloorplanFiles } from '../../lib/propertyMedia';
+import {
+  FLOORPLAN_ACCEPT,
+  uploadPropertyFloorplans,
+  validateFloorplanFiles,
+} from '../../lib/propertyMedia';
 import { supabase } from '../../lib/supabase';
 import '../../styles/admin.css';
 import '../../styles/admin-property-enhancements.css';
@@ -232,6 +236,24 @@ function nullableNumber(value: string) {
   return Number.isFinite(numericValue) ? numericValue : null;
 }
 
+function parsePrice(value: string) {
+  const normalized = value
+    .trim()
+    .replace(/\s/g, '')
+    .replace(/\./g, '')
+    .replace(',', '.');
+
+  if (!normalized) {
+    return null;
+  }
+
+  const numericValue = Number(normalized);
+
+  return Number.isFinite(numericValue)
+    ? numericValue
+    : null;
+}
+
 function createFormState(property: AdminProperty): PropertyFormState {
   return {
     reference: property.reference ?? '',
@@ -262,32 +284,67 @@ function createFormState(property: AdminProperty): PropertyFormState {
       property.usable_area !== null
         ? String(property.usable_area)
         : '',
-    plotArea: property.plot_area !== null ? String(property.plot_area) : '',
+    plotArea:
+      property.plot_area !== null
+        ? String(property.plot_area)
+        : '',
     floor: property.floor ?? '',
-    floorsCount: property.floors_count !== null ? String(property.floors_count) : '',
-    constructionYear: property.construction_year !== null ? String(property.construction_year) : '',
+    floorsCount:
+      property.floors_count !== null
+        ? String(property.floors_count)
+        : '',
+    constructionYear:
+      property.construction_year !== null
+        ? String(property.construction_year)
+        : '',
     propertyCondition: property.property_condition ?? '',
     orientations: property.orientations ?? [],
     heatingType: property.heating_type ?? '',
     elevator: property.elevator,
     parking: property.parking,
     parkingType: property.parking_type ?? '',
-    parkingSpaces: property.parking_spaces !== null ? String(property.parking_spaces) : '',
+    parkingSpaces:
+      property.parking_spaces !== null
+        ? String(property.parking_spaces)
+        : '',
     terrace: property.terrace,
     furnished: property.furnished,
-    exposure: property.exterior ? 'exterior' : property.features.includes('Interior') ? 'interior' : '',
+    exposure: property.exterior
+      ? 'exterior'
+      : property.features.includes('Interior')
+        ? 'interior'
+        : '',
     videoUrl: property.video_url ?? '',
     virtualTourUrl: property.virtual_tour_url ?? '',
-    communityFeeAmount: property.community_fee_amount !== null ? String(property.community_fee_amount) : '',
+    communityFeeAmount:
+      property.community_fee_amount !== null
+        ? String(property.community_fee_amount)
+        : '',
     communityFeePeriod: property.community_fee_period ?? '',
-    ibiAnnualAmount: property.ibi_annual_amount !== null ? String(property.ibi_annual_amount) : '',
-    energyCertificateStatus: property.energy_certificate_status ?? '',
-    energyConsumptionRating: property.energy_consumption_rating ?? '',
-    energyConsumptionValue: property.energy_consumption_value !== null ? String(property.energy_consumption_value) : '',
-    energyEmissionsRating: property.energy_emissions_rating ?? '',
-    energyEmissionsValue: property.energy_emissions_value !== null ? String(property.energy_emissions_value) : '',
-    managedFeatures: property.features.filter(isManagedPropertyFeature).filter((feature) => feature !== 'Interior'),
-    legacyFeatures: property.features.filter((feature) => !isManagedPropertyFeature(feature)),
+    ibiAnnualAmount:
+      property.ibi_annual_amount !== null
+        ? String(property.ibi_annual_amount)
+        : '',
+    energyCertificateStatus:
+      property.energy_certificate_status ?? '',
+    energyConsumptionRating:
+      property.energy_consumption_rating ?? '',
+    energyConsumptionValue:
+      property.energy_consumption_value !== null
+        ? String(property.energy_consumption_value)
+        : '',
+    energyEmissionsRating:
+      property.energy_emissions_rating ?? '',
+    energyEmissionsValue:
+      property.energy_emissions_value !== null
+        ? String(property.energy_emissions_value)
+        : '',
+    managedFeatures: property.features
+      .filter(isManagedPropertyFeature)
+      .filter((feature) => feature !== 'Interior'),
+    legacyFeatures: property.features.filter(
+      (feature) => !isManagedPropertyFeature(feature),
+    ),
     description: property.description ?? '',
     featured: property.featured,
   };
@@ -302,7 +359,10 @@ export function AdminPropertyEditPage() {
   const [form, setForm] = useState<PropertyFormState | null>(null);
   const [images, setImages] = useState<PropertyImage[]>([]);
   const photos = images.filter((image) => image.media_type === 'photo');
-  const floorplans = images.filter((image) => image.media_type === 'floorplan');
+  const floorplans = images.filter(
+    (image) => image.media_type === 'floorplan',
+  );
+
   const [selectedStatus, setSelectedStatus] =
     useState<PropertyStatus>('draft');
 
@@ -310,9 +370,11 @@ export function AdminPropertyEditPage() {
   const [isSavingData, setIsSavingData] = useState(false);
   const [isSavingStatus, setIsSavingStatus] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [isUploadingFloorplans, setIsUploadingFloorplans] = useState(false);
+  const [isUploadingFloorplans, setIsUploadingFloorplans] =
+    useState(false);
   const [isManaging, setIsManaging] = useState(false);
-  const [isDeletingProperty, setIsDeletingProperty] = useState(false);
+  const [isDeletingProperty, setIsDeletingProperty] =
+    useState(false);
   const isReorderingRef = useRef(false);
 
   const [pageError, setPageError] = useState('');
@@ -320,7 +382,11 @@ export function AdminPropertyEditPage() {
   const [dataSuccess, setDataSuccess] = useState('');
   const [imageError, setImageError] = useState('');
   const [floorplanError, setFloorplanError] = useState(
-    (location.state as { floorplanUploadWarning?: string } | null)?.floorplanUploadWarning ?? '',
+    (
+      location.state as {
+        floorplanUploadWarning?: string;
+      } | null
+    )?.floorplanUploadWarning ?? '',
   );
   const [statusError, setStatusError] = useState('');
   const [statusSuccess, setStatusSuccess] = useState('');
@@ -535,7 +601,7 @@ export function AdminPropertyEditPage() {
 
     const title = form.title.trim();
     const city = form.city.trim();
-    const price = Number(form.price);
+    const price = parsePrice(form.price);
 
     if (!title) {
       setDataError(
@@ -554,7 +620,7 @@ export function AdminPropertyEditPage() {
     }
 
     if (
-      !Number.isFinite(price) ||
+      price === null ||
       price < 0
     ) {
       setDataError(
@@ -592,22 +658,44 @@ export function AdminPropertyEditPage() {
       heating_type: form.heatingType || null,
       elevator: form.elevator,
       parking: form.parking,
-      parking_type: form.parking ? form.parkingType || null : null,
-      parking_spaces: form.parking ? nullableNumber(form.parkingSpaces) : null,
+      parking_type:
+        form.parking
+          ? form.parkingType || null
+          : null,
+      parking_spaces:
+        form.parking
+          ? nullableNumber(form.parkingSpaces)
+          : null,
       terrace: form.terrace,
       furnished: form.furnished,
       exterior: form.exposure === 'exterior',
       video_url: nullableText(form.videoUrl),
       virtual_tour_url: nullableText(form.virtualTourUrl),
-      community_fee_amount: nullableNumber(form.communityFeeAmount),
-      community_fee_period: form.communityFeeAmount.trim() ? form.communityFeePeriod || null : null,
-      ibi_annual_amount: nullableNumber(form.ibiAnnualAmount),
-      energy_certificate_status: form.energyCertificateStatus || null,
-      energy_consumption_rating: form.energyConsumptionRating || null,
-      energy_consumption_value: nullableNumber(form.energyConsumptionValue),
-      energy_emissions_rating: form.energyEmissionsRating || null,
-      energy_emissions_value: nullableNumber(form.energyEmissionsValue),
-      features: [...form.legacyFeatures, ...form.managedFeatures, ...(form.exposure === 'interior' ? ['Interior'] : [])],
+      community_fee_amount:
+        nullableNumber(form.communityFeeAmount),
+      community_fee_period:
+        form.communityFeeAmount.trim()
+          ? form.communityFeePeriod || null
+          : null,
+      ibi_annual_amount:
+        nullableNumber(form.ibiAnnualAmount),
+      energy_certificate_status:
+        form.energyCertificateStatus || null,
+      energy_consumption_rating:
+        form.energyConsumptionRating || null,
+      energy_consumption_value:
+        nullableNumber(form.energyConsumptionValue),
+      energy_emissions_rating:
+        form.energyEmissionsRating || null,
+      energy_emissions_value:
+        nullableNumber(form.energyEmissionsValue),
+      features: [
+        ...form.legacyFeatures,
+        ...form.managedFeatures,
+        ...(form.exposure === 'interior'
+          ? ['Interior']
+          : []),
+      ],
       description: nullableText(form.description),
       featured: form.featured,
     };
@@ -831,14 +919,16 @@ export function AdminPropertyEditPage() {
         continue;
       }
 
-      const { data: updatedImage, error: positionError } =
-        await supabase
-          .from('property_images')
-          .update({ position })
-          .eq('id', image.id)
-          .eq('property_id', id)
-          .select('id')
-          .maybeSingle();
+      const {
+        data: updatedImage,
+        error: positionError,
+      } = await supabase
+        .from('property_images')
+        .update({ position })
+        .eq('id', image.id)
+        .eq('property_id', id)
+        .select('id')
+        .maybeSingle();
 
       if (positionError) {
         return positionError;
@@ -895,22 +985,32 @@ export function AdminPropertyEditPage() {
 
     const previousImages = [...images];
     const previousMediaItems = previousImages.filter(
-      (image) => image.media_type === orderedImages[0].media_type,
+      (image) =>
+        image.media_type === orderedImages[0].media_type,
     );
-    const normalizedImages = orderedImages.map((image, position) => ({
-      ...image,
-      position,
-    }));
+
+    const normalizedImages = orderedImages.map(
+      (image, position) => ({
+        ...image,
+        position,
+      }),
+    );
 
     setImageError('');
     setFloorplanError('');
+
     setImages((currentImages) =>
-      replaceMediaItems(currentImages, normalizedImages),
+      replaceMediaItems(
+        currentImages,
+        normalizedImages,
+      ),
     );
+
     setIsManaging(true);
 
     try {
-      const positionError = await updatePositions(orderedImages);
+      const positionError =
+        await updatePositions(orderedImages);
 
       if (positionError) {
         throw positionError;
@@ -918,9 +1018,16 @@ export function AdminPropertyEditPage() {
 
       await refreshImages();
     } catch (reorderError) {
-      console.error('Error reordering property images:', reorderError);
+      console.error(
+        'Error reordering property images:',
+        reorderError,
+      );
 
-      const rollbackError = await updatePositions(previousMediaItems, true);
+      const rollbackError =
+        await updatePositions(
+          previousMediaItems,
+          true,
+        );
 
       if (rollbackError) {
         console.error(
@@ -931,7 +1038,10 @@ export function AdminPropertyEditPage() {
 
       setImages(previousImages);
 
-      if (orderedImages[0].media_type === 'floorplan') {
+      if (
+        orderedImages[0].media_type ===
+        'floorplan'
+      ) {
         setFloorplanError(
           'No se ha podido cambiar el orden de los planos.',
         );
@@ -1107,10 +1217,16 @@ export function AdminPropertyEditPage() {
         return;
       }
 
-      const sameTypeImages = images.filter((item) => item.media_type === image.media_type);
-      const remainingImages = sameTypeImages.filter(
-        (item) => item.id !== image.id,
+      const sameTypeImages = images.filter(
+        (item) =>
+          item.media_type === image.media_type,
       );
+
+      const remainingImages =
+        sameTypeImages.filter(
+          (item) =>
+            item.id !== image.id,
+        );
 
       if (
         image.is_cover &&
@@ -1166,28 +1282,69 @@ export function AdminPropertyEditPage() {
     }
   };
 
-  const handleFloorplanUpload = async (selectedFiles: File[]) => {
-    if (!property || !selectedFiles.length || isUploading || isUploadingFloorplans || isManaging || isDeletingProperty) return;
-    const validation = validateFloorplanFiles(selectedFiles);
-    if (!validation.validFiles.length) {
-      setFloorplanError(validation.errors.join(' '));
+  const handleFloorplanUpload = async (
+    selectedFiles: File[],
+  ) => {
+    if (
+      !property ||
+      !selectedFiles.length ||
+      isUploading ||
+      isUploadingFloorplans ||
+      isManaging ||
+      isDeletingProperty
+    ) {
       return;
     }
+
+    const validation =
+      validateFloorplanFiles(selectedFiles);
+
+    if (!validation.validFiles.length) {
+      setFloorplanError(
+        validation.errors.join(' '),
+      );
+
+      return;
+    }
+
     setFloorplanError('');
     setIsUploadingFloorplans(true);
+
     try {
-      const result = await uploadPropertyFloorplans({
-        propertyId: property.id,
-        propertyTitle: property.title,
-        propertyCity: property.city,
-        files: validation.validFiles,
-        startPosition: floorplans.reduce((highest, image) => Math.max(highest, image.position), -1) + 1,
-      });
-      setFloorplanError([...validation.errors, ...result.errors].join(' '));
+      const result =
+        await uploadPropertyFloorplans({
+          propertyId: property.id,
+          propertyTitle: property.title,
+          propertyCity: property.city,
+          files: validation.validFiles,
+          startPosition:
+            floorplans.reduce(
+              (highest, image) =>
+                Math.max(
+                  highest,
+                  image.position,
+                ),
+              -1,
+            ) + 1,
+        });
+
+      setFloorplanError(
+        [
+          ...validation.errors,
+          ...result.errors,
+        ].join(' '),
+      );
+
       await refreshImages();
     } catch (unexpectedError) {
-      console.error('Unexpected floorplan upload error:', unexpectedError);
-      setFloorplanError('No se han podido completar las subidas de planos. Inténtalo de nuevo.');
+      console.error(
+        'Unexpected floorplan upload error:',
+        unexpectedError,
+      );
+
+      setFloorplanError(
+        'No se han podido completar las subidas de planos. Inténtalo de nuevo.',
+      );
     } finally {
       setIsUploadingFloorplans(false);
     }
@@ -1352,9 +1509,13 @@ export function AdminPropertyEditPage() {
         return;
       }
 
-      const storagePaths = (propertyImages ?? [])
-        .map((image) => image.storage_path)
-        .filter(Boolean);
+      const storagePaths =
+        (propertyImages ?? [])
+          .map(
+            (image) =>
+              image.storage_path,
+          )
+          .filter(Boolean);
 
       if (storagePaths.length > 0) {
         const { error: storageDeleteError } =
@@ -1395,9 +1556,12 @@ export function AdminPropertyEditPage() {
         return;
       }
 
-      navigate('/admin/inmuebles', {
-        replace: true,
-      });
+      navigate(
+        '/admin/inmuebles',
+        {
+          replace: true,
+        },
+      );
     } catch (unexpectedError) {
       console.error(
         'Unexpected property deletion error:',
@@ -1436,9 +1600,18 @@ export function AdminPropertyEditPage() {
   }
 
   const propertyTypeOptionsForForm =
-    propertyTypeOptions.some((option) => option.value === form.propertyType)
+    propertyTypeOptions.some(
+      (option) =>
+        option.value === form.propertyType,
+    )
       ? propertyTypeOptions
-      : [{ value: form.propertyType, label: form.propertyType }, ...propertyTypeOptions];
+      : [
+          {
+            value: form.propertyType,
+            label: form.propertyType,
+          },
+          ...propertyTypeOptions,
+        ];
 
   const isPropertyPublic =
     property.status === 'published' ||
@@ -1456,7 +1629,9 @@ export function AdminPropertyEditPage() {
             aria-label="Abrir la web pública de Alvar Consultores en una nueva pestaña"
           >
             ALVAR CONSULTORES{' '}
-            <span aria-hidden="true">↗</span>
+            <span aria-hidden="true">
+              ↗
+            </span>
           </a>
 
           <h1>Editar inmueble</h1>
@@ -1471,7 +1646,11 @@ export function AdminPropertyEditPage() {
 
           <div className="admin-header-session">
             <AdminCurrentUser />
-            <button type="button" onClick={handleLogout}>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+            >
               Cerrar sesión
             </button>
           </div>
@@ -1517,19 +1696,27 @@ export function AdminPropertyEditPage() {
                 onChange={(event) =>
                   updateForm(
                     'operation',
-                    event.target.value as PropertyOperation,
+                    event.target
+                      .value as PropertyOperation,
                   )
                 }
                 disabled={isDeletingProperty}
                 required
               >
-                <option value="venta">Venta</option>
-                <option value="alquiler">Alquiler</option>
+                <option value="venta">
+                  Venta
+                </option>
+
+                <option value="alquiler">
+                  Alquiler
+                </option>
               </select>
             </label>
 
             <label className="admin-property-form__field">
-              <span>Tipo de inmueble *</span>
+              <span>
+                Tipo de inmueble *
+              </span>
 
               <select
                 value={form.propertyType}
@@ -1542,14 +1729,16 @@ export function AdminPropertyEditPage() {
                 disabled={isDeletingProperty}
                 required
               >
-                {propertyTypeOptionsForForm.map((option) => (
-                  <option
-                    value={option.value}
-                    key={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
+                {propertyTypeOptionsForForm.map(
+                  (option) => (
+                    <option
+                      value={option.value}
+                      key={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ),
+                )}
               </select>
             </label>
 
@@ -1592,9 +1781,8 @@ export function AdminPropertyEditPage() {
 
               <span className="admin-property-form__input-suffix">
                 <input
-                  type="number"
-                  min="0"
-                  step="1"
+                  type="text"
+                  inputMode="decimal"
                   value={form.price}
                   onChange={(event) =>
                     updateForm(
@@ -1603,11 +1791,32 @@ export function AdminPropertyEditPage() {
                     )
                   }
                   disabled={isDeletingProperty}
+                  placeholder={
+                    form.operation ===
+                    'alquiler'
+                      ? 'Ej. 1.500'
+                      : 'Ej. 250.000'
+                  }
                   required
                 />
 
-                <span aria-hidden="true">€</span>
+                <span aria-hidden="true">
+                  {form.operation ===
+                  'alquiler'
+                    ? '€/mes'
+                    : '€'}
+                </span>
               </span>
+
+              <small className="admin-property-form__helper">
+                Puedes escribir, por ejemplo,
+                {' '}
+                {form.operation ===
+                'alquiler'
+                  ? '1500 o 1.500'
+                  : '250000 o 250.000'}
+                .
+              </small>
             </label>
           </div>
         </section>
@@ -1702,8 +1911,9 @@ export function AdminPropertyEditPage() {
               Mostrar dirección exacta en la web
 
               <small>
-                Actívalo solo si quieres que la ubicación
-                exacta del inmueble sea pública.
+                Actívalo solo si quieres que la
+                ubicación exacta del inmueble sea
+                pública.
               </small>
             </span>
           </label>
@@ -1809,103 +2019,358 @@ export function AdminPropertyEditPage() {
             </label>
 
             <label className="admin-property-form__field">
-              <span>Superficie de parcela (m²)</span>
-              <input type="number" min="0" step="0.01" value={form.plotArea} onChange={(event) => updateForm('plotArea', event.target.value)} disabled={isDeletingProperty} />
+              <span>
+                Superficie de parcela (m²)
+              </span>
+
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={form.plotArea}
+                onChange={(event) =>
+                  updateForm(
+                    'plotArea',
+                    event.target.value,
+                  )
+                }
+                disabled={isDeletingProperty}
+              />
             </label>
 
             <label className="admin-property-form__field">
               <span>Número de plantas</span>
-              <input type="number" min="1" step="1" value={form.floorsCount} onChange={(event) => updateForm('floorsCount', event.target.value)} disabled={isDeletingProperty} />
+
+              <input
+                type="number"
+                min="1"
+                step="1"
+                value={form.floorsCount}
+                onChange={(event) =>
+                  updateForm(
+                    'floorsCount',
+                    event.target.value,
+                  )
+                }
+                disabled={isDeletingProperty}
+              />
             </label>
 
             <label className="admin-property-form__field">
-              <span>Año de construcción</span>
-              <input type="number" min="1800" max="2200" step="1" value={form.constructionYear} onChange={(event) => updateForm('constructionYear', event.target.value)} disabled={isDeletingProperty} />
+              <span>
+                Año de construcción
+              </span>
+
+              <input
+                type="number"
+                min="1800"
+                max="2200"
+                step="1"
+                value={form.constructionYear}
+                onChange={(event) =>
+                  updateForm(
+                    'constructionYear',
+                    event.target.value,
+                  )
+                }
+                disabled={isDeletingProperty}
+              />
             </label>
 
             <label className="admin-property-form__field">
               <span>Estado</span>
-              <select value={form.propertyCondition} onChange={(event) => updateForm('propertyCondition', event.target.value as PropertyCondition | '')} disabled={isDeletingProperty}>
-                <option value="">Sin especificar</option>
-                {propertyConditionOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+
+              <select
+                value={form.propertyCondition}
+                onChange={(event) =>
+                  updateForm(
+                    'propertyCondition',
+                    event.target
+                      .value as PropertyCondition | '',
+                  )
+                }
+                disabled={isDeletingProperty}
+              >
+                <option value="">
+                  Sin especificar
+                </option>
+
+                {propertyConditionOptions.map(
+                  (option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ),
+                )}
               </select>
             </label>
 
             <label className="admin-property-form__field">
-              <span>Exterior / interior</span>
-              <select value={form.exposure} onChange={(event) => updateForm('exposure', event.target.value as PropertyFormState['exposure'])} disabled={isDeletingProperty}>
-                <option value="">Sin especificar</option><option value="exterior">Exterior</option><option value="interior">Interior</option>
+              <span>
+                Exterior / interior
+              </span>
+
+              <select
+                value={form.exposure}
+                onChange={(event) =>
+                  updateForm(
+                    'exposure',
+                    event.target
+                      .value as PropertyFormState['exposure'],
+                  )
+                }
+                disabled={isDeletingProperty}
+              >
+                <option value="">
+                  Sin especificar
+                </option>
+
+                <option value="exterior">
+                  Exterior
+                </option>
+
+                <option value="interior">
+                  Interior
+                </option>
               </select>
             </label>
 
             <label className="admin-property-form__field">
               <span>Calefacción</span>
-              <select value={form.heatingType} onChange={(event) => updateForm('heatingType', event.target.value as HeatingType | '')} disabled={isDeletingProperty}>
-                <option value="">Sin especificar</option>{heatingTypeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+
+              <select
+                value={form.heatingType}
+                onChange={(event) =>
+                  updateForm(
+                    'heatingType',
+                    event.target
+                      .value as HeatingType | '',
+                  )
+                }
+                disabled={isDeletingProperty}
+              >
+                <option value="">
+                  Sin especificar
+                </option>
+
+                {heatingTypeOptions.map(
+                  (option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ),
+                )}
               </select>
             </label>
           </div>
 
           <div className="admin-property-subsection">
             <h3>Características</h3>
+
             <div className="admin-property-form__checks">
-            {[
-              ['elevator', 'Ascensor'],
-              ['terrace', 'Terraza'],
-              ['furnished', 'Amueblado'],
-              ['featured', 'Destacado'],
-            ].map(([key, label]) => {
-              const field =
-                key as keyof Pick<
-                  PropertyFormState,
-                  | 'elevator'
-                  | 'terrace'
-                  | 'furnished'
-                  | 'featured'
-                >;
+              {[
+                ['elevator', 'Ascensor'],
+                ['terrace', 'Terraza'],
+                ['furnished', 'Amueblado'],
+                ['featured', 'Destacado'],
+              ].map(([key, label]) => {
+                const field =
+                  key as keyof Pick<
+                    PropertyFormState,
+                    | 'elevator'
+                    | 'terrace'
+                    | 'furnished'
+                    | 'featured'
+                  >;
 
-              return (
-                <label
-                  className="admin-property-form__check"
-                  key={key}
-                >
-                  <input
-                    type="checkbox"
-                    checked={form[field]}
-                    onChange={(event) =>
-                      updateForm(
-                        field,
-                        event.target.checked,
-                      )
-                    }
-                    disabled={isDeletingProperty}
-                  />
+                return (
+                  <label
+                    className="admin-property-form__check"
+                    key={key}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={form[field]}
+                      onChange={(event) =>
+                        updateForm(
+                          field,
+                          event.target.checked,
+                        )
+                      }
+                      disabled={isDeletingProperty}
+                    />
 
-                  <span>{label}</span>
-                </label>
-              );
-            })}
-            {propertyAmenityGroups.flatMap((group) => group.options).map((feature) => (
-              <label className="admin-property-form__check" key={feature}>
-                <input type="checkbox" checked={form.managedFeatures.includes(feature)} onChange={(event) => updateForm('managedFeatures', event.target.checked ? [...form.managedFeatures, feature] : form.managedFeatures.filter((item) => item !== feature))} disabled={isDeletingProperty} />
-                <span>{feature}</span>
-              </label>
-            ))}
+                    <span>{label}</span>
+                  </label>
+                );
+              })}
+
+              {propertyAmenityGroups
+                .flatMap(
+                  (group) =>
+                    group.options,
+                )
+                .map((feature) => (
+                  <label
+                    className="admin-property-form__check"
+                    key={feature}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={form.managedFeatures.includes(
+                        feature,
+                      )}
+                      onChange={(event) =>
+                        updateForm(
+                          'managedFeatures',
+                          event.target.checked
+                            ? [
+                                ...form.managedFeatures,
+                                feature,
+                              ]
+                            : form.managedFeatures.filter(
+                                (item) =>
+                                  item !== feature,
+                              ),
+                        )
+                      }
+                      disabled={isDeletingProperty}
+                    />
+
+                    <span>{feature}</span>
+                  </label>
+                ))}
             </div>
           </div>
 
           <div className="admin-property-subsection">
             <h3>Garaje</h3>
-            <div className="admin-property-form__checks"><label className="admin-property-form__check"><input type="checkbox" checked={form.parking} onChange={(event) => updateForm('parking', event.target.checked)} disabled={isDeletingProperty} /><span>Tiene garaje</span></label></div>
+
+            <div className="admin-property-form__checks">
+              <label className="admin-property-form__check">
+                <input
+                  type="checkbox"
+                  checked={form.parking}
+                  onChange={(event) =>
+                    updateForm(
+                      'parking',
+                      event.target.checked,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+
+                <span>Tiene garaje</span>
+              </label>
+            </div>
+
             <div className="admin-property-form__grid">
-              <label className="admin-property-form__field"><span>Modalidad</span><select value={form.parkingType} onChange={(event) => updateForm('parkingType', event.target.value as ParkingType | '')} disabled={!form.parking || isDeletingProperty}><option value="">Sin especificar</option>{parkingTypeOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-              <label className="admin-property-form__field"><span>Número de plazas</span><input type="number" min="1" step="1" value={form.parkingSpaces} onChange={(event) => updateForm('parkingSpaces', event.target.value)} disabled={!form.parking || isDeletingProperty} /></label>
+              <label className="admin-property-form__field">
+                <span>Modalidad</span>
+
+                <select
+                  value={form.parkingType}
+                  onChange={(event) =>
+                    updateForm(
+                      'parkingType',
+                      event.target
+                        .value as ParkingType | '',
+                    )
+                  }
+                  disabled={
+                    !form.parking ||
+                    isDeletingProperty
+                  }
+                >
+                  <option value="">
+                    Sin especificar
+                  </option>
+
+                  {parkingTypeOptions.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+
+              <label className="admin-property-form__field">
+                <span>
+                  Número de plazas
+                </span>
+
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={form.parkingSpaces}
+                  onChange={(event) =>
+                    updateForm(
+                      'parkingSpaces',
+                      event.target.value,
+                    )
+                  }
+                  disabled={
+                    !form.parking ||
+                    isDeletingProperty
+                  }
+                />
+              </label>
             </div>
           </div>
 
-          <div className="admin-property-subsection"><h3>Orientación</h3><div className="admin-property-form__checks">
-            {orientationOptions.map((option) => <label className="admin-property-form__check" key={option.value}><input type="checkbox" checked={form.orientations.includes(option.value)} onChange={(event) => updateForm('orientations', event.target.checked ? [...form.orientations, option.value] : form.orientations.filter((item) => item !== option.value))} disabled={isDeletingProperty} /><span>{option.label}</span></label>)}
-          </div></div>
+          <div className="admin-property-subsection">
+            <h3>Orientación</h3>
+
+            <div className="admin-property-form__checks">
+              {orientationOptions.map(
+                (option) => (
+                  <label
+                    className="admin-property-form__check"
+                    key={option.value}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={form.orientations.includes(
+                        option.value,
+                      )}
+                      onChange={(event) =>
+                        updateForm(
+                          'orientations',
+                          event.target.checked
+                            ? [
+                                ...form.orientations,
+                                option.value,
+                              ]
+                            : form.orientations.filter(
+                                (item) =>
+                                  item !==
+                                  option.value,
+                              ),
+                        )
+                      }
+                      disabled={isDeletingProperty}
+                    />
+
+                    <span>
+                      {option.label}
+                    </span>
+                  </label>
+                ),
+              )}
+            </div>
+          </div>
 
           <p className="admin-property-form__check-help">
             Los inmuebles destacados pueden aparecer
@@ -1921,29 +2386,265 @@ export function AdminPropertyEditPage() {
 
           <div className="admin-property-subsection admin-property-subsection--first">
             <h3>Multimedia adicional</h3>
+
             <div className="admin-property-form__grid">
-              <label className="admin-property-form__field"><span>Vídeo</span><input type="url" value={form.videoUrl} onChange={(event) => updateForm('videoUrl', event.target.value)} disabled={isDeletingProperty} placeholder="https://..." /><small className="admin-property-form__helper">YouTube, Vimeo u otra URL pública compatible.</small></label>
-              <label className="admin-property-form__field"><span>Visita virtual</span><input type="url" value={form.virtualTourUrl} onChange={(event) => updateForm('virtualTourUrl', event.target.value)} disabled={isDeletingProperty} placeholder="https://..." /><small className="admin-property-form__helper">Matterport, tour virtual u otra URL pública.</small></label>
+              <label className="admin-property-form__field">
+                <span>Vídeo</span>
+
+                <input
+                  type="url"
+                  value={form.videoUrl}
+                  onChange={(event) =>
+                    updateForm(
+                      'videoUrl',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                  placeholder="https://..."
+                />
+
+                <small className="admin-property-form__helper">
+                  YouTube, Vimeo u otra URL pública
+                  compatible.
+                </small>
+              </label>
+
+              <label className="admin-property-form__field">
+                <span>Visita virtual</span>
+
+                <input
+                  type="url"
+                  value={form.virtualTourUrl}
+                  onChange={(event) =>
+                    updateForm(
+                      'virtualTourUrl',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                  placeholder="https://..."
+                />
+
+                <small className="admin-property-form__helper">
+                  Matterport, tour virtual u otra URL
+                  pública.
+                </small>
+              </label>
             </div>
           </div>
 
           <div className="admin-property-subsection">
             <h3>Gastos</h3>
+
             <div className="admin-property-form__grid">
-              <label className="admin-property-form__field"><span>Comunidad (€)</span><input type="number" min="0" step="0.01" value={form.communityFeeAmount} onChange={(event) => updateForm('communityFeeAmount', event.target.value)} disabled={isDeletingProperty} /></label>
-              <label className="admin-property-form__field"><span>Periodicidad</span><select value={form.communityFeePeriod} onChange={(event) => updateForm('communityFeePeriod', event.target.value as CommunityFeePeriod | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{communityFeePeriodOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-              <label className="admin-property-form__field"><span>IBI anual (€)</span><input type="number" min="0" step="0.01" value={form.ibiAnnualAmount} onChange={(event) => updateForm('ibiAnnualAmount', event.target.value)} disabled={isDeletingProperty} /></label>
+              <label className="admin-property-form__field">
+                <span>Comunidad (€)</span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.communityFeeAmount}
+                  onChange={(event) =>
+                    updateForm(
+                      'communityFeeAmount',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+              </label>
+
+              <label className="admin-property-form__field">
+                <span>Periodicidad</span>
+
+                <select
+                  value={form.communityFeePeriod}
+                  onChange={(event) =>
+                    updateForm(
+                      'communityFeePeriod',
+                      event.target
+                        .value as CommunityFeePeriod | '',
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                >
+                  <option value="">
+                    Sin especificar
+                  </option>
+
+                  {communityFeePeriodOptions.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+
+              <label className="admin-property-form__field">
+                <span>IBI anual (€)</span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.ibiAnnualAmount}
+                  onChange={(event) =>
+                    updateForm(
+                      'ibiAnnualAmount',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+              </label>
             </div>
           </div>
 
           <div className="admin-property-subsection">
             <h3>Eficiencia energética</h3>
+
             <div className="admin-property-form__grid">
-              <label className="admin-property-form__field"><span>Estado del certificado</span><select value={form.energyCertificateStatus} onChange={(event) => updateForm('energyCertificateStatus', event.target.value as EnergyCertificateStatus | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyCertificateStatusOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
-              <label className="admin-property-form__field"><span>Letra de consumo</span><select value={form.energyConsumptionRating} onChange={(event) => updateForm('energyConsumptionRating', event.target.value as EnergyRating | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
-              <label className="admin-property-form__field"><span>Consumo (kWh/m²/año)</span><input type="number" min="0" step="0.01" value={form.energyConsumptionValue} onChange={(event) => updateForm('energyConsumptionValue', event.target.value)} disabled={isDeletingProperty} /></label>
-              <label className="admin-property-form__field"><span>Letra de emisiones</span><select value={form.energyEmissionsRating} onChange={(event) => updateForm('energyEmissionsRating', event.target.value as EnergyRating | '')} disabled={isDeletingProperty}><option value="">Sin especificar</option>{energyRatingOptions.map((rating) => <option key={rating} value={rating}>{rating}</option>)}</select></label>
-              <label className="admin-property-form__field"><span>Emisiones (kg CO₂/m²/año)</span><input type="number" min="0" step="0.01" value={form.energyEmissionsValue} onChange={(event) => updateForm('energyEmissionsValue', event.target.value)} disabled={isDeletingProperty} /></label>
+              <label className="admin-property-form__field">
+                <span>
+                  Estado del certificado
+                </span>
+
+                <select
+                  value={form.energyCertificateStatus}
+                  onChange={(event) =>
+                    updateForm(
+                      'energyCertificateStatus',
+                      event.target
+                        .value as EnergyCertificateStatus | '',
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                >
+                  <option value="">
+                    Sin especificar
+                  </option>
+
+                  {energyCertificateStatusOptions.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+
+              <label className="admin-property-form__field">
+                <span>Letra de consumo</span>
+
+                <select
+                  value={form.energyConsumptionRating}
+                  onChange={(event) =>
+                    updateForm(
+                      'energyConsumptionRating',
+                      event.target
+                        .value as EnergyRating | '',
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                >
+                  <option value="">
+                    Sin especificar
+                  </option>
+
+                  {energyRatingOptions.map(
+                    (rating) => (
+                      <option
+                        key={rating}
+                        value={rating}
+                      >
+                        {rating}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+
+              <label className="admin-property-form__field">
+                <span>
+                  Consumo (kWh/m²/año)
+                </span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.energyConsumptionValue}
+                  onChange={(event) =>
+                    updateForm(
+                      'energyConsumptionValue',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+              </label>
+
+              <label className="admin-property-form__field">
+                <span>Letra de emisiones</span>
+
+                <select
+                  value={form.energyEmissionsRating}
+                  onChange={(event) =>
+                    updateForm(
+                      'energyEmissionsRating',
+                      event.target
+                        .value as EnergyRating | '',
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                >
+                  <option value="">
+                    Sin especificar
+                  </option>
+
+                  {energyRatingOptions.map(
+                    (rating) => (
+                      <option
+                        key={rating}
+                        value={rating}
+                      >
+                        {rating}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+
+              <label className="admin-property-form__field">
+                <span>
+                  Emisiones (kg CO₂/m²/año)
+                </span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.energyEmissionsValue}
+                  onChange={(event) =>
+                    updateForm(
+                      'energyEmissionsValue',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+              </label>
             </div>
           </div>
         </section>
@@ -1977,31 +2678,56 @@ export function AdminPropertyEditPage() {
 
           <div className="admin-property-subsection">
             <h3>SEO</h3>
+
             <p className="admin-property-form__check-help">
-              Opcional. Si lo dejas vacío, la web generará automáticamente los metadatos a partir del inmueble y su ubicación.
+              Opcional. Si lo dejas vacío, la web generará
+              automáticamente los metadatos a partir del
+              inmueble y su ubicación.
             </p>
+
             <div className="admin-property-form__grid">
               <label className="admin-property-form__field">
                 <span>Título SEO</span>
+
                 <input
                   type="text"
                   value={form.seoTitle}
-                  onChange={(event) => updateForm('seoTitle', event.target.value)}
+                  onChange={(event) =>
+                    updateForm(
+                      'seoTitle',
+                      event.target.value,
+                    )
+                  }
                   disabled={isDeletingProperty}
                   placeholder="Chalet en venta en Illescas, Toledo | Alvar Consultores"
                 />
-                <small className="admin-property-form__helper">{form.seoTitle.length} caracteres · Recomendado: hasta 60 caracteres</small>
+
+                <small className="admin-property-form__helper">
+                  {form.seoTitle.length} caracteres ·
+                  Recomendado: hasta 60 caracteres
+                </small>
               </label>
+
               <label className="admin-property-form__field">
                 <span>Meta descripción</span>
+
                 <textarea
                   rows={4}
                   value={form.seoDescription}
-                  onChange={(event) => updateForm('seoDescription', event.target.value)}
+                  onChange={(event) =>
+                    updateForm(
+                      'seoDescription',
+                      event.target.value,
+                    )
+                  }
                   disabled={isDeletingProperty}
                   placeholder="Chalet en venta en Illescas, Toledo. Descubre características, precio, ubicación y solicita información a Alvar Consultores."
                 />
-                <small className="admin-property-form__helper">{form.seoDescription.length} caracteres · Recomendado: 140–160 caracteres</small>
+
+                <small className="admin-property-form__helper">
+                  {form.seoDescription.length} caracteres ·
+                  Recomendado: 140–160 caracteres
+                </small>
               </label>
             </div>
           </div>
@@ -2064,9 +2790,10 @@ export function AdminPropertyEditPage() {
             </h2>
 
             <p>
-              Sube las fotografías del inmueble y arrástralas
-              para cambiar su orden. La imagen marcada como
-              portada será la principal en el catálogo.
+              Sube las fotografías del inmueble y
+              arrástralas para cambiar su orden. La
+              imagen marcada como portada será la
+              principal en el catálogo.
             </p>
           </div>
 
@@ -2136,56 +2863,141 @@ export function AdminPropertyEditPage() {
             }
             getImageUrl={getPublicImageUrl}
             onReorder={(orderedImages) =>
-              void handleReorder(orderedImages as PropertyImage[])
+              void handleReorder(
+                orderedImages as PropertyImage[],
+              )
             }
-            onMove={(index, direction, mediaItems) =>
+            onMove={(
+              index,
+              direction,
+              mediaItems,
+            ) =>
               void handleMove(
                 index,
                 direction,
                 mediaItems as PropertyImage[],
               )
             }
-            onSetCover={(imageId) => void handleSetCover(imageId)}
+            onSetCover={(imageId) =>
+              void handleSetCover(imageId)
+            }
             onDelete={(image) =>
-              void handleDelete(image as PropertyImage)
+              void handleDelete(
+                image as PropertyImage,
+              )
             }
           />
         ) : (
           <p className="admin-images__empty">
-            Todavía no hay fotografías para este inmueble.
+            Todavía no hay fotografías para este
+            inmueble.
           </p>
         )}
       </section>
 
-      <section className="admin-images" aria-labelledby="admin-floorplans-title">
+      <section
+        className="admin-images"
+        aria-labelledby="admin-floorplans-title"
+      >
         <div className="admin-images__upload">
           <div>
             <span>PLANOS</span>
-            <h2 id="admin-floorplans-title">Planos del inmueble</h2>
-            <p>Gestiona los planos por separado de la galería de fotografías.</p>
+
+            <h2 id="admin-floorplans-title">
+              Planos del inmueble
+            </h2>
+
+            <p>
+              Gestiona los planos por separado de la
+              galería de fotografías.
+            </p>
           </div>
+
           <label>
-            <span>{isUploadingFloorplans ? 'Subiendo planos...' : 'Añadir planos'}</span>
-            <input type="file" multiple accept={FLOORPLAN_ACCEPT} disabled={isUploading || isUploadingFloorplans || isManaging || isDeletingProperty} onChange={(event) => { const files = Array.from(event.target.files ?? []); event.target.value = ''; void handleFloorplanUpload(files); }} />
-            <small>JPG, PNG o WEBP · Máximo 10 MB por archivo</small>
+            <span>
+              {isUploadingFloorplans
+                ? 'Subiendo planos...'
+                : 'Añadir planos'}
+            </span>
+
+            <input
+              type="file"
+              multiple
+              accept={FLOORPLAN_ACCEPT}
+              disabled={
+                isUploading ||
+                isUploadingFloorplans ||
+                isManaging ||
+                isDeletingProperty
+              }
+              onChange={(event) => {
+                const files = Array.from(
+                  event.target.files ?? [],
+                );
+
+                event.target.value = '';
+
+                void handleFloorplanUpload(
+                  files,
+                );
+              }}
+            />
+
+            <small>
+              JPG, PNG o WEBP · Máximo 10 MB por archivo
+            </small>
           </label>
         </div>
 
-        {floorplanError ? <p className="admin-images__error" role="alert">{floorplanError}</p> : null}
+        {floorplanError ? (
+          <p
+            className="admin-images__error"
+            role="alert"
+          >
+            {floorplanError}
+          </p>
+        ) : null}
 
         {floorplans.length ? (
           <SortablePropertyMediaGrid
             items={floorplans}
             variant="floorplan"
             propertyTitle={property.title}
-            disabled={isManaging || isUploading || isUploadingFloorplans || isDeletingProperty}
+            disabled={
+              isManaging ||
+              isUploading ||
+              isUploadingFloorplans ||
+              isDeletingProperty
+            }
             getImageUrl={getPublicImageUrl}
-            onReorder={(orderedImages) => void handleReorder(orderedImages as PropertyImage[])}
-            onMove={(index, direction, mediaItems) => void handleMove(index, direction, mediaItems as PropertyImage[])}
+            onReorder={(orderedImages) =>
+              void handleReorder(
+                orderedImages as PropertyImage[],
+              )
+            }
+            onMove={(
+              index,
+              direction,
+              mediaItems,
+            ) =>
+              void handleMove(
+                index,
+                direction,
+                mediaItems as PropertyImage[],
+              )
+            }
             onSetCover={() => undefined}
-            onDelete={(image) => void handleDelete(image as PropertyImage)}
+            onDelete={(image) =>
+              void handleDelete(
+                image as PropertyImage,
+              )
+            }
           />
-        ) : <p className="admin-images__empty">Todavía no hay planos para este inmueble.</p>}
+        ) : (
+          <p className="admin-images__empty">
+            Todavía no hay planos para este inmueble.
+          </p>
+        )}
       </section>
 
       <form
@@ -2205,29 +3017,34 @@ export function AdminPropertyEditPage() {
           </p>
 
           <div className="admin-property-form__checks">
-            {statusOptions.map(({ value, label }) => (
-              <label
-                className="admin-property-form__check"
-                key={value}
-              >
-                <input
-                  type="radio"
-                  name="property-status"
-                  value={value}
-                  checked={
-                    selectedStatus === value
-                  }
-                  disabled={isDeletingProperty}
-                  onChange={() => {
-                    setSelectedStatus(value);
-                    setStatusError('');
-                    setStatusSuccess('');
-                  }}
-                />
+            {statusOptions.map(
+              ({ value, label }) => (
+                <label
+                  className="admin-property-form__check"
+                  key={value}
+                >
+                  <input
+                    type="radio"
+                    name="property-status"
+                    value={value}
+                    checked={
+                      selectedStatus ===
+                      value
+                    }
+                    disabled={isDeletingProperty}
+                    onChange={() => {
+                      setSelectedStatus(
+                        value,
+                      );
+                      setStatusError('');
+                      setStatusSuccess('');
+                    }}
+                  />
 
-                <span>{label}</span>
-              </label>
-            ))}
+                  <span>{label}</span>
+                </label>
+              ),
+            )}
           </div>
 
           <p className="admin-property-form__check-help">
