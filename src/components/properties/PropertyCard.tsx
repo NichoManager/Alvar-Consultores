@@ -9,9 +9,15 @@ export function PropertyCard({
   property: Property;
   index?: number;
 }) {
-  const operation = property.operation.toLowerCase().includes('alquiler')
-    ? 'En alquiler'
-    : 'En venta';
+  const normalizedOperation = property.operation.trim().toLowerCase();
+
+const isRental =
+  normalizedOperation === 'alquilar' ||
+  normalizedOperation === 'alquiler';
+
+const operation = isRental
+  ? 'En alquiler'
+  : 'En venta';
 
   const formattedPrice = property.price
     ? `${property.price.toLocaleString('es-ES')} €`
