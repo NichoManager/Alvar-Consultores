@@ -522,7 +522,7 @@ export function HomePage() {
 
               <p>
                 Criterio inmobiliario,
-                trato directo y
+                trato personalizado y
                 acompañamiento real.
               </p>
             </div>
