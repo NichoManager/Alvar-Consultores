@@ -20,8 +20,8 @@ const operation = isRental
   : 'En venta';
 
   const formattedPrice = property.price
-    ? `${property.price.toLocaleString('es-ES')} €`
-    : 'Consultar precio';
+  ? `${property.price.toLocaleString('es-ES')} €${isRental ? '/mes' : ''}`
+  : 'Consultar precio';
 
   const featuredNumber = String(index + 1).padStart(2, '0');
   const visibleFeatures = property.features.slice(0, 3);
