@@ -1,6 +1,10 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
+import {
+  SortablePropertyMediaGrid,
+  type SortablePropertyMedia,
+} from '../../components/admin/SortablePropertyMediaGrid';
 import {
   communityFeePeriodOptions,
   energyRatingOptions,
@@ -152,14 +156,8 @@ type PropertyFormState = {
   featured: boolean;
 };
 
-type PropertyImage = {
-  id: string;
+type PropertyImage = SortablePropertyMedia & {
   property_id: string;
-  storage_path: string;
-  alt_text: string | null;
-  position: number;
-  is_cover: boolean;
-  media_type: 'photo' | 'floorplan';
 };
 
 const statusLabels: Record<PropertyStatus, string> = {
@@ -315,6 +313,7 @@ export function AdminPropertyEditPage() {
   const [isUploadingFloorplans, setIsUploadingFloorplans] = useState(false);
   const [isManaging, setIsManaging] = useState(false);
   const [isDeletingProperty, setIsDeletingProperty] = useState(false);
+  const isReorderingRef = useRef(false);
 
   const [pageError, setPageError] = useState('');
   const [dataError, setDataError] = useState('');
@@ -825,25 +824,128 @@ export function AdminPropertyEditPage() {
 
   const updatePositions = async (
     orderedImages: PropertyImage[],
+    force = false,
   ) => {
     for (const [position, image] of orderedImages.entries()) {
-      if (image.position === position) {
+      if (!force && image.position === position) {
         continue;
       }
 
-      const { error: positionError } =
+      const { data: updatedImage, error: positionError } =
         await supabase
           .from('property_images')
           .update({ position })
           .eq('id', image.id)
-          .eq('property_id', id);
+          .eq('property_id', id)
+          .select('id')
+          .maybeSingle();
 
       if (positionError) {
         return positionError;
       }
+
+      if (!updatedImage) {
+        return new Error(
+          `No property image row was updated for ${image.id}.`,
+        );
+      }
     }
 
     return null;
+  };
+
+  const replaceMediaItems = (
+    currentImages: PropertyImage[],
+    orderedImages: PropertyImage[],
+  ) => {
+    const mediaType = orderedImages[0]?.media_type;
+    let nextMediaIndex = 0;
+
+    if (!mediaType) {
+      return currentImages;
+    }
+
+    return currentImages.map((image) => {
+      if (image.media_type !== mediaType) {
+        return image;
+      }
+
+      const orderedImage = orderedImages[nextMediaIndex];
+      nextMediaIndex += 1;
+
+      return orderedImage;
+    });
+  };
+
+  const handleReorder = async (
+    orderedImages: PropertyImage[],
+  ) => {
+    if (
+      isManaging ||
+      isReorderingRef.current ||
+      isUploading ||
+      isUploadingFloorplans ||
+      isDeletingProperty ||
+      orderedImages.length < 2
+    ) {
+      return;
+    }
+
+    isReorderingRef.current = true;
+
+    const previousImages = [...images];
+    const previousMediaItems = previousImages.filter(
+      (image) => image.media_type === orderedImages[0].media_type,
+    );
+    const normalizedImages = orderedImages.map((image, position) => ({
+      ...image,
+      position,
+    }));
+
+    setImageError('');
+    setFloorplanError('');
+    setImages((currentImages) =>
+      replaceMediaItems(currentImages, normalizedImages),
+    );
+    setIsManaging(true);
+
+    try {
+      const positionError = await updatePositions(orderedImages);
+
+      if (positionError) {
+        throw positionError;
+      }
+
+      await refreshImages();
+    } catch (reorderError) {
+      console.error('Error reordering property images:', reorderError);
+
+      const rollbackError = await updatePositions(previousMediaItems, true);
+
+      if (rollbackError) {
+        console.error(
+          'Error restoring property image positions:',
+          rollbackError,
+        );
+      }
+
+      setImages(previousImages);
+
+      if (orderedImages[0].media_type === 'floorplan') {
+        setFloorplanError(
+          'No se ha podido cambiar el orden de los planos.',
+        );
+      } else {
+        setImageError(
+          'No se ha podido cambiar el orden de las fotografías.',
+        );
+      }
+
+      await refreshImages();
+    } finally {
+      isReorderingRef.current = false;
+      setIsManaging(false);
+    }
   };
 
   const handleSetCover = async (
@@ -945,43 +1047,7 @@ export function AdminPropertyEditPage() {
       reorderedImages[imageIndex],
     ];
 
-    setImageError('');
-    setIsManaging(true);
-
-    try {
-      const positionError =
-        await updatePositions(reorderedImages);
-
-      if (positionError) {
-        console.error(
-          'Error reordering property images:',
-          positionError,
-        );
-
-        setImageError(
-          'No se ha podido cambiar el orden de las fotografías.',
-        );
-
-        await refreshImages();
-
-        return;
-      }
-
-      await refreshImages();
-    } catch (unexpectedError) {
-      console.error(
-        'Unexpected image reorder error:',
-        unexpectedError,
-      );
-
-      setImageError(
-        'No se ha podido cambiar el orden de las fotografías.',
-      );
-
-      await refreshImages();
-    } finally {
-      setIsManaging(false);
-    }
+    await handleReorder(reorderedImages);
   };
 
   const handleDelete = async (
@@ -1998,9 +2064,9 @@ export function AdminPropertyEditPage() {
             </h2>
 
             <p>
-              Sube las fotografías del inmueble.
-              La imagen marcada como portada será la
-              principal en el catálogo.
+              Sube las fotografías del inmueble y arrástralas
+              para cambiar su orden. La imagen marcada como
+              portada será la principal en el catálogo.
             </p>
           </div>
 
@@ -2058,110 +2124,32 @@ export function AdminPropertyEditPage() {
         ) : null}
 
         {photos.length > 0 ? (
-          <div className="admin-images__grid">
-            {photos.map((image, index) => (
-              <article
-                className="admin-image-card"
-                key={image.id}
-              >
-                <div className="admin-image-card__media">
-                  <img
-                    src={getPublicImageUrl(
-                      image.storage_path,
-                    )}
-                    alt={
-                      image.alt_text ??
-                      property.title
-                    }
-                    loading="lazy"
-                  />
-
-                  {image.is_cover ? (
-                    <span className="admin-image-card__cover">
-                      PORTADA
-                    </span>
-                  ) : null}
-                </div>
-
-                <div className="admin-image-card__actions">
-                  <span>
-                    Posición {image.position + 1}
-                  </span>
-
-                  <div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        void handleMove(index, -1, photos)
-                      }
-                      disabled={
-                        isManaging ||
-                        isUploading ||
-                        isDeletingProperty ||
-                        index === 0
-                      }
-                      aria-label={`Subir posición de ${
-                        image.alt_text ??
-                        property.title
-                      }`}
-                    >
-                      ↑
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        void handleMove(index, 1, photos)
-                      }
-                      disabled={
-                        isManaging ||
-                        isUploading ||
-                        isDeletingProperty ||
-                        index === photos.length - 1
-                      }
-                      aria-label={`Bajar posición de ${
-                        image.alt_text ??
-                        property.title
-                      }`}
-                    >
-                      ↓
-                    </button>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      void handleSetCover(image.id)
-                    }
-                    disabled={
-                      isManaging ||
-                      isUploading ||
-                      isDeletingProperty ||
-                      image.is_cover
-                    }
-                  >
-                    {image.is_cover
-                      ? 'Es la portada'
-                      : 'Hacer portada'}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      void handleDelete(image)
-                    }
-                    disabled={
-                      isManaging ||
-                      isUploading ||
-                      isDeletingProperty
-                    }
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+          <SortablePropertyMediaGrid
+            items={photos}
+            variant="photo"
+            propertyTitle={property.title}
+            disabled={
+              isManaging ||
+              isUploading ||
+              isUploadingFloorplans ||
+              isDeletingProperty
+            }
+            getImageUrl={getPublicImageUrl}
+            onReorder={(orderedImages) =>
+              void handleReorder(orderedImages as PropertyImage[])
+            }
+            onMove={(index, direction, mediaItems) =>
+              void handleMove(
+                index,
+                direction,
+                mediaItems as PropertyImage[],
+              )
+            }
+            onSetCover={(imageId) => void handleSetCover(imageId)}
+            onDelete={(image) =>
+              void handleDelete(image as PropertyImage)
+            }
+          />
         ) : (
           <p className="admin-images__empty">
             Todavía no hay fotografías para este inmueble.
@@ -2186,21 +2174,17 @@ export function AdminPropertyEditPage() {
         {floorplanError ? <p className="admin-images__error" role="alert">{floorplanError}</p> : null}
 
         {floorplans.length ? (
-          <div className="admin-floorplans-editor__grid">
-            {floorplans.map((image, index) => (
-              <article key={image.id}>
-                <img src={getPublicImageUrl(image.storage_path)} alt={image.alt_text ?? `Plano ${index + 1} de ${property.title}`} loading="lazy" />
-                <div>
-                  <span>Plano {index + 1}</span>
-                  <span>
-                    <button type="button" onClick={() => void handleMove(index, -1, floorplans)} disabled={isManaging || isUploading || isUploadingFloorplans || isDeletingProperty || index === 0} aria-label={`Subir plano ${index + 1}`}>↑</button>
-                    <button type="button" onClick={() => void handleMove(index, 1, floorplans)} disabled={isManaging || isUploading || isUploadingFloorplans || isDeletingProperty || index === floorplans.length - 1} aria-label={`Bajar plano ${index + 1}`}>↓</button>
-                    <button type="button" onClick={() => void handleDelete(image)} disabled={isManaging || isUploading || isUploadingFloorplans || isDeletingProperty}>Eliminar</button>
-                  </span>
-                </div>
-              </article>
-            ))}
-          </div>
+          <SortablePropertyMediaGrid
+            items={floorplans}
+            variant="floorplan"
+            propertyTitle={property.title}
+            disabled={isManaging || isUploading || isUploadingFloorplans || isDeletingProperty}
+            getImageUrl={getPublicImageUrl}
+            onReorder={(orderedImages) => void handleReorder(orderedImages as PropertyImage[])}
+            onMove={(index, direction, mediaItems) => void handleMove(index, direction, mediaItems as PropertyImage[])}
+            onSetCover={() => undefined}
+            onDelete={(image) => void handleDelete(image as PropertyImage)}
+          />
         ) : <p className="admin-images__empty">Todavía no hay planos para este inmueble.</p>}
       </section>
 

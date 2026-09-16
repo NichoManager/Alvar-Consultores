@@ -2171,6 +2171,15 @@
   border: 1px solid var(--admin-line);
   background: var(--admin-white);
   box-shadow: 0 14px 38px rgba(17, 24, 50, 0.06);
+  transition: box-shadow 0.18s ease, opacity 0.18s ease;
+  will-change: transform;
+}
+
+.admin-image-card.is-dragging {
+  z-index: 5;
+  border-color: var(--admin-gold);
+  opacity: 0.72;
+  box-shadow: 0 22px 48px rgba(17, 24, 50, 0.18);
 }
 
 .admin-image-card__media {
@@ -2197,6 +2206,53 @@
   font-size: 0.56rem;
   font-weight: 900;
   letter-spacing: 0.11em;
+}
+
+.admin-media-drag-handle {
+  position: absolute;
+  z-index: 2;
+  top: 0.7rem;
+  right: 0.7rem;
+  display: inline-grid;
+  width: 2.55rem;
+  height: 2.55rem;
+  min-height: 0;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(248, 246, 240, 0.5);
+  border-radius: 0;
+  cursor: grab;
+  color: var(--admin-ivory);
+  background: rgba(17, 24, 50, 0.82);
+  box-shadow: 0 5px 18px rgba(17, 24, 50, 0.2);
+  font: inherit;
+  touch-action: none;
+}
+
+.admin-media-drag-handle span {
+  font-size: 1.35rem;
+  line-height: 1;
+  transform: rotate(90deg);
+}
+
+.admin-media-drag-handle:hover:not(:disabled) {
+  border-color: var(--admin-gold);
+  color: var(--admin-gold);
+  background: var(--admin-navy);
+}
+
+.admin-media-drag-handle:active:not(:disabled) {
+  cursor: grabbing;
+}
+
+.admin-media-drag-handle:focus-visible {
+  outline: 2px solid var(--admin-gold);
+  outline-offset: 3px;
+}
+
+.admin-media-drag-handle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .admin-image-card__actions {
