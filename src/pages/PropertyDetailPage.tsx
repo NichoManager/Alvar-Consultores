@@ -442,16 +442,23 @@ export function PropertyDetailPage() {
           undefined,
     );
 
-  const encodedMapLocation =
-    encodeURIComponent(
-      mapLocation,
-    );
+ const encodedMapLocation =
+  encodeURIComponent(
+    mapLocation,
+  );
 
-  const googleMapsEmbedUrl =
-    `https://www.google.com/maps?q=${encodedMapLocation}&output=embed`;
+const mapZoom =
+  property.showExactAddress
+    ? 16
+    : property.area?.trim()
+      ? 14
+      : 13;
 
-  const googleMapsUrl =
-    `https://www.google.com/maps/search/?api=1&query=${encodedMapLocation}`;
+const googleMapsEmbedUrl =
+  `https://www.google.com/maps?q=${encodedMapLocation}&z=${mapZoom}&output=embed`;
+
+const googleMapsUrl =
+  `https://www.google.com/maps/search/?api=1&query=${encodedMapLocation}`;
 
   const message = isReserved
     ? `Hola, he visto el inmueble reservado ${property.title}. ¿Podéis informarme sobre inmuebles similares?`
