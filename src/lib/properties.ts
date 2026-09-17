@@ -607,9 +607,10 @@ function buildMapLocation(
       .join(' ');
 
     return [
-      row.address,
+      row.address.trim(),
       postalCity,
-      row.province,
+      row.province?.trim(),
+      'España',
     ]
       .filter(
         (
@@ -623,9 +624,10 @@ function buildMapLocation(
   }
 
   return [
-    row.area,
-    row.city,
-    row.province,
+    row.postal_code?.trim(),
+    row.city?.trim(),
+    row.province?.trim(),
+    'España',
   ]
     .filter(
       (
