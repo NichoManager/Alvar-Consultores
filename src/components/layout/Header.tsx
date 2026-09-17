@@ -81,7 +81,11 @@ export function Header() {
 
   useEffect(() => {
     setMenuOpen(false);
-  }, [location.pathname, location.search, location.hash]);
+  }, [
+    location.pathname,
+    location.search,
+    location.hash,
+  ]);
 
   return (
     <>
@@ -103,7 +107,9 @@ export function Header() {
                   key={to}
                   to={to}
                   className={active ? 'active' : undefined}
-                  aria-current={active ? 'page' : undefined}
+                  aria-current={
+                    active ? 'page' : undefined
+                  }
                 >
                   {label}
                 </Link>
@@ -113,15 +119,17 @@ export function Header() {
 
           <Link
             to="/"
-            className="brand-mark brand-mark--image brand-mark--plain"
+            className="brand-mark brand-mark--image brand-mark--circular"
             aria-label="Ir a la página de inicio de Alvar Consultores Inmobiliarios"
           >
-            <img
-              src="/images/alvar/logo-alvar-sin-circulo.png"
-              alt="Alvar Consultores Inmobiliarios"
-              width="1254"
-              height="1254"
-            />
+            <span className="brand-mark__circle">
+              <img
+                src="/images/alvar/logo-alvar-sin-circulo.png"
+                alt="Alvar Consultores Inmobiliarios"
+                width="1254"
+                height="1254"
+              />
+            </span>
           </Link>
 
           <nav
@@ -136,7 +144,9 @@ export function Header() {
                   key={to}
                   to={to}
                   className={active ? 'active' : undefined}
-                  aria-current={active ? 'page' : undefined}
+                  aria-current={
+                    active ? 'page' : undefined
+                  }
                 >
                   {label}
                 </Link>
