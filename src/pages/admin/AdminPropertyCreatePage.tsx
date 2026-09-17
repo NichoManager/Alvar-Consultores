@@ -265,6 +265,13 @@ export function AdminPropertyCreatePage() {
           ) ?? '',
         ).trim();
 
+      const province =
+        String(
+          formData.get(
+            'province',
+          ) ?? '',
+        ).trim();
+
       const slug =
         createSlug(title);
 
@@ -310,6 +317,22 @@ export function AdminPropertyCreatePage() {
       ) {
         setError(
           'Revisa el título y el precio antes de guardar el inmueble.',
+        );
+
+        return;
+      }
+
+      if (!city) {
+        setError(
+          'Introduce la localidad o municipio del inmueble.',
+        );
+
+        return;
+      }
+
+      if (!province) {
+        setError(
+          'Introduce la provincia del inmueble.',
         );
 
         return;
@@ -392,6 +415,8 @@ export function AdminPropertyCreatePage() {
                 'EUR',
 
               city,
+
+              province,
 
               area:
                 nullableText(
@@ -956,15 +981,38 @@ export function AdminPropertyCreatePage() {
           <div className="admin-property-form__grid">
             <label className="admin-property-form__field">
               <span>
-                Ciudad *
+                Localidad / municipio *
               </span>
 
               <input
                 type="text"
                 name="city"
-                placeholder="Madrid"
+                placeholder="Ej. La Guardia"
+                autoComplete="address-level2"
                 required
               />
+
+              <small className="admin-property-form__helper">
+                Introduce el municipio real del inmueble.
+              </small>
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>
+                Provincia *
+              </span>
+
+              <input
+                type="text"
+                name="province"
+                placeholder="Ej. Toledo"
+                autoComplete="address-level1"
+                required
+              />
+
+              <small className="admin-property-form__helper">
+                Ayuda a identificar correctamente la ubicación y el mapa.
+              </small>
             </label>
 
             <label className="admin-property-form__field">
@@ -975,19 +1023,7 @@ export function AdminPropertyCreatePage() {
               <input
                 type="text"
                 name="area"
-                placeholder="Ej. Ríos Rosas"
-              />
-            </label>
-
-            <label className="admin-property-form__field">
-              <span>
-                Dirección
-              </span>
-
-              <input
-                type="text"
-                name="address"
-                placeholder="Ej. Calle ..."
+                placeholder="Ej. Zona centro"
               />
             </label>
 
@@ -1000,8 +1036,26 @@ export function AdminPropertyCreatePage() {
                 type="text"
                 name="postal_code"
                 inputMode="numeric"
-                placeholder="Ej. 28003"
+                autoComplete="postal-code"
+                placeholder="Ej. 45760"
               />
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>
+                Dirección
+              </span>
+
+              <input
+                type="text"
+                name="address"
+                autoComplete="street-address"
+                placeholder="Ej. Calle ..."
+              />
+
+              <small className="admin-property-form__helper">
+                La dirección exacta solo será pública si activas la opción inferior.
+              </small>
             </label>
           </div>
 
