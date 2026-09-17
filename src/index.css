@@ -428,15 +428,15 @@ em {
 
 .brand-mark__circle img {
   display: block;
-  width: 128%;
-  height: 128%;
+  width: 138%;
+  height: 138%;
   max-width: none;
   max-height: none;
   object-fit: contain;
   object-position: center;
   background: transparent;
   filter: none;
-  transform: translateY(-0.05rem);
+  transform: translateY(-0.25rem);
 }
 
 .brand-mark--circular:focus-visible {
