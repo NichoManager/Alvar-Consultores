@@ -423,7 +423,7 @@ em {
 
 .brand-mark.brand-mark--image.brand-mark--plain {
   position: absolute;
-  top: 50%;
+  top: 51%;
   left: 50%;
   min-width: 0;
   width: clamp(4.65rem, 5.2vw, 5.25rem);
@@ -455,6 +455,7 @@ em {
   width: 5.25rem;
   height: 5.25rem;
 }
+
 
 
 .brand-mark--circular:focus-visible {
