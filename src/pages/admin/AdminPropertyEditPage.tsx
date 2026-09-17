@@ -75,6 +75,7 @@ type AdminProperty = {
   price: number;
   currency: string;
   city: string;
+  province: string | null;
   area: string | null;
   postal_code: string | null;
   address: string | null;
@@ -123,6 +124,7 @@ type PropertyFormState = {
   propertyType: string;
   price: string;
   city: string;
+  province: string;
   area: string;
   postalCode: string;
   address: string;
@@ -266,6 +268,7 @@ function createFormState(property: AdminProperty): PropertyFormState {
     propertyType: property.property_type,
     price: String(property.price),
     city: property.city,
+    province: property.province ?? '',
     area: property.area ?? '',
     postalCode: property.postal_code ?? '',
     address: property.address ?? '',
@@ -477,6 +480,7 @@ export function AdminPropertyEditPage() {
               price,
               currency,
               city,
+              province,
               area,
               postal_code,
               address,
@@ -619,6 +623,7 @@ export function AdminPropertyEditPage() {
 
     const title = form.title.trim();
     const city = form.city.trim();
+    const province = form.province.trim();
     const price = parsePrice(form.price);
 
     if (!title) {
@@ -631,7 +636,15 @@ export function AdminPropertyEditPage() {
 
     if (!city) {
       setSaveError(
-        'Introduce la ciudad del inmueble.',
+        'Introduce la localidad o municipio del inmueble.',
+      );
+
+      return;
+    }
+
+    if (!province) {
+      setSaveError(
+        'Introduce la provincia del inmueble.',
       );
 
       return;
@@ -726,6 +739,7 @@ export function AdminPropertyEditPage() {
       property_type: form.propertyType,
       price,
       city,
+      province,
       area: nullableText(form.area),
       postal_code: nullableText(form.postalCode),
       address: nullableText(form.address),
@@ -994,8 +1008,7 @@ export function AdminPropertyEditPage() {
       setIsUploading(false);
     }
   };
-
-  const updatePositions = async (
+    const updatePositions = async (
     orderedImages: PropertyImage[],
     force = false,
   ) => {
@@ -1825,7 +1838,9 @@ export function AdminPropertyEditPage() {
 
           <div className="admin-property-form__grid">
             <label className="admin-property-form__field">
-              <span>Ciudad *</span>
+              <span>
+                Localidad / municipio *
+              </span>
 
               <input
                 type="text"
@@ -1837,8 +1852,37 @@ export function AdminPropertyEditPage() {
                   )
                 }
                 disabled={isDeletingProperty}
+                autoComplete="address-level2"
+                placeholder="Ej. La Guardia"
                 required
               />
+
+              <small className="admin-property-form__helper">
+                Introduce el municipio real del inmueble.
+              </small>
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>Provincia *</span>
+
+              <input
+                type="text"
+                value={form.province}
+                onChange={(event) =>
+                  updateForm(
+                    'province',
+                    event.target.value,
+                  )
+                }
+                disabled={isDeletingProperty}
+                autoComplete="address-level1"
+                placeholder="Ej. Toledo"
+                required
+              />
+
+              <small className="admin-property-form__helper">
+                Ayuda a identificar correctamente la ubicación y el mapa.
+              </small>
             </label>
 
             <label className="admin-property-form__field">
@@ -1854,6 +1898,26 @@ export function AdminPropertyEditPage() {
                   )
                 }
                 disabled={isDeletingProperty}
+                placeholder="Ej. Zona centro"
+              />
+            </label>
+
+            <label className="admin-property-form__field">
+              <span>Código postal</span>
+
+              <input
+                type="text"
+                inputMode="numeric"
+                value={form.postalCode}
+                onChange={(event) =>
+                  updateForm(
+                    'postalCode',
+                    event.target.value,
+                  )
+                }
+                disabled={isDeletingProperty}
+                autoComplete="postal-code"
+                placeholder="Ej. 45760"
               />
             </label>
 
@@ -1870,23 +1934,13 @@ export function AdminPropertyEditPage() {
                   )
                 }
                 disabled={isDeletingProperty}
+                autoComplete="street-address"
+                placeholder="Ej. Calle ..."
               />
-            </label>
 
-            <label className="admin-property-form__field">
-              <span>Código postal</span>
-
-              <input
-                type="text"
-                value={form.postalCode}
-                onChange={(event) =>
-                  updateForm(
-                    'postalCode',
-                    event.target.value,
-                  )
-                }
-                disabled={isDeletingProperty}
-              />
+              <small className="admin-property-form__helper">
+                La dirección exacta solo será pública si activas la opción inferior.
+              </small>
             </label>
           </div>
 
@@ -1914,8 +1968,7 @@ export function AdminPropertyEditPage() {
             </span>
           </label>
         </section>
-
-        <section className="admin-property-form__section">
+                <section className="admin-property-form__section">
           <div>
             <span>03</span>
             <h2>Datos del inmueble</h2>
