@@ -110,6 +110,7 @@ type AdminProperty = {
   features: string[];
   description: string | null;
   featured: boolean;
+  featured_position: number | null;
   published_at: string | null;
 };
 
@@ -158,6 +159,7 @@ type PropertyFormState = {
   legacyFeatures: string[];
   description: string;
   featured: boolean;
+  featuredPosition: string;
 };
 
 type PropertyImage = SortablePropertyMedia & {
@@ -347,6 +349,12 @@ function createFormState(property: AdminProperty): PropertyFormState {
     ),
     description: property.description ?? '',
     featured: property.featured,
+    featuredPosition:
+      property.featured_position !== null
+        ? String(
+            property.featured_position,
+          )
+        : '',
   };
 }
 
@@ -496,6 +504,7 @@ export function AdminPropertyEditPage() {
               features,
               description,
               featured,
+              featured_position,
               published_at
             `,
           )
@@ -631,6 +640,29 @@ export function AdminPropertyEditPage() {
       return;
     }
 
+    const featuredPosition =
+      form.featured
+        ? nullableNumber(
+            form.featuredPosition,
+          )
+        : null;
+
+    if (
+      featuredPosition !== null &&
+      (
+        !Number.isInteger(
+          featuredPosition,
+        ) ||
+        featuredPosition < 1
+      )
+    ) {
+      setSaveError(
+        'La posiciÃ³n en destacados debe ser un nÃºmero entero igual o mayor que 1.',
+      );
+
+      return;
+    }
+
     const isPublicStatus =
       selectedStatus === 'published' ||
       selectedStatus === 'reserved';
@@ -743,6 +775,8 @@ export function AdminPropertyEditPage() {
       ],
       description: nullableText(form.description),
       featured: form.featured,
+      featured_position:
+        featuredPosition,
       status: selectedStatus,
       published_at: publishedAt,
     };
@@ -2199,6 +2233,39 @@ export function AdminPropertyEditPage() {
                     <span>{feature}</span>
                   </label>
                 ))}
+            </div>
+
+            <div className="admin-property-form__grid">
+              <label className="admin-property-form__field">
+                <span>
+                  PosiciÃ³n en destacados
+                </span>
+
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  inputMode="numeric"
+                  value={
+                    form.featuredPosition
+                  }
+                  onChange={(event) =>
+                    updateForm(
+                      'featuredPosition',
+                      event.target.value,
+                    )
+                  }
+                  disabled={
+                    !form.featured ||
+                    isDeletingProperty
+                  }
+                  placeholder="Sin prioridad manual"
+                />
+
+                <small className="admin-property-form__helper">
+                  1 = principal / grande. 2, 3, 4â€¦ definen el orden de apariciÃ³n en la Home.
+                </small>
+              </label>
             </div>
           </div>
 

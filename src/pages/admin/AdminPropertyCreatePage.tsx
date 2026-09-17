@@ -137,6 +137,11 @@ export function AdminPropertyCreatePage() {
   ] = useState('');
 
   const [
+    featured,
+    setFeatured,
+  ] = useState(false);
+
+  const [
     floorplans,
     setFloorplans,
   ] = useState<
@@ -289,6 +294,15 @@ export function AdminPropertyCreatePage() {
           ),
         );
 
+      const featuredPosition =
+        featured
+          ? nullableNumber(
+              formData.get(
+                'featured_position',
+              ),
+            )
+          : null;
+
       if (
         !slug ||
         price === null ||
@@ -296,6 +310,22 @@ export function AdminPropertyCreatePage() {
       ) {
         setError(
           'Revisa el título y el precio antes de guardar el inmueble.',
+        );
+
+        return;
+      }
+
+      if (
+        featuredPosition !== null &&
+        (
+          !Number.isInteger(
+            featuredPosition,
+          ) ||
+          featuredPosition < 1
+        )
+      ) {
+        setError(
+          'La posiciÃ³n en destacados debe ser un nÃºmero entero igual o mayor que 1.',
         );
 
         return;
@@ -598,9 +628,10 @@ export function AdminPropertyCreatePage() {
                 ).trim(),
 
               featured:
-                formData.has(
-                  'featured',
-                ),
+                featured,
+
+              featured_position:
+                featuredPosition,
 
               published_at:
                 null,
@@ -1243,6 +1274,17 @@ export function AdminPropertyCreatePage() {
                 <input
                   type="checkbox"
                   name="featured"
+                  checked={
+                    featured
+                  }
+                  onChange={(
+                    event,
+                  ) =>
+                    setFeatured(
+                      event.target
+                        .checked,
+                    )
+                  }
                 />
 
                 <span>
@@ -1279,6 +1321,30 @@ export function AdminPropertyCreatePage() {
                     </label>
                   ),
                 )}
+            </div>
+
+            <div className="admin-property-form__grid">
+              <label className="admin-property-form__field">
+                <span>
+                  PosiciÃ³n en destacados
+                </span>
+
+                <input
+                  type="number"
+                  name="featured_position"
+                  min="1"
+                  step="1"
+                  inputMode="numeric"
+                  disabled={
+                    !featured
+                  }
+                  placeholder="Sin prioridad manual"
+                />
+
+                <small className="admin-property-form__helper">
+                  1 = principal / grande. 2, 3, 4â€¦ definen el orden de apariciÃ³n en la Home.
+                </small>
+              </label>
             </div>
           </div>
 
