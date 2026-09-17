@@ -124,7 +124,7 @@ export function Header() {
           >
             <span className="brand-mark__circle">
               <img
-                src="/images/alvar/logo-alvar-sin-circulo.png"
+                src="/images/alvar/logo-alvar-blanco-redondo.png"
                 alt="Alvar Consultores Inmobiliarios"
                 width="1254"
                 height="1254"
