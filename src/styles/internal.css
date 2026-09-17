@@ -34,6 +34,12 @@
   line-height: 1.7;
 }
 
+.internal-hero__text {
+  white-space: pre-line;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 .internal-hero__aside {
   padding: 1.5rem 0 0 1.5rem;
   border-left: 1px solid var(--border);
@@ -545,8 +551,8 @@
   min-height: 100%;
 }
 
-.property-gallery button > img,
-.lightbox > img {
+.property-gallery button>img,
+.lightbox>img {
   display: block;
   width: 100%;
   height: 100%;
@@ -588,7 +594,7 @@
   height: min(75vh, 48rem);
 }
 
-.lightbox > img {
+.lightbox>img {
   width: min(90vw, 70rem);
   height: min(75vh, 48rem);
 }
@@ -748,6 +754,9 @@
   margin: 0;
   color: var(--forest);
   font: 500 clamp(1.35rem, 2.2vw, 1.8rem) / 1.48 'Cormorant Garamond', serif;
+  white-space: pre-line;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 .property-features,
@@ -2450,26 +2459,27 @@
   }
 
   .contact-map__frame {
-  min-height: 17rem;
-}
+    min-height: 17rem;
+  }
 
-.contact-map__frame iframe {
-  height: 17rem;
-}
+  .contact-map__frame iframe {
+    height: 17rem;
+  }
 
-.contact-map__caption {
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 1rem;
-}
+  .contact-map__caption {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+  }
 
-.contact-map__caption > a {
-  width: 100%;
-  justify-content: space-between;
-  padding-top: 0.85rem;
-  border-top: 1px solid rgba(17, 24, 50, 0.1);
-  border-bottom: 0;
-}
+  .contact-map__caption>a {
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(17, 24, 50, 0.1);
+    border-bottom: 0;
+  }
+
   .contact-page__form {
     padding: 1.25rem;
   }

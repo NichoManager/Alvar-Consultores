@@ -657,7 +657,7 @@ export function AdminPropertyEditPage() {
       )
     ) {
       setSaveError(
-        'La posiciÃ³n en destacados debe ser un nÃºmero entero igual o mayor que 1.',
+        'La posición en destacados debe ser un número entero igual o mayor que 1.',
       );
 
       return;
@@ -2238,7 +2238,7 @@ export function AdminPropertyEditPage() {
             <div className="admin-property-form__grid">
               <label className="admin-property-form__field">
                 <span>
-                  PosiciÃ³n en destacados
+                  Posición en destacados
                 </span>
 
                 <input
@@ -2263,7 +2263,7 @@ export function AdminPropertyEditPage() {
                 />
 
                 <small className="admin-property-form__helper">
-                  1 = principal / grande. 2, 3, 4â€¦ definen el orden de apariciÃ³n en la Home.
+                  1 = principal / grande. 2, 3, 4… definen el orden de aparición en la Home.
                 </small>
               </label>
             </div>

@@ -966,32 +966,32 @@ export async function getFeaturedProperties(
 ) {
   const properties =
     await getPublicProperties({
-    p_slug: null,
-    p_featured: true,
-    p_limit: null,
-  });
+      p_slug: null,
+      p_featured: true,
+      p_limit: null,
+    });
 
   const sortedProperties = [
     ...properties,
   ].sort((a, b) => {
+    const aPosition =
+      a.featuredPosition;
+
+    const bPosition =
+      b.featuredPosition;
+
     const aHasPosition =
-      typeof a.featuredPosition ===
-      'number';
+      typeof aPosition === 'number';
 
     const bHasPosition =
-      typeof b.featuredPosition ===
-      'number';
+      typeof bPosition === 'number';
 
     if (
       aHasPosition &&
       bHasPosition &&
-      a.featuredPosition !==
-        b.featuredPosition
+      aPosition !== bPosition
     ) {
-      return (
-        a.featuredPosition! -
-        b.featuredPosition!
-      );
+      return aPosition - bPosition;
     }
 
     if (aHasPosition !== bHasPosition) {
