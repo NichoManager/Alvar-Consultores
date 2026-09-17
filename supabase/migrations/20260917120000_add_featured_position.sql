@@ -176,8 +176,16 @@ as $$
       or p.featured = p_featured
     )
   order by
+    case
+      when p_featured is true then p.featured_position
+      else null
+    end asc nulls last,
     p.published_at desc nulls last,
-    p.created_at desc
+    p.created_at desc,
+    case
+      when p_featured is true then p.id
+      else null
+    end asc
   limit least(
     greatest(
       coalesce(p_limit, 1000),

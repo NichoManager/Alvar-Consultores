@@ -968,7 +968,7 @@ export async function getFeaturedProperties(
     await getPublicProperties({
       p_slug: null,
       p_featured: true,
-      p_limit: null,
+      p_limit: limit,
     });
 
   const sortedProperties = [
