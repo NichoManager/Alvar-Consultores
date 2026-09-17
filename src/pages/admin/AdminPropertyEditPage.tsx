@@ -351,9 +351,7 @@ function createFormState(property: AdminProperty): PropertyFormState {
     featured: property.featured,
     featuredPosition:
       property.featured_position !== null
-        ? String(
-            property.featured_position,
-          )
+        ? String(property.featured_position)
         : '',
   };
 }
@@ -366,7 +364,11 @@ export function AdminPropertyEditPage() {
   const [property, setProperty] = useState<AdminProperty | null>(null);
   const [form, setForm] = useState<PropertyFormState | null>(null);
   const [images, setImages] = useState<PropertyImage[]>([]);
-  const photos = images.filter((image) => image.media_type === 'photo');
+
+  const photos = images.filter(
+    (image) => image.media_type === 'photo',
+  );
+
   const floorplans = images.filter(
     (image) => image.media_type === 'floorplan',
   );
@@ -382,6 +384,7 @@ export function AdminPropertyEditPage() {
   const [isManaging, setIsManaging] = useState(false);
   const [isDeletingProperty, setIsDeletingProperty] =
     useState(false);
+
   const isSavingRef = useRef(false);
   const isReorderingRef = useRef(false);
 
@@ -389,6 +392,7 @@ export function AdminPropertyEditPage() {
   const [saveError, setSaveError] = useState('');
   const [saveSuccess, setSaveSuccess] = useState('');
   const [imageError, setImageError] = useState('');
+
   const [floorplanError, setFloorplanError] = useState(
     (
       location.state as {
@@ -396,11 +400,15 @@ export function AdminPropertyEditPage() {
       } | null
     )?.floorplanUploadWarning ?? '',
   );
+
   const [deleteError, setDeleteError] = useState('');
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate('/admin/login', { replace: true });
+
+    navigate('/admin/login', {
+      replace: true,
+    });
   };
 
   const refreshImages = async () => {
@@ -1061,6 +1069,7 @@ export function AdminPropertyEditPage() {
     isReorderingRef.current = true;
 
     const previousImages = [...images];
+
     const previousMediaItems = previousImages.filter(
       (image) =>
         image.media_type === orderedImages[0].media_type,
@@ -1592,6 +1601,7 @@ export function AdminPropertyEditPage() {
             aria-label="Abrir la web pública de Alvar Consultores en una nueva pestaña"
           >
             ALVAR CONSULTORES{' '}
+
             <span aria-hidden="true">
               ↗
             </span>
@@ -1796,8 +1806,7 @@ export function AdminPropertyEditPage() {
               </span>
 
               <small className="admin-property-form__helper">
-                Puedes escribir, por ejemplo,
-                {' '}
+                Puedes escribir, por ejemplo,{' '}
                 {form.operation ===
                 'alquiler'
                   ? '1500 o 1.500'
@@ -2165,7 +2174,6 @@ export function AdminPropertyEditPage() {
                 ['elevator', 'Ascensor'],
                 ['terrace', 'Terraza'],
                 ['furnished', 'Amueblado'],
-                ['featured', 'Destacado'],
               ].map(([key, label]) => {
                 const field =
                   key as keyof Pick<
@@ -2173,7 +2181,6 @@ export function AdminPropertyEditPage() {
                     | 'elevator'
                     | 'terrace'
                     | 'furnished'
-                    | 'featured'
                   >;
 
                 return (
@@ -2235,8 +2242,32 @@ export function AdminPropertyEditPage() {
                 ))}
             </div>
 
-            <div className="admin-property-form__grid">
-              <label className="admin-property-form__field">
+            <div className="admin-featured-controls">
+              <label className="admin-property-form__check admin-featured-controls__toggle">
+                <input
+                  type="checkbox"
+                  checked={form.featured}
+                  onChange={(event) =>
+                    updateForm(
+                      'featured',
+                      event.target.checked,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+
+                <span>
+                  Destacado en la Home
+
+                  <small>
+                    Actívalo para mostrar este inmueble
+                    en la selección de propiedades
+                    destacadas de la Home.
+                  </small>
+                </span>
+              </label>
+
+              <label className="admin-property-form__field admin-featured-controls__position">
                 <span>
                   Posición en destacados
                 </span>
@@ -2263,7 +2294,9 @@ export function AdminPropertyEditPage() {
                 />
 
                 <small className="admin-property-form__helper">
-                  1 = principal / grande. 2, 3, 4… definen el orden de aparición en la Home.
+                  1 = principal / grande. 2, 3, 4…
+                  definen el orden de aparición en la
+                  Home.
                 </small>
               </label>
             </div>
@@ -2393,8 +2426,9 @@ export function AdminPropertyEditPage() {
           </div>
 
           <p className="admin-property-form__check-help">
-            Los inmuebles destacados pueden aparecer
-            en posiciones preferentes de la web.
+            Los campos específicos de casas, chalets o
+            fincas son opcionales y no impiden guardar
+            otros tipos de inmueble.
           </p>
         </section>
 
@@ -2752,7 +2786,6 @@ export function AdminPropertyEditPage() {
             </div>
           </div>
         </section>
-
       </form>
 
       <section
@@ -2978,9 +3011,7 @@ export function AdminPropertyEditPage() {
         )}
       </section>
 
-      <div
-        className="admin-property-form"
-      >
+      <div className="admin-property-form">
         <section className="admin-property-form__section">
           <div>
             <span>06</span>
@@ -3014,6 +3045,7 @@ export function AdminPropertyEditPage() {
                       setSelectedStatus(
                         value,
                       );
+
                       setSaveError('');
                       setSaveSuccess('');
                     }}
