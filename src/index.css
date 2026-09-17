@@ -423,7 +423,7 @@ em {
 
 .brand-mark.brand-mark--image.brand-mark--plain {
   position: absolute;
-  top: calc(50% + 0.4rem);
+  top: 50%;
   left: 50%;
   min-width: 0;
   width: clamp(5.375rem, 6.5vw, 6.5rem);
@@ -434,15 +434,14 @@ em {
   overflow: hidden;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 8px 18px rgba(16, 20, 38, 0.2);
+  box-shadow: 0 8px 18px rgba(16, 20, 38, 0.18);
   padding: 0.35rem 0.35rem 0.5rem;
   box-sizing: border-box;
   transform: translate(-50%, -50%);
   transition:
     width 0.3s var(--ease),
     height 0.3s var(--ease),
-    transform 0.3s var(--ease),
-    top 0.3s var(--ease);
+    transform 0.3s var(--ease);
 }
 
 .brand-mark--plain img {
@@ -461,14 +460,12 @@ em {
   border-radius: 0.25rem;
 }
 
-.site-header.is-scrolled .brand-mark--circular {
+.site-header.is-scrolled .brand-mark--plain {
   width: 5.25rem;
   height: 5.25rem;
 }
 
-.site-header.is-scrolled .brand-mark--circular img {
-  filter: drop-shadow(0 5px 12px rgba(16, 20, 38, 0.12));
-}
+
 
 .brand-mark--circular:focus-visible {
   border-radius: 50%;

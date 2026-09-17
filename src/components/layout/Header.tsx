@@ -50,8 +50,6 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const location = useLocation();
-  const showPlainLogo =
-    location.pathname === '/' && !scrolled;
 
   const closeMenu = useCallback(() => {
     setMenuOpen(false);
@@ -115,24 +113,11 @@ export function Header() {
 
           <Link
             to="/"
-            className={`brand-mark brand-mark--image ${
-              showPlainLogo
-                ? 'brand-mark--plain'
-                : 'brand-mark--circular'
-            }`}
-            style={
-              showPlainLogo
-                ? { borderRadius: '50%', overflow: 'hidden' }
-                : undefined
-            }
+            className="brand-mark brand-mark--image brand-mark--plain"
             aria-label="Ir a la página de inicio de Alvar Consultores Inmobiliarios"
           >
             <img
-              src={
-                showPlainLogo
-                  ? '/images/alvar/logo-alvar-sin-circulo.png'
-                  : '/images/alvar/logo-alvar-circular.png'
-              }
+              src="/images/alvar/logo-alvar-sin-circulo.png"
               alt="Alvar Consultores Inmobiliarios"
               width="1254"
               height="1254"
