@@ -451,8 +451,10 @@ em {
   height: 100%;
   max-height: none;
   object-fit: contain;
+  object-position: center;
   background: #ffffff;
   filter: none;
+  transform: translate(2px, -2px);
 }
 
 .brand-mark--plain:focus-visible {
@@ -1587,7 +1589,7 @@ em {
 }
 
 .property-card__media .architectural-visual,
-.property-card__media > img {
+.property-card__media>img {
   display: block;
   width: 100%;
   min-height: 100%;
@@ -1613,7 +1615,7 @@ em {
 }
 
 .property-card:hover .property-card__media .architectural-visual,
-.property-card:hover .property-card__media > img {
+.property-card:hover .property-card__media>img {
   transform: scale(1.035);
   filter: saturate(1.04) contrast(1.03);
 }
