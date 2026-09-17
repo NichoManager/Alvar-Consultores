@@ -117,18 +117,20 @@ export function Header() {
             })}
           </nav>
 
-        <Link
-  to="/"
-  className="brand-mark brand-mark--image brand-mark--plain"
-  aria-label="Ir a la página de inicio de Alvar Consultores Inmobiliarios"
->
-  <img
-    src="/images/alvar/logo-alvar-sin-circulo.png"
-    alt="Alvar Consultores Inmobiliarios"
-    width="1254"
-    height="1254"
-  />
-</Link>
+          <Link
+            to="/"
+            className="brand-mark brand-mark--image brand-mark--circular"
+            aria-label="Ir a la página de inicio de Alvar Consultores Inmobiliarios"
+          >
+            <span className="brand-mark__circle">
+              <img
+                src="/images/alvar/logo-alvar-sin-circulo.png"
+                alt="Alvar Consultores Inmobiliarios"
+                width="1254"
+                height="1254"
+              />
+            </span>
+          </Link>
 
           <nav
             className="desktop-nav desktop-nav--right"
