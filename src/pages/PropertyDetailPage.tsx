@@ -410,14 +410,6 @@ export function PropertyDetailPage() {
   const isReserved =
     property.status === 'Reservado';
 
-  const mapLocation =
-    property.mapLocation ||
-    getUniqueLocationParts([
-      property.area,
-      property.city,
-      property.province,
-    ]).join(', ');
-
   const detailCharacteristics =
     property.characteristics ??
     property.features;
@@ -442,23 +434,44 @@ export function PropertyDetailPage() {
           undefined,
     );
 
- const encodedMapLocation =
-  encodeURIComponent(
-    mapLocation,
-  );
+  /*
+   * Para el mapa no utilizamos la zona/barrio cuando
+   * la dirección exacta es privada.
+   *
+   * Motivo:
+   * valores genéricos como "Zona centro" pueden hacer
+   * que Google Maps interprete una ubicación diferente
+   * dependiendo del dispositivo o del contexto de búsqueda.
+   *
+   * La zona sí sigue mostrándose en la ficha mediante
+   * locationLabel, pero no se utiliza para geolocalizar
+   * el iframe.
+   */
+  const mapSearchLocation =
+    property.showExactAddress &&
+    property.mapLocation?.trim()
+      ? property.mapLocation
+      : getUniqueLocationParts([
+          property.city,
+          property.province,
+        ]).join(', ');
 
-const mapZoom =
-  property.showExactAddress
-    ? 16
-    : property.area?.trim()
-      ? 14
-      : 13;
+  const encodedMapLocation =
+    encodeURIComponent(
+      mapSearchLocation,
+    );
 
-const googleMapsEmbedUrl =
-  `https://www.google.com/maps?q=${encodedMapLocation}&z=${mapZoom}&output=embed`;
+  const mapZoom =
+    property.showExactAddress &&
+    property.mapLocation?.trim()
+      ? 16
+      : 14;
 
-const googleMapsUrl =
-  `https://www.google.com/maps/search/?api=1&query=${encodedMapLocation}`;
+  const googleMapsEmbedUrl =
+    `https://www.google.com/maps?q=${encodedMapLocation}&z=${mapZoom}&output=embed`;
+
+  const googleMapsUrl =
+    `https://www.google.com/maps/search/?api=1&query=${encodedMapLocation}`;
 
   const message = isReserved
     ? `Hola, he visto el inmueble reservado ${property.title}. ¿Podéis informarme sobre inmuebles similares?`
