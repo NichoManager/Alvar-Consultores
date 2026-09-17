@@ -627,8 +627,7 @@ export function AdminPropertyCreatePage() {
                   ) ?? '',
                 ).trim(),
 
-              featured:
-                featured,
+              featured,
 
               featured_position:
                 featuredPosition,
@@ -1270,28 +1269,6 @@ export function AdminPropertyCreatePage() {
                 </span>
               </label>
 
-              <label className="admin-property-form__check">
-                <input
-                  type="checkbox"
-                  name="featured"
-                  checked={
-                    featured
-                  }
-                  onChange={(
-                    event,
-                  ) =>
-                    setFeatured(
-                      event.target
-                        .checked,
-                    )
-                  }
-                />
-
-                <span>
-                  Destacado
-                </span>
-              </label>
-
               {propertyAmenityGroups
                 .flatMap(
                   (group) =>
@@ -1323,8 +1300,40 @@ export function AdminPropertyCreatePage() {
                 )}
             </div>
 
-            <div className="admin-property-form__grid">
-              <label className="admin-property-form__field">
+            <div className="admin-featured-controls">
+              <label className="admin-property-form__check admin-featured-controls__toggle">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  checked={
+                    featured
+                  }
+                  onChange={(
+                    event,
+                  ) =>
+                    setFeatured(
+                      event.target
+                        .checked,
+                    )
+                  }
+                />
+
+                <span>
+                  Destacado en la Home
+
+                  <small>
+                    Actívalo para
+                    mostrar este
+                    inmueble en la
+                    selección de
+                    propiedades
+                    destacadas de la
+                    Home.
+                  </small>
+                </span>
+              </label>
+
+              <label className="admin-property-form__field admin-featured-controls__position">
                 <span>
                   Posición en destacados
                 </span>
@@ -1342,7 +1351,11 @@ export function AdminPropertyCreatePage() {
                 />
 
                 <small className="admin-property-form__helper">
-                  1 = principal / grande. 2, 3, 4… definen el orden de aparición en la Home.
+                  1 = principal /
+                  grande. 2, 3, 4…
+                  definen el orden de
+                  aparición en la
+                  Home.
                 </small>
               </label>
             </div>
