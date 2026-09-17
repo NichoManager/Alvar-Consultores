@@ -400,8 +400,8 @@ em {
   top: 50%;
   left: 50%;
   min-width: 0;
-  width: 5.7rem;
-  height: 5.7rem;
+  width: 5.82rem;
+  height: 5.82rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -413,6 +413,7 @@ em {
     height 0.3s var(--ease),
     transform 0.3s var(--ease);
 }
+
 .brand-mark__circle {
   display: flex;
   width: 100%;
@@ -435,9 +436,10 @@ em {
   object-position: center;
   background: transparent;
   filter: none;
-  transform: translateY(-0.14rem) scale(1.03);
+  transform: translateY(-0.18rem) scale(1.03);
   transform-origin: center;
 }
+
 .brand-mark--circular:focus-visible {
   border-radius: 50%;
 }
@@ -5685,12 +5687,12 @@ em {
     display: none;
   }
 
- .brand-mark.brand-mark--image.brand-mark--circular {
-  position: static;
-  width: 4.9rem;
-  height: 4.9rem;
-  transform: none;
-}
+  .brand-mark.brand-mark--image.brand-mark--circular {
+    position: static;
+    width: 4.9rem;
+    height: 4.9rem;
+    transform: none;
+  }
 
   .header-cta {
     margin-left: auto;
@@ -5972,10 +5974,10 @@ em {
     min-width: 10.4rem;
   }
 
-.brand-mark.brand-mark--image.brand-mark--circular {
-  width: 4rem;
-  height: 4rem;
-}
+  .brand-mark.brand-mark--image.brand-mark--circular {
+    width: 4rem;
+    height: 4rem;
+  }
 
   .brand-mark strong {
     font-size: 1.35rem;
