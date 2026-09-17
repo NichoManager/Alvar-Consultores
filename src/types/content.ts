@@ -91,6 +91,7 @@ export interface Property {
   equipment?: string[];
 
   featured: boolean;
+  featuredPosition?: number;
   published: boolean;
   publishedAt?: string;
   createdAt: string;

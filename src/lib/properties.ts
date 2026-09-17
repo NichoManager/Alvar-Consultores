@@ -169,6 +169,10 @@ type PublicPropertyRow = {
 
   featured: boolean;
 
+  featured_position:
+    | number
+    | null;
+
   published_at:
     | string
     | null;
@@ -850,6 +854,10 @@ function mapPublicProperty(
     featured:
       row.featured,
 
+    featuredPosition:
+      row.featured_position ??
+      undefined,
+
     published: true,
 
     publishedAt:
@@ -921,12 +929,88 @@ export async function getPublishedPropertyBySlug(
   return property ?? null;
 }
 
-export function getFeaturedProperties(
+function compareByExistingPublicOrder(
+  a: Property,
+  b: Property,
+) {
+  if (
+    a.publishedAt &&
+    b.publishedAt
+  ) {
+    const publishedOrder =
+      b.publishedAt.localeCompare(
+        a.publishedAt,
+      );
+
+    if (publishedOrder !== 0) {
+      return publishedOrder;
+    }
+  } else if (a.publishedAt) {
+    return -1;
+  } else if (b.publishedAt) {
+    return 1;
+  }
+
+  const createdOrder =
+    b.createdAt.localeCompare(
+      a.createdAt,
+    );
+
+  return createdOrder !== 0
+    ? createdOrder
+    : a.id.localeCompare(b.id);
+}
+
+export async function getFeaturedProperties(
   limit: number | null = null,
 ) {
-  return getPublicProperties({
+  const properties =
+    await getPublicProperties({
     p_slug: null,
     p_featured: true,
-    p_limit: limit,
+    p_limit: null,
   });
+
+  const sortedProperties = [
+    ...properties,
+  ].sort((a, b) => {
+    const aHasPosition =
+      typeof a.featuredPosition ===
+      'number';
+
+    const bHasPosition =
+      typeof b.featuredPosition ===
+      'number';
+
+    if (
+      aHasPosition &&
+      bHasPosition &&
+      a.featuredPosition !==
+        b.featuredPosition
+    ) {
+      return (
+        a.featuredPosition! -
+        b.featuredPosition!
+      );
+    }
+
+    if (aHasPosition !== bHasPosition) {
+      return aHasPosition ? -1 : 1;
+    }
+
+    return compareByExistingPublicOrder(
+      a,
+      b,
+    );
+  });
+
+  return limit === null
+    ? sortedProperties
+    : sortedProperties.slice(
+        0,
+        Math.max(
+          0,
+          Math.trunc(limit),
+        ),
+      );
 }
