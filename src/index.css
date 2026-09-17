@@ -426,25 +426,19 @@ em {
   top: 50%;
   left: 50%;
   min-width: 0;
-  width: clamp(5.375rem, 6.5vw, 6.5rem);
-  height: clamp(5.375rem, 6.5vw, 6.5rem);
+  width: 4.8rem;
+  height: 4.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-
-  /* EL CÍRCULO BLANCO */
   overflow: hidden;
   border-radius: 50%;
   background: #ffffff;
-
-  /* aire interior para el logo */
-  padding: 0.34rem 0.34rem 0.44rem;
+  box-shadow: 0 6px 16px rgba(16, 20, 38, 0.16);
+  padding: 0.26rem 0.26rem 0.34rem;
   box-sizing: border-box;
-
-  box-shadow: 0 8px 18px rgba(16, 20, 38, 0.2);
   transform: translate(-50%, -50%);
-
   transition:
     width 0.3s var(--ease),
     height 0.3s var(--ease),
@@ -468,8 +462,8 @@ em {
 }
 
 .site-header.is-scrolled .brand-mark--plain {
-  width: 5.25rem;
-  height: 5.25rem;
+  width: 4.8rem;
+  height: 4.8rem;
 }
 
 
