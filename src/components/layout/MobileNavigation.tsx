@@ -99,7 +99,7 @@ export function MobileNavigation({
           aria-label="Ir a la página de inicio de Alvar Consultores Inmobiliarios"
         >
           <img
-            src="/images/alvar/logo-alvar-circular.png"
+            src="/images/alvar/logo-alvar-sin-circulo.png"
             alt="Alvar Consultores Inmobiliarios"
             width="1254"
             height="1254"
