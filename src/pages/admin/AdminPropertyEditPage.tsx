@@ -179,26 +179,29 @@ const statusLabels: Record<PropertyStatus, string> = {
 
 const statusDescriptions: Record<PropertyStatus, string> = {
   draft: 'No aparece en el catálogo público.',
-  published: 'Visible en el catálogo y en la ficha pública del inmueble.',
+  published:
+    'Visible en el catálogo y en la ficha pública del inmueble.',
   reserved:
     'Visible en la web con la etiqueta Reservado para indicar que la operación está en curso.',
-  sold: 'Operación de venta cerrada. El inmueble queda fuera del catálogo.',
+  sold:
+    'Operación de venta cerrada. El inmueble permanece visible en la web con la etiqueta Vendido.',
   rented:
-    'Operación de alquiler cerrada. El inmueble queda fuera del catálogo.',
-  archived: 'Se conserva en el CRM pero no aparece públicamente.',
+    'Operación de alquiler cerrada. El inmueble permanece visible en la web con la etiqueta Alquilado.',
+  archived:
+    'Se conserva en el CRM pero no aparece públicamente.',
 };
 
 const statusOptions: Array<{
   value: PropertyStatus;
   label: string;
 }> = [
-  { value: 'draft', label: 'Borrador' },
-  { value: 'published', label: 'Publicado' },
-  { value: 'reserved', label: 'Reservado' },
-  { value: 'sold', label: 'Vendido · Venta' },
-  { value: 'rented', label: 'Alquilado · Alquiler' },
-  { value: 'archived', label: 'Archivado' },
-];
+    { value: 'draft', label: 'Borrador' },
+    { value: 'published', label: 'Publicado' },
+    { value: 'reserved', label: 'Reservado' },
+    { value: 'sold', label: 'Vendido · Venta' },
+    { value: 'rented', label: 'Alquilado · Alquiler' },
+    { value: 'archived', label: 'Archivado' },
+  ];
 
 function getFileExtension(fileName: string) {
   return fileName.split('.').pop()?.toLowerCase() ?? '';
@@ -664,8 +667,8 @@ export function AdminPropertyEditPage() {
     const featuredPosition =
       form.featured
         ? nullableNumber(
-            form.featuredPosition,
-          )
+          form.featuredPosition,
+        )
         : null;
 
     if (
@@ -685,8 +688,10 @@ export function AdminPropertyEditPage() {
     }
 
     const isPublicStatus =
-      selectedStatus === 'published' ||
-      selectedStatus === 'reserved';
+  selectedStatus === 'published' ||
+  selectedStatus === 'reserved' ||
+  selectedStatus === 'sold' ||
+  selectedStatus === 'rented';
 
     if (
       isPublicStatus &&
@@ -727,7 +732,7 @@ export function AdminPropertyEditPage() {
     const publishedAt =
       isPublicStatus
         ? property.published_at ??
-          new Date().toISOString()
+        new Date().toISOString()
         : property.published_at;
 
     const updatePayload = {
@@ -1008,7 +1013,7 @@ export function AdminPropertyEditPage() {
       setIsUploading(false);
     }
   };
-    const updatePositions = async (
+  const updatePositions = async (
     orderedImages: PropertyImage[],
     force = false,
   ) => {
@@ -1252,9 +1257,9 @@ export function AdminPropertyEditPage() {
       reorderedImages[imageIndex],
       reorderedImages[nextIndex],
     ] = [
-      reorderedImages[nextIndex],
-      reorderedImages[imageIndex],
-    ];
+        reorderedImages[nextIndex],
+        reorderedImages[imageIndex],
+      ];
 
     await handleReorder(reorderedImages);
   };
@@ -1591,16 +1596,18 @@ export function AdminPropertyEditPage() {
     )
       ? propertyTypeOptions
       : [
-          {
-            value: form.propertyType,
-            label: form.propertyType,
-          },
-          ...propertyTypeOptions,
-        ];
+        {
+          value: form.propertyType,
+          label: form.propertyType,
+        },
+        ...propertyTypeOptions,
+      ];
 
   const isPropertyPublic =
-    property.status === 'published' ||
-    property.status === 'reserved';
+  property.status === 'published' ||
+  property.status === 'reserved' ||
+  property.status === 'sold' ||
+  property.status === 'rented';
 
   return (
     <main className="admin-property-edit">
@@ -1803,7 +1810,7 @@ export function AdminPropertyEditPage() {
                   disabled={isDeletingProperty}
                   placeholder={
                     form.operation ===
-                    'alquiler'
+                      'alquiler'
                       ? 'Ej. 1.500'
                       : 'Ej. 250.000'
                   }
@@ -1812,7 +1819,7 @@ export function AdminPropertyEditPage() {
 
                 <span aria-hidden="true">
                   {form.operation ===
-                  'alquiler'
+                    'alquiler'
                     ? '€/mes'
                     : '€'}
                 </span>
@@ -1821,7 +1828,7 @@ export function AdminPropertyEditPage() {
               <small className="admin-property-form__helper">
                 Puedes escribir, por ejemplo,{' '}
                 {form.operation ===
-                'alquiler'
+                  'alquiler'
                   ? '1500 o 1.500'
                   : '250000 o 250.000'}
                 .
@@ -1968,7 +1975,7 @@ export function AdminPropertyEditPage() {
             </span>
           </label>
         </section>
-                <section className="admin-property-form__section">
+        <section className="admin-property-form__section">
           <div>
             <span>03</span>
             <h2>Datos del inmueble</h2>
@@ -2278,13 +2285,13 @@ export function AdminPropertyEditPage() {
                           'managedFeatures',
                           event.target.checked
                             ? [
-                                ...form.managedFeatures,
-                                feature,
-                              ]
+                              ...form.managedFeatures,
+                              feature,
+                            ]
                             : form.managedFeatures.filter(
-                                (item) =>
-                                  item !== feature,
-                              ),
+                              (item) =>
+                                item !== feature,
+                            ),
                         )
                       }
                       disabled={isDeletingProperty}
@@ -2456,14 +2463,14 @@ export function AdminPropertyEditPage() {
                           'orientations',
                           event.target.checked
                             ? [
-                                ...form.orientations,
-                                option.value,
-                              ]
+                              ...form.orientations,
+                              option.value,
+                            ]
                             : form.orientations.filter(
-                                (item) =>
-                                  item !==
-                                  option.value,
-                              ),
+                              (item) =>
+                                item !==
+                                option.value,
+                            ),
                         )
                       }
                       disabled={isDeletingProperty}
@@ -3115,13 +3122,15 @@ export function AdminPropertyEditPage() {
           </p>
 
           {(selectedStatus === 'published' ||
-            selectedStatus === 'reserved') &&
-          photos.length === 0 ? (
-            <p className="admin-property-form__error">
-              Para mostrar el inmueble en la web debes
-              añadir al menos una fotografía.
-            </p>
-          ) : null}
+  selectedStatus === 'reserved' ||
+  selectedStatus === 'sold' ||
+  selectedStatus === 'rented') &&
+photos.length === 0 ? (
+  <p className="admin-property-form__error">
+    Para mostrar el inmueble en la web debes
+    añadir al menos una fotografía.
+  </p>
+) : null}
         </section>
 
         {saveError ? (
