@@ -64,7 +64,8 @@ function getUniqueLocationParts(
     string | null | undefined
   >,
 ) {
-  const seen = new Set<string>();
+  const seen =
+    new Set<string>();
 
   return values.filter(
     (
@@ -77,7 +78,9 @@ function getUniqueLocationParts(
       const normalized =
         normalizeText(value);
 
-      if (seen.has(normalized)) {
+      if (
+        seen.has(normalized)
+      ) {
         return false;
       }
 
@@ -103,10 +106,13 @@ function getAutomaticSeoTitle(
     normalizeText(title);
 
   const alreadyContainsLocation =
-    locationParts.some((location) =>
-      titleNormalized.includes(
-        normalizeText(location),
-      ),
+    locationParts.some(
+      (location) =>
+        titleNormalized.includes(
+          normalizeText(
+            location,
+          ),
+        ),
     );
 
   const location =
@@ -124,11 +130,14 @@ function getAutomaticSeoTitle(
 function limitMetaDescription(
   value: string,
 ) {
-  const cleanValue = value
-    .replace(/\s+/g, ' ')
-    .trim();
+  const cleanValue =
+    value
+      .replace(/\s+/g, ' ')
+      .trim();
 
-  if (cleanValue.length <= 160) {
+  if (
+    cleanValue.length <= 160
+  ) {
     return cleanValue;
   }
 
@@ -143,10 +152,14 @@ function getAutomaticSeoDescription(
   location: string,
 ) {
   const normalizedDescription =
-    normalizeText(description);
+    normalizeText(
+      description,
+    );
 
   const normalizedLocation =
-    normalizeText(location);
+    normalizeText(
+      location,
+    );
 
   const alreadyContainsLocation =
     Boolean(
@@ -171,8 +184,12 @@ function toAbsoluteUrl(
   url: string,
 ) {
   if (
-    url.startsWith('http://') ||
-    url.startsWith('https://')
+    url.startsWith(
+      'http://',
+    ) ||
+    url.startsWith(
+      'https://',
+    )
   ) {
     return url;
   }
@@ -208,9 +225,10 @@ export function PropertyDetailPage() {
   const [
     property,
     setProperty,
-  ] = useState<Property | null>(
-    null,
-  );
+  ] =
+    useState<Property | null>(
+      null,
+    );
 
   const [
     isLoading,
@@ -248,12 +266,19 @@ export function PropertyDetailPage() {
           );
 
           if (isMounted) {
-            setProperty(null);
-            setLoadError(true);
+            setProperty(
+              null,
+            );
+
+            setLoadError(
+              true,
+            );
           }
         } finally {
           if (isMounted) {
-            setIsLoading(false);
+            setIsLoading(
+              false,
+            );
           }
         }
       };
@@ -352,7 +377,9 @@ export function PropertyDetailPage() {
     ]);
 
   const locationLabel =
-    locationParts.join(' · ');
+    locationParts.join(
+      ' · ',
+    );
 
   const seoLocationParts =
     getUniqueLocationParts([
@@ -361,7 +388,9 @@ export function PropertyDetailPage() {
     ]);
 
   const seoLocationLabel =
-    seoLocationParts.join(', ');
+    seoLocationParts.join(
+      ', ',
+    );
 
   const automaticSeoTitle =
     getAutomaticSeoTitle(
@@ -408,7 +437,26 @@ export function PropertyDetailPage() {
     automaticImageAlt;
 
   const isReserved =
-    property.status === 'Reservado';
+    property.status ===
+    'Reservado';
+
+  const isSold =
+    property.status ===
+    'Vendido';
+
+  const isRented =
+    property.status ===
+    'Alquilado';
+
+  const hasSpecialStatus =
+    isReserved ||
+    isSold ||
+    isRented;
+
+  const statusLabel =
+    hasSpecialStatus
+      ? property.status
+      : null;
 
   const detailCharacteristics =
     property.characteristics ??
@@ -435,26 +483,26 @@ export function PropertyDetailPage() {
     );
 
   /*
-   * Para el mapa no utilizamos la zona/barrio cuando
-   * la dirección exacta es privada.
+   * buildMapLocation() ya genera una ubicación segura:
    *
-   * Motivo:
-   * valores genéricos como "Zona centro" pueden hacer
-   * que Google Maps interprete una ubicación diferente
-   * dependiendo del dispositivo o del contexto de búsqueda.
+   * Dirección pública:
+   * Calle..., 45760 La Guardia, Toledo, España
    *
-   * La zona sí sigue mostrándose en la ficha mediante
-   * locationLabel, pero no se utiliza para geolocalizar
-   * el iframe.
+   * Dirección privada:
+   * 45760, La Guardia, Toledo, España
+   *
+   * De este modo utilizamos código postal, localidad y
+   * provincia para evitar interpretaciones incorrectas
+   * de Google Maps sin revelar la calle privada.
    */
   const mapSearchLocation =
-    property.showExactAddress &&
-    property.mapLocation?.trim()
-      ? property.mapLocation
-      : getUniqueLocationParts([
-          property.city,
-          property.province,
-        ]).join(', ');
+    property.mapLocation?.trim() ||
+    getUniqueLocationParts([
+      property.postalCode,
+      property.city,
+      property.province,
+      'España',
+    ]).join(', ');
 
   const encodedMapLocation =
     encodeURIComponent(
@@ -462,8 +510,7 @@ export function PropertyDetailPage() {
     );
 
   const mapZoom =
-    property.showExactAddress &&
-    property.mapLocation?.trim()
+    property.showExactAddress
       ? 16
       : 14;
 
@@ -473,9 +520,38 @@ export function PropertyDetailPage() {
   const googleMapsUrl =
     `https://www.google.com/maps/search/?api=1&query=${encodedMapLocation}`;
 
-  const message = isReserved
-    ? `Hola, he visto el inmueble reservado ${property.title}. ¿Podéis informarme sobre inmuebles similares?`
-    : `Hola, estoy interesado/a en el inmueble ${property.title}. ¿Podéis darme más información?`;
+  const message =
+    isReserved
+      ? `Hola, he visto el inmueble reservado ${property.title}. ¿Podéis informarme sobre inmuebles similares?`
+      : isSold
+        ? `Hola, he visto el inmueble vendido ${property.title}. ¿Podéis informarme sobre inmuebles similares?`
+        : isRented
+          ? `Hola, he visto el inmueble alquilado ${property.title}. ¿Podéis informarme sobre inmuebles similares?`
+          : `Hola, estoy interesado/a en el inmueble ${property.title}. ¿Podéis darme más información?`;
+
+  const contactHeading =
+    hasSpecialStatus
+      ? '¿Buscas un inmueble similar?'
+      : '¿Te interesa esta propiedad?';
+
+  const contactDescription =
+    isReserved
+      ? 'Este inmueble está reservado. Déjanos tus datos y te ayudaremos a encontrar alternativas similares.'
+      : isSold
+        ? 'Este inmueble ya está vendido. Déjanos tus datos y te ayudaremos a encontrar propiedades similares disponibles.'
+        : isRented
+          ? 'Este inmueble ya está alquilado. Déjanos tus datos y te ayudaremos a encontrar propiedades similares disponibles.'
+          : 'Déjanos tus datos y te contactamos para ampliar información, resolver dudas o coordinar una visita.';
+
+  const contactNote =
+    hasSpecialStatus
+      ? 'Te atenderemos personalmente para conocer qué buscas y proponerte otras oportunidades.'
+      : 'Te atenderemos personalmente para confirmar disponibilidad y condiciones de la propiedad.';
+
+  const mobileContactLabel =
+    hasSpecialStatus
+      ? 'Consultar inmuebles similares'
+      : 'Solicitar información';
 
   const breadcrumbs = [
     {
@@ -483,37 +559,62 @@ export function PropertyDetailPage() {
       to: '/',
     },
     {
-      label: operationLabel,
-      to: operationTo,
+      label:
+        operationLabel,
+      to:
+        operationTo,
     },
     {
-      label: property.title,
+      label:
+        property.title,
     },
   ];
 
   const breadcrumbSchema = {
     '@context':
       'https://schema.org',
+
     '@type':
       'BreadcrumbList',
+
     itemListElement: [
       {
-        '@type': 'ListItem',
+        '@type':
+          'ListItem',
+
         position: 1,
-        name: 'Inicio',
-        item: `${SITE_URL}/`,
+
+        name:
+          'Inicio',
+
+        item:
+          `${SITE_URL}/`,
       },
+
       {
-        '@type': 'ListItem',
+        '@type':
+          'ListItem',
+
         position: 2,
-        name: 'Inmuebles',
-        item: `${SITE_URL}/inmuebles`,
+
+        name:
+          'Inmuebles',
+
+        item:
+          `${SITE_URL}/inmuebles`,
       },
+
       {
-        '@type': 'ListItem',
+        '@type':
+          'ListItem',
+
         position: 3,
-        name: property.title,
-        item: propertyUrl,
+
+        name:
+          property.title,
+
+        item:
+          propertyUrl,
       },
     ],
   };
@@ -521,65 +622,103 @@ export function PropertyDetailPage() {
   const listingSchema = {
     '@context':
       'https://schema.org',
+
     '@type':
       'RealEstateListing',
-    name: property.title,
+
+    name:
+      property.title,
+
     description:
       seoDescription,
-    url: propertyUrl,
-    inLanguage: 'es-ES',
+
+    url:
+      propertyUrl,
+
+    inLanguage:
+      'es-ES',
+
     publisher: {
       '@type':
         'RealEstateAgent',
-      name: business.name,
+
+      name:
+        business.name,
+
       telephone:
         business.phoneMobileHref,
-      url: SITE_URL,
+
+      url:
+        SITE_URL,
     },
+
     contentLocation: {
-      '@type': 'Place',
+      '@type':
+        'Place',
+
       name:
         locationLabel ||
         seoLocationLabel ||
         property.city,
+
       address: {
         '@type':
           'PostalAddress',
+
         addressLocality:
           property.city,
+
         addressRegion:
           property.province,
-        addressCountry: 'ES',
+
+        postalCode:
+          property.postalCode,
+
+        addressCountry:
+          'ES',
       },
     },
+
     ...(coverImageUrl
       ? {
           primaryImageOfPage: {
             '@type':
               'ImageObject',
-            url: coverImageUrl,
+
+            url:
+              coverImageUrl,
           },
         }
       : {}),
+
     ...(property.price
       ? {
           offers: {
-            '@type': 'Offer',
+            '@type':
+              'Offer',
+
             price:
               property.price,
+
             priceCurrency:
               property.currency ||
               'EUR',
-            url: propertyUrl,
+
+            url:
+              propertyUrl,
+
             businessFunction:
               isRent
                 ? 'http://purl.org/goodrelations/v1#LeaseOut'
                 : 'http://purl.org/goodrelations/v1#Sell',
+
             offeredBy: {
               '@type':
                 'RealEstateAgent',
+
               name:
                 business.name,
+
               telephone:
                 business.phoneMobileHref,
             },
@@ -597,10 +736,13 @@ export function PropertyDetailPage() {
         }
         path={`/inmuebles/${property.slug}`}
         image={
-          property.coverImage
+          property
+            .coverImage
             ?.url
         }
-        imageAlt={imageAlt}
+        imageAlt={
+          imageAlt
+        }
       />
 
       <JsonLd
@@ -617,12 +759,15 @@ export function PropertyDetailPage() {
 
       <InternalHero
         eyebrow={`${property.operation.toUpperCase()} · ${locationLabel}`}
-        title={property.title}
+        title={
+          property.title
+        }
         text={
           property.description
         }
         image={
-          property.coverImage
+          property
+            .coverImage
             ?.url ??
           '/images/alvar/heroes/hero-inmuebles-madrid.webp'
         }
@@ -636,21 +781,29 @@ export function PropertyDetailPage() {
         aside={
           <div className="property-hero__summary">
             <span>
-              {property.operation}
+              {
+                property.operation
+              }
             </span>
 
-            {isReserved ? (
+            {statusLabel ? (
               <span className="property-status-badge">
-                Reservado
+                {
+                  statusLabel
+                }
               </span>
             ) : null}
 
             <strong>
-              {formattedPrice}
+              {
+                formattedPrice
+              }
             </strong>
 
             <small>
-              {locationLabel}
+              {
+                locationLabel
+              }
             </small>
           </div>
         }
@@ -669,14 +822,17 @@ export function PropertyDetailPage() {
               </span>
 
               <p>
-                Descubre los espacios y
+                Descubre los
+                espacios y
                 detalles de la
                 propiedad.
               </p>
             </div>
 
             <small>
-              {locationLabel}
+              {
+                locationLabel
+              }
             </small>
           </div>
 
@@ -698,7 +854,9 @@ export function PropertyDetailPage() {
               >
                 Vídeo{' '}
 
-                <span aria-hidden="true">
+                <span
+                  aria-hidden="true"
+                >
                   ↗
                 </span>
               </a>
@@ -714,14 +872,16 @@ export function PropertyDetailPage() {
               >
                 Visita virtual{' '}
 
-                <span aria-hidden="true">
+                <span
+                  aria-hidden="true"
+                >
                   ↗
                 </span>
               </a>
             ) : null}
 
-            {(property.floorplans ?? [])
-              .length ? (
+            {(property.floorplans ??
+              []).length ? (
               <a href="#property-floorplans">
                 Planos
               </a>
@@ -733,7 +893,9 @@ export function PropertyDetailPage() {
           </nav>
 
           <PropertyGallery
-            property={property}
+            property={
+              property
+            }
           />
         </Container>
       </section>
@@ -771,15 +933,21 @@ export function PropertyDetailPage() {
 
             <div className="property-content__intro-meta">
               <span>
-                {property.operation}
+                {
+                  property.operation
+                }
               </span>
 
               <strong>
-                {formattedPrice}
+                {
+                  formattedPrice
+                }
               </strong>
 
               <p>
-                {locationLabel}
+                {
+                  locationLabel
+                }
               </p>
             </div>
           </header>
@@ -986,7 +1154,8 @@ export function PropertyDetailPage() {
                       {property.energyCertificateStatus ===
                       'exempt' ? (
                         <p className="property-additional-details__notice">
-                          Inmueble exento de
+                          Inmueble
+                          exento de
                           certificado
                           energético.
                         </p>
@@ -1014,6 +1183,7 @@ export function PropertyDetailPage() {
                                 <dd>
                                   {[
                                     property.energyConsumptionRating,
+
                                     property.energyConsumptionValue !==
                                     undefined
                                       ? `${property.energyConsumptionValue.toLocaleString(
@@ -1042,6 +1212,7 @@ export function PropertyDetailPage() {
                                 <dd>
                                   {[
                                     property.energyEmissionsRating,
+
                                     property.energyEmissionsValue !==
                                     undefined
                                       ? `${property.energyEmissionsValue.toLocaleString(
@@ -1088,7 +1259,9 @@ export function PropertyDetailPage() {
                     </p>
 
                     <h3 id="property-location-title">
-                      {locationLabel}
+                      {
+                        locationLabel
+                      }
                     </h3>
                   </div>
                 </div>
@@ -1115,7 +1288,9 @@ export function PropertyDetailPage() {
                 >
                   Ver en Google Maps{' '}
 
-                  <span aria-hidden="true">
+                  <span
+                    aria-hidden="true"
+                  >
                     ↗
                   </span>
                 </a>
@@ -1125,19 +1300,21 @@ export function PropertyDetailPage() {
             <aside className="property-contact">
               <div className="property-contact__heading">
                 <span>
-                  INFORMACIÓN Y VISITAS
+                  {hasSpecialStatus
+                    ? 'INFORMACIÓN Y ALTERNATIVAS'
+                    : 'INFORMACIÓN Y VISITAS'}
                 </span>
 
                 <h2>
-                  {isReserved
-                    ? '¿Buscas un inmueble similar?'
-                    : '¿Te interesa esta propiedad?'}
+                  {
+                    contactHeading
+                  }
                 </h2>
 
                 <p>
-                  {isReserved
-                    ? 'Este inmueble está reservado. Déjanos tus datos y te ayudaremos a encontrar alternativas similares.'
-                    : 'Déjanos tus datos y te contactamos para ampliar información, resolver dudas o coordinar una visita.'}
+                  {
+                    contactDescription
+                  }
                 </p>
               </div>
 
@@ -1184,16 +1361,18 @@ export function PropertyDetailPage() {
                     WhatsApp
                   </span>
 
-                  <span aria-hidden="true">
+                  <span
+                    aria-hidden="true"
+                  >
                     ↗
                   </span>
                 </a>
               </div>
 
               <small className="property-contact__note">
-                {isReserved
-                  ? 'Te atenderemos personalmente para conocer qué buscas y proponerte otras oportunidades.'
-                  : 'Te atenderemos personalmente para confirmar disponibilidad y condiciones de la propiedad.'}
+                {
+                  contactNote
+                }
               </small>
             </aside>
           </div>
@@ -1218,9 +1397,9 @@ export function PropertyDetailPage() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {isReserved
-            ? 'Consultar inmuebles similares'
-            : 'Solicitar información'}
+          {
+            mobileContactLabel
+          }
         </a>
       </div>
     </>
