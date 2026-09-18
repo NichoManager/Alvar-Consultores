@@ -7,6 +7,7 @@ import type { Property } from '../types/content';
 
 export type PropertyFilterState = {
   operation: string;
+  status: string;
   province: string;
   city: string;
   area: string;
@@ -42,6 +43,7 @@ export type PropertyLocationOption = {
 
 export const defaultPropertyFilters: PropertyFilterState = {
   operation: '',
+  status: '',
   province: '',
   city: '',
   area: '',

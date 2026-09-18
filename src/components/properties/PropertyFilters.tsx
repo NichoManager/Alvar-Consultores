@@ -87,6 +87,72 @@ export function PropertyFilters({
   const showOperationSelector =
     lockedOperation === '';
 
+  const effectiveOperation =
+    lockedOperation ||
+    draft.operation;
+
+  const statusOptions =
+    effectiveOperation === 'venta'
+      ? [
+          {
+            value: '',
+            label: 'Todos',
+          },
+          {
+            value: 'available',
+            label: 'Disponible',
+          },
+          {
+            value: 'reserved',
+            label: 'Reservado',
+          },
+          {
+            value: 'sold',
+            label: 'Vendido',
+          },
+        ]
+      : effectiveOperation === 'alquiler'
+        ? [
+            {
+              value: '',
+              label: 'Todos',
+            },
+            {
+              value: 'available',
+              label: 'Disponible',
+            },
+            {
+              value: 'reserved',
+              label: 'Reservado',
+            },
+            {
+              value: 'rented',
+              label: 'Alquilado',
+            },
+          ]
+        : [
+            {
+              value: '',
+              label: 'Todos',
+            },
+            {
+              value: 'available',
+              label: 'Disponible',
+            },
+            {
+              value: 'reserved',
+              label: 'Reservado',
+            },
+            {
+              value: 'sold',
+              label: 'Vendido',
+            },
+            {
+              value: 'rented',
+              label: 'Alquilado',
+            },
+          ];
+
   useEffect(() => {
     setDraft(value);
   }, [value]);
@@ -114,9 +180,31 @@ export function PropertyFilters({
   const updateOperation = (
     operation: PropertyFilterState['operation'],
   ) => {
+    setDraft((current) => {
+      const incompatibleStatus =
+        (operation === 'venta' &&
+          current.status === 'rented') ||
+        (operation === 'alquiler' &&
+          current.status === 'sold');
+
+      return {
+        ...current,
+        operation,
+        status: incompatibleStatus
+          ? ''
+          : current.status,
+      };
+    });
+
+    setPriceError('');
+  };
+
+  const updateStatus = (
+    status: PropertyFilterState['status'],
+  ) => {
     setDraft((current) => ({
       ...current,
-      operation,
+      status,
     }));
 
     setPriceError('');
@@ -150,7 +238,10 @@ export function PropertyFilters({
     onChange(nextFilters);
 
     trackEvent('property_filter', {
-      filters: JSON.stringify(nextFilters),
+      filters:
+        JSON.stringify(
+          nextFilters,
+        ),
     });
 
     setMobileOpen(false);
@@ -164,7 +255,8 @@ export function PropertyFilters({
     if (lockedOperation) {
       const nextFilters: PropertyFilterState = {
         ...defaultPropertyFilters,
-        operation: lockedOperation,
+        operation:
+          lockedOperation,
       };
 
       setDraft(nextFilters);
@@ -173,7 +265,10 @@ export function PropertyFilters({
       return;
     }
 
-    setDraft(defaultPropertyFilters);
+    setDraft(
+      defaultPropertyFilters,
+    );
+
     onClear();
   };
 
@@ -186,13 +281,15 @@ export function PropertyFilters({
   const mobileEyebrow =
     lockedOperation === 'venta'
       ? 'COMPRAR'
-      : lockedOperation === 'alquiler'
+      : lockedOperation ===
+          'alquiler'
         ? 'ALQUILAR'
         : 'BUSCAR INMUEBLES';
 
   const hasActiveDraftFilters =
     (!lockedOperation &&
       draft.operation !== '') ||
+    draft.status !== '' ||
     draft.province !== '' ||
     draft.city !== '' ||
     draft.area !== '' ||
@@ -258,13 +355,16 @@ export function PropertyFilters({
 
       <form
         className={`property-filters${
-          mobileOpen ? ' is-open' : ''
+          mobileOpen
+            ? ' is-open'
+            : ''
         }`}
         onSubmit={submit}
         aria-label={
           lockedOperation === 'venta'
             ? 'Filtros de inmuebles en venta'
-            : lockedOperation === 'alquiler'
+            : lockedOperation ===
+                'alquiler'
               ? 'Filtros de inmuebles en alquiler'
               : 'Filtros de inmuebles'
         }
@@ -322,15 +422,19 @@ export function PropertyFilters({
               <button
                 type="button"
                 className={
-                  draft.operation === 'venta'
+                  draft.operation ===
+                  'venta'
                     ? 'is-active'
                     : ''
                 }
                 aria-pressed={
-                  draft.operation === 'venta'
+                  draft.operation ===
+                  'venta'
                 }
                 onClick={() =>
-                  updateOperation('venta')
+                  updateOperation(
+                    'venta',
+                  )
                 }
               >
                 Comprar
@@ -360,19 +464,69 @@ export function PropertyFilters({
           </div>
         ) : null}
 
+        <div className="property-filters__operation">
+          <span className="property-filters__field-label">
+            Situación
+          </span>
+
+          <div
+            className="property-filters__operation-control"
+            role="group"
+            aria-label="Situación comercial del inmueble"
+          >
+            {statusOptions.map(
+              (option) => (
+                <button
+                  key={
+                    option.value ||
+                    'all-statuses'
+                  }
+                  type="button"
+                  className={
+                    draft.status ===
+                    option.value
+                      ? 'is-active'
+                      : ''
+                  }
+                  aria-pressed={
+                    draft.status ===
+                    option.value
+                  }
+                  onClick={() =>
+                    updateStatus(
+                      option.value,
+                    )
+                  }
+                >
+                  {
+                    option.label
+                  }
+                </button>
+              ),
+            )}
+          </div>
+        </div>
+
         <div className="property-filters__search-shell">
           <div className="property-filters__main">
             <div className="property-filters__main-field property-filters__main-field--location">
               <PropertyLocationFilter
                 id="catalogue-location"
-                options={locationOptions}
-                value={selectedLocation}
-                onChange={(option) =>
-                  setDraft((current) =>
-                    applyLocationOption(
-                      current,
-                      option,
-                    ),
+                options={
+                  locationOptions
+                }
+                value={
+                  selectedLocation
+                }
+                onChange={(
+                  option,
+                ) =>
+                  setDraft(
+                    (current) =>
+                      applyLocationOption(
+                        current,
+                        option,
+                      ),
                   )
                 }
               />
@@ -385,8 +539,12 @@ export function PropertyFilters({
 
               <select
                 name="type"
-                value={draft.type}
-                onChange={update}
+                value={
+                  draft.type
+                }
+                onChange={
+                  update
+                }
               >
                 <option value="">
                   Todos los tipos
@@ -395,10 +553,16 @@ export function PropertyFilters({
                 {typeOptions.map(
                   (option) => (
                     <option
-                      key={option.value}
-                      value={option.value}
+                      key={
+                        option.value
+                      }
+                      value={
+                        option.value
+                      }
                     >
-                      {option.label}
+                      {
+                        option.label
+                      }
                     </option>
                   ),
                 )}
@@ -422,8 +586,12 @@ export function PropertyFilters({
                     inputMode="numeric"
                     min="0"
                     step="1000"
-                    value={draft.minPrice}
-                    onChange={update}
+                    value={
+                      draft.minPrice
+                    }
+                    onChange={
+                      update
+                    }
                     placeholder="Desde"
                   />
                 </label>
@@ -444,8 +612,12 @@ export function PropertyFilters({
                     inputMode="numeric"
                     min="0"
                     step="1000"
-                    value={draft.maxPrice}
-                    onChange={update}
+                    value={
+                      draft.maxPrice
+                    }
+                    onChange={
+                      update
+                    }
                     placeholder="Hasta"
                   />
                 </label>
@@ -460,7 +632,9 @@ export function PropertyFilters({
                 Buscar
               </span>
 
-              <span aria-hidden="true">
+              <span
+                aria-hidden="true"
+              >
                 →
               </span>
             </button>
@@ -483,8 +657,12 @@ export function PropertyFilters({
 
               <select
                 name="bedrooms"
-                value={draft.bedrooms}
-                onChange={update}
+                value={
+                  draft.bedrooms
+                }
+                onChange={
+                  update
+                }
               >
                 {minimumRoomOptions.map(
                   (option) => (
@@ -493,9 +671,13 @@ export function PropertyFilters({
                         option.value ||
                         'any-bedroom'
                       }
-                      value={option.value}
+                      value={
+                        option.value
+                      }
                     >
-                      {option.label}
+                      {
+                        option.label
+                      }
                     </option>
                   ),
                 )}
@@ -509,8 +691,12 @@ export function PropertyFilters({
 
               <select
                 name="bathrooms"
-                value={draft.bathrooms}
-                onChange={update}
+                value={
+                  draft.bathrooms
+                }
+                onChange={
+                  update
+                }
               >
                 {minimumRoomOptions.map(
                   (option) => (
@@ -519,9 +705,13 @@ export function PropertyFilters({
                         option.value ||
                         'any-bathroom'
                       }
-                      value={option.value}
+                      value={
+                        option.value
+                      }
                     >
-                      {option.label}
+                      {
+                        option.label
+                      }
                     </option>
                   ),
                 )}
@@ -540,8 +730,12 @@ export function PropertyFilters({
                   inputMode="numeric"
                   min="0"
                   step="1"
-                  value={draft.minArea}
-                  onChange={update}
+                  value={
+                    draft.minArea
+                  }
+                  onChange={
+                    update
+                  }
                   placeholder="Mínima"
                 />
 
@@ -562,11 +756,16 @@ export function PropertyFilters({
                   : ''
               }`}
               type="button"
-              aria-expanded={advancedOpen}
+              aria-expanded={
+                advancedOpen
+              }
               aria-controls="property-advanced-filters"
               onClick={() =>
                 setAdvancedOpen(
-                  (current) => !current,
+                  (
+                    current,
+                  ) =>
+                    !current,
                 )
               }
             >
@@ -575,7 +774,9 @@ export function PropertyFilters({
               </span>
 
               {hasAdvancedFilters ? (
-                <i aria-hidden="true" />
+                <i
+                  aria-hidden="true"
+                />
               ) : null}
 
               <span
@@ -599,18 +800,24 @@ export function PropertyFilters({
                   </span>
 
                   <strong>
-                    Los detalles que importan.
+                    Los detalles que
+                    importan.
                   </strong>
                 </div>
 
                 <button
                   type="button"
                   onClick={() =>
-                    setAdvancedOpen(false)
+                    setAdvancedOpen(
+                      false,
+                    )
                   }
                 >
                   Cerrar
-                  <span aria-hidden="true">
+
+                  <span
+                    aria-hidden="true"
+                  >
                     ↑
                   </span>
                 </button>
@@ -618,19 +825,34 @@ export function PropertyFilters({
 
               <div className="property-filters__features">
                 {featureFilters.map(
-                  ({ key, label }) => (
-                    <label key={key}>
+                  ({
+                    key,
+                    label,
+                  }) => (
+                    <label
+                      key={
+                        key
+                      }
+                    >
                       <input
-                        name={key}
+                        name={
+                          key
+                        }
                         type="checkbox"
                         checked={Boolean(
-                          draft[key],
+                          draft[
+                            key
+                          ],
                         )}
-                        onChange={update}
+                        onChange={
+                          update
+                        }
                       />
 
                       <span>
-                        {label}
+                        {
+                          label
+                        }
                       </span>
                     </label>
                   ),
@@ -639,25 +861,37 @@ export function PropertyFilters({
 
               <label className="property-filters__condition">
                 <span>
-                  Estado del inmueble
+                  Estado de conservación
                 </span>
 
                 <select
                   name="condition"
-                  value={draft.condition}
-                  onChange={update}
+                  value={
+                    draft.condition
+                  }
+                  onChange={
+                    update
+                  }
                 >
                   <option value="">
                     Cualquier estado
                   </option>
 
                   {propertyConditionOptions.map(
-                    (option) => (
+                    (
+                      option,
+                    ) => (
                       <option
-                        key={option.value}
-                        value={option.value}
+                        key={
+                          option.value
+                        }
+                        value={
+                          option.value
+                        }
                       >
-                        {option.label}
+                        {
+                          option.label
+                        }
                       </option>
                     ),
                   )}
@@ -672,7 +906,9 @@ export function PropertyFilters({
             <button
               className="property-filters__clear"
               type="button"
-              onClick={clear}
+              onClick={
+                clear
+              }
             >
               Limpiar
             </button>
@@ -684,7 +920,9 @@ export function PropertyFilters({
           >
             Aplicar filtros
 
-            <span aria-hidden="true">
+            <span
+              aria-hidden="true"
+            >
               →
             </span>
           </button>
