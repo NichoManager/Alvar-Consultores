@@ -19,6 +19,8 @@ const STORAGE_BUCKET =
 export const PUBLIC_PROPERTY_STATUSES = [
   'published',
   'reserved',
+  'sold',
+  'rented',
 ] as const;
 
 type PublicPropertyStatus =
@@ -681,10 +683,13 @@ function mapPublicProperty(
         : 'Comprar',
 
     status:
-      row.status ===
-      'reserved'
+      row.status === 'reserved'
         ? 'Reservado'
-        : 'Disponible',
+        : row.status === 'sold'
+          ? 'Vendido'
+          : row.status === 'rented'
+            ? 'Alquilado'
+            : 'Disponible',
 
     propertyType:
       row.property_type,
@@ -707,10 +712,8 @@ function mapPublicProperty(
       undefined,
 
     postalCode:
-      row.show_exact_address
-        ? row.postal_code ??
-          undefined
-        : undefined,
+      row.postal_code?.trim() ||
+      undefined,
 
     address:
       row.show_exact_address
