@@ -9,24 +9,65 @@ export function PropertyCard({
   property: Property;
   index?: number;
 }) {
-  const normalizedOperation = property.operation.trim().toLowerCase();
+  const normalizedOperation =
+    property.operation
+      .trim()
+      .toLowerCase();
 
-const isRental =
-  normalizedOperation === 'alquilar' ||
-  normalizedOperation === 'alquiler';
+  const isRental =
+    normalizedOperation === 'alquilar' ||
+    normalizedOperation === 'alquiler';
 
-const operation = isRental
-  ? 'En alquiler'
-  : 'En venta';
+  const operation = isRental
+    ? 'En alquiler'
+    : 'En venta';
 
   const formattedPrice = property.price
-  ? `${property.price.toLocaleString('es-ES')} €${isRental ? '/mes' : ''}`
-  : 'Consultar precio';
+    ? `${property.price.toLocaleString(
+        'es-ES',
+      )} €${isRental ? '/mes' : ''}`
+    : 'Consultar precio';
 
-  const featuredNumber = String(index + 1).padStart(2, '0');
-  const visibleFeatures = property.features.slice(0, 3);
-  const location = [property.area, property.city].filter(Boolean).join(' · ');
-  const isReserved = property.status === 'Reservado';
+  const featuredNumber = String(
+    index + 1,
+  ).padStart(2, '0');
+
+  const visibleFeatures =
+    property.features.slice(0, 3);
+
+  const location = [
+    property.area,
+    property.city,
+  ]
+    .filter(Boolean)
+    .join(' · ');
+
+  const isReserved =
+    property.status === 'Reservado';
+
+  const isSold =
+    property.status === 'Vendido';
+
+  const isRented =
+    property.status === 'Alquilado';
+
+  const badgeLabel =
+    isReserved
+      ? 'Reservado'
+      : isSold
+        ? 'Vendido'
+        : isRented
+          ? 'Alquilado'
+          : operation;
+
+  const badgeModifier =
+    isReserved
+      ? ' property-card__badge--reserved'
+      : isSold
+        ? ' property-card__badge--sold'
+        : isRented
+          ? ' property-card__badge--rented'
+          : '';
 
   return (
     <article className="property-card">
@@ -43,18 +84,27 @@ const operation = isRental
               decoding="async"
             />
           ) : (
-            <ArchitecturalVisual variant={property.visual} decorative />
+            <ArchitecturalVisual
+              variant={property.visual}
+              decorative
+            />
           )}
 
-          <div className="property-card__media-layer" aria-hidden="true" />
+          <div
+            className="property-card__media-layer"
+            aria-hidden="true"
+          />
 
           <span
-            className={`property-card__badge${isReserved ? ' property-card__badge--reserved' : ''}`}
+            className={`property-card__badge${badgeModifier}`}
           >
-            {isReserved ? 'Reservado' : operation}
+            {badgeLabel}
           </span>
 
-          <span className="property-card__number" aria-hidden="true">
+          <span
+            className="property-card__number"
+            aria-hidden="true"
+          >
             {featuredNumber}
           </span>
         </div>
@@ -64,25 +114,39 @@ const operation = isRental
             <p className="property-card__location">
               {location}
             </p>
-            <span>{operation}</span>
+
+            <span>
+              {operation}
+            </span>
           </div>
 
-          <h3>{property.title}</h3>
+          <h3>
+            {property.title}
+          </h3>
 
           <div className="property-card__meta">
-            <p className="property-card__price">{formattedPrice}</p>
+            <p className="property-card__price">
+              {formattedPrice}
+            </p>
 
             {visibleFeatures.length > 0 && (
               <ul aria-label="Características principales">
-                {visibleFeatures.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
+                {visibleFeatures.map(
+                  (feature) => (
+                    <li key={feature}>
+                      {feature}
+                    </li>
+                  ),
+                )}
               </ul>
             )}
           </div>
 
           <span className="property-card__link">
-            Ver inmueble <i aria-hidden="true">↗</i>
+            Ver inmueble{' '}
+            <i aria-hidden="true">
+              ↗
+            </i>
           </span>
         </div>
       </Link>
