@@ -1622,8 +1622,6 @@ em {
   min-height: 2.65rem;
   padding: 0.55rem 1.5rem;
   border-radius: 0;
-  background: rgba(255, 255, 255, 0.96);
-  color: var(--forest);
   box-shadow: 0 10px 28px rgba(17, 24, 50, 0.18);
   font-size: 0.78rem;
   font-weight: 850;
@@ -1633,11 +1631,19 @@ em {
   transform-origin: center;
 }
 
-.property-card__badge--reserved,
-.property-card__badge--sold,
-.property-card__badge--rented {
+.property-card__badge--reserved {
   background: rgba(255, 255, 255, 0.96);
   color: var(--forest);
+}
+
+.property-card__badge--sold {
+  background: #c83b32;
+  color: #ffffff;
+}
+
+.property-card__badge--rented {
+  background: #2f8f57;
+  color: #ffffff;
 }
 
 .property-card__number {
