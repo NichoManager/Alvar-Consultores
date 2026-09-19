@@ -24,8 +24,8 @@ export function PropertyCard({
 
   const formattedPrice = property.price
     ? `${property.price.toLocaleString(
-        'es-ES',
-      )} €${isRental ? '/mes' : ''}`
+      'es-ES',
+    )} €${isRental ? '/mes' : ''}`
     : 'Consultar precio';
 
   const featuredNumber = String(
@@ -99,7 +99,10 @@ export function PropertyCard({
           />
 
           <span
-            className={`property-card__badge${badgeModifier}`}
+            className={`property-card__badge${isReserved || isSold || isRented
+                ? ' property-card__badge--status'
+                : ''
+              }${badgeModifier}`}
             aria-label={
               hasCommercialStatus
                 ? `Estado del inmueble: ${badgeLabel}`
