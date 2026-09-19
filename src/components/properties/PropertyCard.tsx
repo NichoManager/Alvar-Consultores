@@ -51,23 +51,26 @@ export function PropertyCard({
   const isRented =
     property.status === 'Alquilado';
 
-  const badgeLabel =
-    isReserved
-      ? 'Reservado'
-      : isSold
-        ? 'Vendido'
-        : isRented
-          ? 'Alquilado'
-          : operation;
+  const hasCommercialStatus =
+    isReserved ||
+    isSold ||
+    isRented;
 
-  const badgeModifier =
-    isReserved
-      ? ' property-card__badge--reserved'
-      : isSold
-        ? ' property-card__badge--sold'
-        : isRented
-          ? ' property-card__badge--rented'
-          : '';
+  const badgeLabel = isReserved
+    ? 'Reservado'
+    : isSold
+      ? 'Vendido'
+      : isRented
+        ? 'Alquilado'
+        : operation;
+
+  const badgeModifier = isReserved
+    ? ' property-card__badge--status property-card__badge--reserved'
+    : isSold
+      ? ' property-card__badge--status property-card__badge--sold'
+      : isRented
+        ? ' property-card__badge--status property-card__badge--rented'
+        : '';
 
   return (
     <article className="property-card">
@@ -97,6 +100,11 @@ export function PropertyCard({
 
           <span
             className={`property-card__badge${badgeModifier}`}
+            aria-label={
+              hasCommercialStatus
+                ? `Estado del inmueble: ${badgeLabel}`
+                : undefined
+            }
           >
             {badgeLabel}
           </span>

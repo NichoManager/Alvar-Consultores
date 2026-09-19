@@ -1599,23 +1599,35 @@ em {
   position: absolute;
   top: 1rem;
   left: 1rem;
-  z-index: 2;
-  padding: 0.46rem 0.72rem;
-  background: rgba(248, 246, 240, 0.92);
-  border: 1px solid rgba(184, 148, 77, 0.22);
-  color: var(--forest);
-  font-size: 0.56rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.2rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.2rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.09em;
-  line-height: 1;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  backdrop-filter: blur(8px);
+  color: #111832;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 24px rgba(17, 24, 50, 0.14);
 }
 
 .property-card__badge--reserved {
-  border-color: rgba(184, 148, 77, 0.72);
-  background: rgba(17, 24, 50, 0.92);
-  color: var(--sand);
+  color: #111832;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.property-card__badge--sold {
+  color: #111832;
+  background: rgba(212, 176, 98, 0.95);
+}
+
+.property-card__badge--rented {
+  color: #111832;
+  background: rgba(212, 176, 98, 0.95);
 }
 
 .property-card__number {
