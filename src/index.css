@@ -1603,31 +1603,35 @@ em {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 2.2rem;
-  padding: 0.45rem 0.9rem;
+  min-height: 1.9rem;
+  padding: 0.38rem 0.7rem;
   border-radius: 0.2rem;
-  font-size: 0.72rem;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--forest);
+  box-shadow: 0 8px 20px rgba(17, 24, 50, 0.12);
+  font-size: 0.64rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #111832;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 10px 24px rgba(17, 24, 50, 0.14);
+}
+
+.property-card__badge--status {
+  min-height: 2.35rem;
+  padding: 0.52rem 1rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.09em;
+  box-shadow: 0 12px 28px rgba(17, 24, 50, 0.18);
 }
 
 .property-card__badge--reserved {
-  color: #111832;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--forest);
 }
 
-.property-card__badge--sold {
-  color: #111832;
-  background: rgba(212, 176, 98, 0.95);
-}
-
+.property-card__badge--sold,
 .property-card__badge--rented {
-  color: #111832;
-  background: rgba(212, 176, 98, 0.95);
+  background: var(--sand);
+  color: var(--forest);
 }
 
 .property-card__number {
