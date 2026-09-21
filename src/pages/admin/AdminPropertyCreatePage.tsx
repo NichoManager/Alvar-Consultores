@@ -7,10 +7,14 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import {
+  addressVisibilityOptions,
+  buildingCertificationOptions,
   communityFeePeriodOptions,
   energyRatingOptions,
   energyCertificateStatusOptions,
   heatingTypeOptions,
+  officeBuildingUseOptions,
+  officeSpaceTypeOptions,
   orientationOptions,
   parkingTypeOptions,
   propertyAmenityGroups,
@@ -125,6 +129,11 @@ export function AdminPropertyCreatePage() {
     useState<PropertyOperation>(
       'venta',
     );
+
+  const [
+    selectedPropertyType,
+    setSelectedPropertyType,
+  ] = useState('Piso');
 
   const [
     seoTitle,
@@ -250,6 +259,39 @@ export function AdminPropertyCreatePage() {
         new FormData(
           event.currentTarget,
         );
+
+      const propertyType =
+        String(
+          formData.get(
+            'property_type',
+          ) ?? '',
+        );
+
+      const isOffice =
+        propertyType ===
+        'Oficina';
+
+      const officeAddressVisibility =
+        isOffice
+          ? String(
+              formData.get(
+                'address_visibility',
+              ) ?? 'hidden',
+            )
+          : formData.has(
+              'show_exact_address',
+            )
+            ? 'exact'
+            : 'hidden';
+
+      const officeElevatorsCount =
+        isOffice
+          ? nullableNumber(
+              formData.get(
+                'elevators_count',
+              ),
+            )
+          : null;
 
       const title =
         String(
@@ -400,11 +442,7 @@ export function AdminPropertyCreatePage() {
                 ),
 
               property_type:
-                String(
-                  formData.get(
-                    'property_type',
-                  ),
-                ),
+                propertyType,
 
               status:
                 'draft',
@@ -440,16 +478,65 @@ export function AdminPropertyCreatePage() {
                 ),
 
               show_exact_address:
-                formData.has(
-                  'show_exact_address',
-                ),
+                officeAddressVisibility ===
+                'exact',
+
+              address_visibility:
+                officeAddressVisibility,
+
+              street_number:
+                isOffice
+                  ? nullableText(
+                      formData.get(
+                        'street_number',
+                      ),
+                    )
+                  : null,
+
+              block:
+                isOffice
+                  ? nullableText(
+                      formData.get(
+                        'block',
+                      ),
+                    )
+                  : null,
+
+              door:
+                isOffice
+                  ? nullableText(
+                      formData.get(
+                        'door',
+                      ),
+                    )
+                  : null,
+
+              urbanization_name:
+                isOffice
+                  ? nullableText(
+                      formData.get(
+                        'urbanization_name',
+                      ),
+                    )
+                  : null,
+
+              cadastral_reference:
+                isOffice
+                  ? nullableText(
+                      formData.get(
+                        'cadastral_reference',
+                      ),
+                    )
+                  : null,
 
               bedrooms:
-                nullableNumber(
-                  formData.get(
-                    'bedrooms',
-                  ),
-                ),
+                isOffice
+                  ? null
+                  : nullableNumber(
+                      formData.get(
+                        'bedrooms',
+                      ),
+                    ),
 
               bathrooms:
                 nullableNumber(
@@ -473,11 +560,13 @@ export function AdminPropertyCreatePage() {
                 ),
 
               plot_area:
-                nullableNumber(
-                  formData.get(
-                    'plot_area',
-                  ),
-                ),
+                isOffice
+                  ? null
+                  : nullableNumber(
+                      formData.get(
+                        'plot_area',
+                      ),
+                    ),
 
               floor:
                 nullableText(
@@ -487,11 +576,13 @@ export function AdminPropertyCreatePage() {
                 ),
 
               floors_count:
-                nullableNumber(
-                  formData.get(
-                    'floors_count',
-                  ),
-                ),
+                isOffice
+                  ? null
+                  : nullableNumber(
+                      formData.get(
+                        'floors_count',
+                      ),
+                    ),
 
               construction_year:
                 nullableNumber(
@@ -522,9 +613,13 @@ export function AdminPropertyCreatePage() {
                 ),
 
               elevator:
-                formData.has(
-                  'elevator',
-                ),
+                officeElevatorsCount !==
+                null
+                  ? officeElevatorsCount >
+                    0
+                  : formData.has(
+                      'elevator',
+                    ),
 
               parking:
                 hasParking,
@@ -560,6 +655,81 @@ export function AdminPropertyCreatePage() {
               exterior:
                 exposure ===
                 'exterior',
+
+              office_space_type:
+                isOffice
+                  ? nullableText(
+                      formData.get(
+                        'office_space_type',
+                      ),
+                    )
+                  : null,
+
+              gross_leasable_area:
+                isOffice
+                  ? nullableNumber(
+                      formData.get(
+                        'gross_leasable_area',
+                      ),
+                    )
+                  : null,
+
+              workstation_area:
+                isOffice
+                  ? nullableNumber(
+                      formData.get(
+                        'workstation_area',
+                      ),
+                    )
+                  : null,
+
+              building_use:
+                isOffice
+                  ? nullableText(
+                      formData.get(
+                        'building_use',
+                      ),
+                    )
+                  : null,
+
+              available_from:
+                isOffice
+                  ? nullableText(
+                      formData.get(
+                        'available_from',
+                      ),
+                    )
+                  : null,
+
+              building_certifications:
+                isOffice
+                  ? formData
+                      .getAll(
+                        'building_certifications',
+                      )
+                      .map(String)
+                  : [],
+
+              building_floors_count:
+                isOffice
+                  ? nullableNumber(
+                      formData.get(
+                        'building_floors_count',
+                      ),
+                    )
+                  : null,
+
+              office_floors_count:
+                isOffice
+                  ? nullableNumber(
+                      formData.get(
+                        'office_floors_count',
+                      ),
+                    )
+                  : null,
+
+              elevators_count:
+                officeElevatorsCount,
 
               video_url:
                 nullableText(
@@ -735,6 +905,10 @@ export function AdminPropertyCreatePage() {
       }
     };
 
+  const isOffice =
+    selectedPropertyType ===
+    'Oficina';
+
   return (
     <main className="admin-property-form-page">
       <header className="admin-property-form__header">
@@ -859,7 +1033,16 @@ export function AdminPropertyCreatePage() {
 
               <select
                 name="property_type"
-                defaultValue="Piso"
+                value={
+                  selectedPropertyType
+                }
+                onChange={(
+                  event,
+                ) =>
+                  setSelectedPropertyType(
+                    event.target.value,
+                  )
+                }
                 required
               >
                 {propertyTypeOptions.map(
@@ -1050,34 +1233,142 @@ export function AdminPropertyCreatePage() {
                 type="text"
                 name="address"
                 autoComplete="street-address"
-                placeholder="Ej. Calle ..."
+                placeholder={
+                  isOffice
+                    ? 'Ej. Calle Serrano'
+                    : 'Ej. Calle ...'
+                }
               />
 
               <small className="admin-property-form__helper">
-                La dirección exacta solo será pública si activas la opción inferior.
+                {isOffice
+                  ? 'Introduce la vía sin necesidad de añadir aquí el número, bloque o puerta.'
+                  : 'La dirección exacta solo será pública si activas la opción inferior.'}
               </small>
             </label>
+
+            {isOffice ? (
+              <>
+                <label className="admin-property-form__field">
+                  <span>
+                    Número
+                  </span>
+
+                  <input
+                    type="text"
+                    name="street_number"
+                    placeholder="Ej. 42"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Bloque / escalera
+                  </span>
+
+                  <input
+                    type="text"
+                    name="block"
+                    placeholder="Ej. Bloque B"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Puerta / oficina
+                  </span>
+
+                  <input
+                    type="text"
+                    name="door"
+                    placeholder="Ej. Oficina 3A"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Edificio / urbanización
+                  </span>
+
+                  <input
+                    type="text"
+                    name="urbanization_name"
+                    placeholder="Ej. Edificio Centro"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Referencia catastral
+                  </span>
+
+                  <input
+                    type="text"
+                    name="cadastral_reference"
+                    placeholder="Ej. 1234567VK4713S0001AB"
+                  />
+                </label>
+              </>
+            ) : null}
           </div>
 
-          <label className="admin-property-form__check admin-property-form__privacy-check">
-            <input
-              type="checkbox"
-              name="show_exact_address"
-            />
+          {isOffice ? (
+            <div className="admin-property-subsection">
+              <h3>
+                Visibilidad de la dirección
+              </h3>
 
-            <span>
-              Mostrar dirección
-              exacta en la web
+              <p className="admin-property-form__check-help">
+                Decide cuánto detalle de la ubicación quieres
+                mostrar públicamente en la ficha de la oficina.
+              </p>
 
-              <small>
-                Actívalo solo si
-                quieres que la
-                ubicación exacta
-                del inmueble sea
-                pública.
-              </small>
-            </span>
-          </label>
+              <div className="admin-property-form__checks">
+                {addressVisibilityOptions.map(
+                  (option) => (
+                    <label
+                      className="admin-property-form__check"
+                      key={option.value}
+                    >
+                      <input
+                        type="radio"
+                        name="address_visibility"
+                        value={option.value}
+                        defaultChecked={
+                          option.value ===
+                          'hidden'
+                        }
+                      />
+
+                      <span>
+                        {option.label}
+                      </span>
+                    </label>
+                  ),
+                )}
+              </div>
+            </div>
+          ) : (
+            <label className="admin-property-form__check admin-property-form__privacy-check">
+              <input
+                type="checkbox"
+                name="show_exact_address"
+              />
+
+              <span>
+                Mostrar dirección
+                exacta en la web
+
+                <small>
+                  Actívalo solo si
+                  quieres que la
+                  ubicación exacta
+                  del inmueble sea
+                  pública.
+                </small>
+              </span>
+            </label>
+          )}
         </section>
 
         <section className="admin-property-form__section">
@@ -1090,18 +1381,20 @@ export function AdminPropertyCreatePage() {
           </div>
 
           <div className="admin-property-form__grid">
-            <label className="admin-property-form__field">
-              <span>
-                Dormitorios
-              </span>
+            {!isOffice ? (
+              <label className="admin-property-form__field">
+                <span>
+                  Dormitorios
+                </span>
 
-              <input
-                type="number"
-                name="bedrooms"
-                min="0"
-                step="1"
-              />
-            </label>
+                <input
+                  type="number"
+                  name="bedrooms"
+                  min="0"
+                  step="1"
+                />
+              </label>
+            ) : null}
 
             <label className="admin-property-form__field">
               <span>
@@ -1144,19 +1437,21 @@ export function AdminPropertyCreatePage() {
               />
             </label>
 
-            <label className="admin-property-form__field">
-              <span>
-                Superficie de
-                parcela (m²)
-              </span>
+            {!isOffice ? (
+              <label className="admin-property-form__field">
+                <span>
+                  Superficie de
+                  parcela (m²)
+                </span>
 
-              <input
-                type="number"
-                name="plot_area"
-                min="0"
-                step="0.01"
-              />
-            </label>
+                <input
+                  type="number"
+                  name="plot_area"
+                  min="0"
+                  step="0.01"
+                />
+              </label>
+            ) : null}
 
             <label className="admin-property-form__field">
               <span>
@@ -1169,18 +1464,20 @@ export function AdminPropertyCreatePage() {
               />
             </label>
 
-            <label className="admin-property-form__field">
-              <span>
-                Número de plantas
-              </span>
+            {!isOffice ? (
+              <label className="admin-property-form__field">
+                <span>
+                  Número de plantas
+                </span>
 
-              <input
-                type="number"
-                name="floors_count"
-                min="1"
-                step="1"
-              />
-            </label>
+                <input
+                  type="number"
+                  name="floors_count"
+                  min="1"
+                  step="1"
+                />
+              </label>
+            ) : null}
 
             <label className="admin-property-form__field">
               <span>
@@ -1283,6 +1580,192 @@ export function AdminPropertyCreatePage() {
               </select>
             </label>
           </div>
+
+          {isOffice ? (
+            <div className="admin-property-subsection admin-property-subsection--first">
+              <h3>
+                Datos específicos de oficina
+              </h3>
+
+              <p className="admin-property-form__check-help">
+                Completa solo los datos que conozcas. Estos campos se
+                guardan de forma estructurada para poder mostrar y filtrar
+                correctamente oficinas y espacios de trabajo.
+              </p>
+
+              <div className="admin-property-form__grid">
+                <label className="admin-property-form__field">
+                  <span>
+                    Tipo de espacio
+                  </span>
+
+                  <select
+                    name="office_space_type"
+                    defaultValue=""
+                  >
+                    <option value="">
+                      Sin especificar
+                    </option>
+
+                    {officeSpaceTypeOptions.map(
+                      (option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Superficie bruta alquilable (m²)
+                  </span>
+
+                  <input
+                    type="number"
+                    name="gross_leasable_area"
+                    min="0.01"
+                    step="0.01"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Superficie del puesto de trabajo (m²)
+                  </span>
+
+                  <input
+                    type="number"
+                    name="workstation_area"
+                    min="0.01"
+                    step="0.01"
+                  />
+
+                  <small className="admin-property-form__helper">
+                    Úsalo cuando el anuncio corresponda a un puesto
+                    individual o espacio de trabajo.
+                  </small>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Uso del edificio
+                  </span>
+
+                  <select
+                    name="building_use"
+                    defaultValue=""
+                  >
+                    <option value="">
+                      Sin especificar
+                    </option>
+
+                    {officeBuildingUseOptions.map(
+                      (option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Nº de plantas del edificio
+                  </span>
+
+                  <input
+                    type="number"
+                    name="building_floors_count"
+                    min="1"
+                    step="1"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Nº de plantas de la oficina
+                  </span>
+
+                  <input
+                    type="number"
+                    name="office_floors_count"
+                    min="1"
+                    step="1"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Nº de ascensores
+                  </span>
+
+                  <input
+                    type="number"
+                    name="elevators_count"
+                    min="0"
+                    step="1"
+                  />
+
+                  <small className="admin-property-form__helper">
+                    Si indicas un número mayor que 0, se guardará
+                    también que el edificio dispone de ascensor.
+                  </small>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Disponible desde
+                  </span>
+
+                  <input
+                    type="date"
+                    name="available_from"
+                  />
+
+                  <small className="admin-property-form__helper">
+                    Déjalo vacío si ya está disponible o no quieres
+                    indicar una fecha concreta.
+                  </small>
+                </label>
+              </div>
+
+              <div className="admin-property-subsection">
+                <h3>
+                  Certificaciones del edificio
+                </h3>
+
+                <div className="admin-property-form__checks">
+                  {buildingCertificationOptions.map(
+                    (certification) => (
+                      <label
+                        className="admin-property-form__check"
+                        key={certification}
+                      >
+                        <input
+                          type="checkbox"
+                          name="building_certifications"
+                          value={certification}
+                        />
+
+                        <span>
+                          {certification}
+                        </span>
+                      </label>
+                    ),
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           <div className="admin-property-subsection">
             <h3>
@@ -1515,11 +1998,9 @@ export function AdminPropertyCreatePage() {
           </div>
 
           <p className="admin-property-form__check-help">
-            Los campos específicos
-            de casas, chalets o
-            fincas son opcionales y
-            no impiden guardar otros
-            tipos de inmueble.
+            {isOffice
+              ? 'Los campos específicos de oficina son opcionales. Completa únicamente la información disponible.'
+              : 'Los campos específicos de casas, chalets o fincas son opcionales y no impiden guardar otros tipos de inmueble.'}
           </p>
         </section>
 
