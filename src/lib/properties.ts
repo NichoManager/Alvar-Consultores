@@ -1,5 +1,6 @@
 import {
   chaletTypeOptions,
+  garageCapacityOptions,
   getOptionLabel,
   heatingTypeOptions,
   officeBuildingUseOptions,
@@ -12,6 +13,7 @@ import {
   type ChaletType,
   type CommunityFeePeriod,
   type EnergyCertificateStatus,
+  type GarageCapacity,
   type OfficeBuildingUse,
   type OfficeSpaceType,
 } from '../data/propertyOptions';
@@ -132,6 +134,10 @@ type PublicPropertyRow = {
   terrace: boolean;
   furnished: boolean;
   exterior: boolean;
+
+  garage_capacity:
+    | GarageCapacity
+    | null;
 
   office_space_type:
     | OfficeSpaceType
@@ -396,6 +402,11 @@ function buildFeatureGroups(
       'Piscina',
       'Aire acondicionado',
       'Jardín',
+      'Personal de seguridad',
+      'Plaza cubierta',
+      'Sistemas de alarma',
+      'Circuito cerrado de seguridad',
+      'Puerta automática',
     ]);
 
   const equipmentAmenities =
@@ -436,6 +447,12 @@ function buildFeatureGroups(
     getOptionLabel(
       chaletTypeOptions,
       row.chalet_type,
+    );
+
+  const garageCapacity =
+    getOptionLabel(
+      garageCapacityOptions,
+      row.garage_capacity,
     );
 
   const officeSpaceType =
@@ -501,10 +518,17 @@ function buildFeatureGroups(
     uniqueFeatures([
       chaletType,
 
+      row.property_type === 'Garaje' &&
+      garageCapacity
+        ? `Capacidad: ${garageCapacity}`
+        : null,
+
       officeSpaceType,
 
       builtArea
-        ? `${builtArea} m² construidos`
+        ? row.property_type === 'Garaje'
+          ? `${builtArea} m² de superficie`
+          : `${builtArea} m² construidos`
         : null,
 
       usableArea
