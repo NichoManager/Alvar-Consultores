@@ -9,7 +9,6 @@ import { TrustBar } from '../components/home/TrustBar';
 import { PropertyGrid } from '../components/properties/PropertyGrid';
 import { JsonLd } from '../components/seo/JsonLd';
 import { SeoHead } from '../components/seo/SeoHead';
-import { ArchitecturalVisual } from '../components/ui/ArchitecturalVisual';
 import { Button } from '../components/ui/Button';
 import { Container } from '../components/ui/Container';
 import { CTASection } from '../components/ui/CTASection';
