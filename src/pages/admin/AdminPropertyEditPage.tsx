@@ -6,21 +6,29 @@ import {
   type SortablePropertyMedia,
 } from '../../components/admin/SortablePropertyMediaGrid';
 import {
+  addressVisibilityOptions,
+  buildingCertificationOptions,
   communityFeePeriodOptions,
   energyRatingOptions,
   energyCertificateStatusOptions,
   heatingTypeOptions,
   isManagedPropertyFeature,
+  officeBuildingUseOptions,
+  officeSpaceTypeOptions,
   orientationOptions,
   parkingTypeOptions,
   propertyAmenityGroups,
   propertyConditionOptions,
   propertyTypeOptions,
-  type EnergyRating,
+  type AddressVisibility,
+  type BuildingCertification,
   type CommunityFeePeriod,
+  type EnergyRating,
   type EnergyCertificateStatus,
   type HeatingType,
   type ManagedPropertyFeature,
+  type OfficeBuildingUse,
+  type OfficeSpaceType,
   type ParkingType,
   type PropertyCondition,
   type PropertyOrientation,
@@ -80,6 +88,12 @@ type AdminProperty = {
   postal_code: string | null;
   address: string | null;
   show_exact_address: boolean;
+  address_visibility: AddressVisibility;
+  street_number: string | null;
+  block: string | null;
+  door: string | null;
+  urbanization_name: string | null;
+  cadastral_reference: string | null;
   bedrooms: number | null;
   bathrooms: number | null;
   built_area: number | null;
@@ -98,6 +112,15 @@ type AdminProperty = {
   terrace: boolean;
   furnished: boolean;
   exterior: boolean;
+  office_space_type: OfficeSpaceType | null;
+  gross_leasable_area: number | null;
+  workstation_area: number | null;
+  building_use: OfficeBuildingUse | null;
+  available_from: string | null;
+  building_certifications: BuildingCertification[];
+  building_floors_count: number | null;
+  office_floors_count: number | null;
+  elevators_count: number | null;
   video_url: string | null;
   virtual_tour_url: string | null;
   community_fee_amount: number | null;
@@ -129,6 +152,12 @@ type PropertyFormState = {
   postalCode: string;
   address: string;
   showExactAddress: boolean;
+  addressVisibility: AddressVisibility;
+  streetNumber: string;
+  block: string;
+  door: string;
+  urbanizationName: string;
+  cadastralReference: string;
   bedrooms: string;
   bathrooms: string;
   builtArea: string;
@@ -147,6 +176,15 @@ type PropertyFormState = {
   terrace: boolean;
   furnished: boolean;
   exposure: '' | 'exterior' | 'interior';
+  officeSpaceType: OfficeSpaceType | '';
+  grossLeasableArea: string;
+  workstationArea: string;
+  buildingUse: OfficeBuildingUse | '';
+  availableFrom: string;
+  buildingCertifications: BuildingCertification[];
+  buildingFloorsCount: string;
+  officeFloorsCount: string;
+  elevatorsCount: string;
   videoUrl: string;
   virtualTourUrl: string;
   communityFeeAmount: string;
@@ -276,6 +314,14 @@ function createFormState(property: AdminProperty): PropertyFormState {
     postalCode: property.postal_code ?? '',
     address: property.address ?? '',
     showExactAddress: property.show_exact_address,
+    addressVisibility:
+      property.address_visibility ??
+      (property.show_exact_address ? 'exact' : 'hidden'),
+    streetNumber: property.street_number ?? '',
+    block: property.block ?? '',
+    door: property.door ?? '',
+    urbanizationName: property.urbanization_name ?? '',
+    cadastralReference: property.cadastral_reference ?? '',
     bedrooms:
       property.bedrooms !== null
         ? String(property.bedrooms)
@@ -321,6 +367,31 @@ function createFormState(property: AdminProperty): PropertyFormState {
       ? 'exterior'
       : property.features.includes('Interior')
         ? 'interior'
+        : '',
+    officeSpaceType: property.office_space_type ?? '',
+    grossLeasableArea:
+      property.gross_leasable_area !== null
+        ? String(property.gross_leasable_area)
+        : '',
+    workstationArea:
+      property.workstation_area !== null
+        ? String(property.workstation_area)
+        : '',
+    buildingUse: property.building_use ?? '',
+    availableFrom: property.available_from ?? '',
+    buildingCertifications:
+      property.building_certifications ?? [],
+    buildingFloorsCount:
+      property.building_floors_count !== null
+        ? String(property.building_floors_count)
+        : '',
+    officeFloorsCount:
+      property.office_floors_count !== null
+        ? String(property.office_floors_count)
+        : '',
+    elevatorsCount:
+      property.elevators_count !== null
+        ? String(property.elevators_count)
         : '',
     videoUrl: property.video_url ?? '',
     virtualTourUrl: property.virtual_tour_url ?? '',
@@ -488,6 +559,12 @@ export function AdminPropertyEditPage() {
               postal_code,
               address,
               show_exact_address,
+              address_visibility,
+              street_number,
+              block,
+              door,
+              urbanization_name,
+              cadastral_reference,
               bedrooms,
               bathrooms,
               built_area,
@@ -506,6 +583,15 @@ export function AdminPropertyEditPage() {
               terrace,
               furnished,
               exterior,
+              office_space_type,
+              gross_leasable_area,
+              workstation_area,
+              building_use,
+              available_from,
+              building_certifications,
+              building_floors_count,
+              office_floors_count,
+              elevators_count,
               video_url,
               virtual_tour_url,
               community_fee_amount,
@@ -664,6 +750,21 @@ export function AdminPropertyEditPage() {
       return;
     }
 
+    const isOffice =
+      form.propertyType === 'Oficina';
+
+    const addressVisibility: AddressVisibility =
+      isOffice
+        ? form.addressVisibility
+        : form.showExactAddress
+          ? 'exact'
+          : 'hidden';
+
+    const officeElevatorsCount =
+      isOffice
+        ? nullableNumber(form.elevatorsCount)
+        : null;
+
     const featuredPosition =
       form.featured
         ? nullableNumber(
@@ -688,10 +789,10 @@ export function AdminPropertyEditPage() {
     }
 
     const isPublicStatus =
-  selectedStatus === 'published' ||
-  selectedStatus === 'reserved' ||
-  selectedStatus === 'sold' ||
-  selectedStatus === 'rented';
+      selectedStatus === 'published' ||
+      selectedStatus === 'reserved' ||
+      selectedStatus === 'sold' ||
+      selectedStatus === 'rented';
 
     if (
       isPublicStatus &&
@@ -748,19 +849,53 @@ export function AdminPropertyEditPage() {
       area: nullableText(form.area),
       postal_code: nullableText(form.postalCode),
       address: nullableText(form.address),
-      show_exact_address: form.showExactAddress,
-      bedrooms: nullableNumber(form.bedrooms),
+      show_exact_address:
+        addressVisibility === 'exact',
+      address_visibility: addressVisibility,
+      street_number:
+        isOffice
+          ? nullableText(form.streetNumber)
+          : null,
+      block:
+        isOffice
+          ? nullableText(form.block)
+          : null,
+      door:
+        isOffice
+          ? nullableText(form.door)
+          : null,
+      urbanization_name:
+        isOffice
+          ? nullableText(form.urbanizationName)
+          : null,
+      cadastral_reference:
+        isOffice
+          ? nullableText(form.cadastralReference)
+          : null,
+      bedrooms:
+        isOffice
+          ? null
+          : nullableNumber(form.bedrooms),
       bathrooms: nullableNumber(form.bathrooms),
       built_area: nullableNumber(form.builtArea),
       usable_area: nullableNumber(form.usableArea),
-      plot_area: nullableNumber(form.plotArea),
+      plot_area:
+        isOffice
+          ? null
+          : nullableNumber(form.plotArea),
       floor: nullableText(form.floor),
-      floors_count: nullableNumber(form.floorsCount),
+      floors_count:
+        isOffice
+          ? null
+          : nullableNumber(form.floorsCount),
       construction_year: nullableNumber(form.constructionYear),
       property_condition: form.propertyCondition || null,
       orientations: form.orientations,
       heating_type: form.heatingType || null,
-      elevator: form.elevator,
+      elevator:
+        officeElevatorsCount !== null
+          ? officeElevatorsCount > 0
+          : form.elevator,
       parking: form.parking,
       parking_type:
         form.parking
@@ -773,6 +908,39 @@ export function AdminPropertyEditPage() {
       terrace: form.terrace,
       furnished: form.furnished,
       exterior: form.exposure === 'exterior',
+      office_space_type:
+        isOffice
+          ? form.officeSpaceType || null
+          : null,
+      gross_leasable_area:
+        isOffice
+          ? nullableNumber(form.grossLeasableArea)
+          : null,
+      workstation_area:
+        isOffice
+          ? nullableNumber(form.workstationArea)
+          : null,
+      building_use:
+        isOffice
+          ? form.buildingUse || null
+          : null,
+      available_from:
+        isOffice
+          ? nullableText(form.availableFrom)
+          : null,
+      building_certifications:
+        isOffice
+          ? form.buildingCertifications
+          : [],
+      building_floors_count:
+        isOffice
+          ? nullableNumber(form.buildingFloorsCount)
+          : null,
+      office_floors_count:
+        isOffice
+          ? nullableNumber(form.officeFloorsCount)
+          : null,
+      elevators_count: officeElevatorsCount,
       video_url: nullableText(form.videoUrl),
       virtual_tour_url: nullableText(form.virtualTourUrl),
       community_fee_amount:
@@ -1603,11 +1771,14 @@ export function AdminPropertyEditPage() {
         ...propertyTypeOptions,
       ];
 
+  const isOffice =
+    form.propertyType === 'Oficina';
+
   const isPropertyPublic =
-  property.status === 'published' ||
-  property.status === 'reserved' ||
-  property.status === 'sold' ||
-  property.status === 'rented';
+    property.status === 'published' ||
+    property.status === 'reserved' ||
+    property.status === 'sold' ||
+    property.status === 'rented';
 
   return (
     <main className="admin-property-edit">
@@ -1929,7 +2100,11 @@ export function AdminPropertyEditPage() {
             </label>
 
             <label className="admin-property-form__field">
-              <span>Dirección</span>
+              <span>
+                {isOffice
+                  ? 'Calle / vía'
+                  : 'Dirección'}
+              </span>
 
               <input
                 type="text"
@@ -1942,39 +2117,191 @@ export function AdminPropertyEditPage() {
                 }
                 disabled={isDeletingProperty}
                 autoComplete="street-address"
-                placeholder="Ej. Calle ..."
+                placeholder={
+                  isOffice
+                    ? 'Ej. Calle Serrano'
+                    : 'Ej. Calle ...'
+                }
               />
 
               <small className="admin-property-form__helper">
-                La dirección exacta solo será pública si activas la opción inferior.
+                {isOffice
+                  ? 'Introduce la vía sin necesidad de añadir aquí el número, bloque o puerta.'
+                  : 'La dirección exacta solo será pública si activas la opción inferior.'}
               </small>
             </label>
+
+            {isOffice ? (
+              <>
+                <label className="admin-property-form__field">
+                  <span>Número</span>
+
+                  <input
+                    type="text"
+                    value={form.streetNumber}
+                    onChange={(event) =>
+                      updateForm(
+                        'streetNumber',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                    placeholder="Ej. 42"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>Bloque / escalera</span>
+
+                  <input
+                    type="text"
+                    value={form.block}
+                    onChange={(event) =>
+                      updateForm(
+                        'block',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                    placeholder="Ej. Bloque B"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>Puerta / oficina</span>
+
+                  <input
+                    type="text"
+                    value={form.door}
+                    onChange={(event) =>
+                      updateForm(
+                        'door',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                    placeholder="Ej. Oficina 3A"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>Edificio / urbanización</span>
+
+                  <input
+                    type="text"
+                    value={form.urbanizationName}
+                    onChange={(event) =>
+                      updateForm(
+                        'urbanizationName',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                    placeholder="Ej. Edificio Centro"
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>Referencia catastral</span>
+
+                  <input
+                    type="text"
+                    value={form.cadastralReference}
+                    onChange={(event) =>
+                      updateForm(
+                        'cadastralReference',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                    placeholder="Ej. 1234567VK4713S0001AB"
+                  />
+                </label>
+              </>
+            ) : null}
           </div>
 
-          <label className="admin-property-form__check admin-property-form__privacy-check">
-            <input
-              type="checkbox"
-              checked={form.showExactAddress}
-              onChange={(event) =>
-                updateForm(
-                  'showExactAddress',
-                  event.target.checked,
-                )
-              }
-              disabled={isDeletingProperty}
-            />
+          {isOffice ? (
+            <div className="admin-property-subsection">
+              <h3>Visibilidad de la dirección</h3>
 
-            <span>
-              Mostrar dirección exacta en la web
+              <p className="admin-property-form__check-help">
+                Decide cuánto detalle de la ubicación quieres
+                mostrar públicamente en la ficha de la oficina.
+              </p>
 
-              <small>
-                Actívalo solo si quieres que la
-                ubicación exacta del inmueble sea
-                pública.
-              </small>
-            </span>
-          </label>
+              <div className="admin-property-form__checks">
+                {addressVisibilityOptions.map(
+                  (option) => (
+                    <label
+                      className="admin-property-form__check"
+                      key={option.value}
+                    >
+                      <input
+                        type="radio"
+                        name="address-visibility"
+                        value={option.value}
+                        checked={
+                          form.addressVisibility ===
+                          option.value
+                        }
+                        onChange={() => {
+                          updateForm(
+                            'addressVisibility',
+                            option.value,
+                          );
+
+                          updateForm(
+                            'showExactAddress',
+                            option.value === 'exact',
+                          );
+                        }}
+                        disabled={isDeletingProperty}
+                      />
+
+                      <span>{option.label}</span>
+                    </label>
+                  ),
+                )}
+              </div>
+            </div>
+          ) : (
+            <label className="admin-property-form__check admin-property-form__privacy-check">
+              <input
+                type="checkbox"
+                checked={form.showExactAddress}
+                onChange={(event) => {
+                  const checked =
+                    event.target.checked;
+
+                  updateForm(
+                    'showExactAddress',
+                    checked,
+                  );
+
+                  updateForm(
+                    'addressVisibility',
+                    checked
+                      ? 'exact'
+                      : 'hidden',
+                  );
+                }}
+                disabled={isDeletingProperty}
+              />
+
+              <span>
+                Mostrar dirección exacta en la web
+
+                <small>
+                  Actívalo solo si quieres que la
+                  ubicación exacta del inmueble sea
+                  pública.
+                </small>
+              </span>
+            </label>
+          )}
         </section>
+
         <section className="admin-property-form__section">
           <div>
             <span>03</span>
@@ -1982,23 +2309,25 @@ export function AdminPropertyEditPage() {
           </div>
 
           <div className="admin-property-form__grid">
-            <label className="admin-property-form__field">
-              <span>Dormitorios</span>
+            {!isOffice ? (
+              <label className="admin-property-form__field">
+                <span>Dormitorios</span>
 
-              <input
-                type="number"
-                min="0"
-                step="1"
-                value={form.bedrooms}
-                onChange={(event) =>
-                  updateForm(
-                    'bedrooms',
-                    event.target.value,
-                  )
-                }
-                disabled={isDeletingProperty}
-              />
-            </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.bedrooms}
+                  onChange={(event) =>
+                    updateForm(
+                      'bedrooms',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+              </label>
+            ) : null}
 
             <label className="admin-property-form__field">
               <span>Baños</span>
@@ -2074,43 +2403,47 @@ export function AdminPropertyEditPage() {
               />
             </label>
 
-            <label className="admin-property-form__field">
-              <span>
-                Superficie de parcela (m²)
-              </span>
+            {!isOffice ? (
+              <label className="admin-property-form__field">
+                <span>
+                  Superficie de parcela (m²)
+                </span>
 
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.plotArea}
-                onChange={(event) =>
-                  updateForm(
-                    'plotArea',
-                    event.target.value,
-                  )
-                }
-                disabled={isDeletingProperty}
-              />
-            </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.plotArea}
+                  onChange={(event) =>
+                    updateForm(
+                      'plotArea',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+              </label>
+            ) : null}
 
-            <label className="admin-property-form__field">
-              <span>Número de plantas</span>
+            {!isOffice ? (
+              <label className="admin-property-form__field">
+                <span>Número de plantas</span>
 
-              <input
-                type="number"
-                min="1"
-                step="1"
-                value={form.floorsCount}
-                onChange={(event) =>
-                  updateForm(
-                    'floorsCount',
-                    event.target.value,
-                  )
-                }
-                disabled={isDeletingProperty}
-              />
-            </label>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={form.floorsCount}
+                  onChange={(event) =>
+                    updateForm(
+                      'floorsCount',
+                      event.target.value,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
+              </label>
+            ) : null}
 
             <label className="admin-property-form__field">
               <span>
@@ -2225,6 +2558,250 @@ export function AdminPropertyEditPage() {
               </select>
             </label>
           </div>
+
+          {isOffice ? (
+            <div className="admin-property-subsection admin-property-subsection--first">
+              <h3>Datos específicos de oficina</h3>
+
+              <p className="admin-property-form__check-help">
+                Completa solo los datos que conozcas. Estos campos se
+                guardan de forma estructurada para poder mostrar y filtrar
+                correctamente oficinas y espacios de trabajo.
+              </p>
+
+              <div className="admin-property-form__grid">
+                <label className="admin-property-form__field">
+                  <span>Tipo de espacio</span>
+
+                  <select
+                    value={form.officeSpaceType}
+                    onChange={(event) =>
+                      updateForm(
+                        'officeSpaceType',
+                        event.target
+                          .value as OfficeSpaceType | '',
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  >
+                    <option value="">
+                      Sin especificar
+                    </option>
+
+                    {officeSpaceTypeOptions.map(
+                      (option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Superficie bruta alquilable (m²)
+                  </span>
+
+                  <input
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    value={form.grossLeasableArea}
+                    onChange={(event) =>
+                      updateForm(
+                        'grossLeasableArea',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Superficie del puesto de trabajo (m²)
+                  </span>
+
+                  <input
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    value={form.workstationArea}
+                    onChange={(event) =>
+                      updateForm(
+                        'workstationArea',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  />
+
+                  <small className="admin-property-form__helper">
+                    Úsalo cuando el anuncio corresponda a un puesto
+                    individual o espacio de trabajo.
+                  </small>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>Uso del edificio</span>
+
+                  <select
+                    value={form.buildingUse}
+                    onChange={(event) =>
+                      updateForm(
+                        'buildingUse',
+                        event.target
+                          .value as OfficeBuildingUse | '',
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  >
+                    <option value="">
+                      Sin especificar
+                    </option>
+
+                    {officeBuildingUseOptions.map(
+                      (option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Nº de plantas del edificio
+                  </span>
+
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={form.buildingFloorsCount}
+                    onChange={(event) =>
+                      updateForm(
+                        'buildingFloorsCount',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Nº de plantas de la oficina
+                  </span>
+
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={form.officeFloorsCount}
+                    onChange={(event) =>
+                      updateForm(
+                        'officeFloorsCount',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  />
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>Nº de ascensores</span>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={form.elevatorsCount}
+                    onChange={(event) =>
+                      updateForm(
+                        'elevatorsCount',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  />
+
+                  <small className="admin-property-form__helper">
+                    Si indicas un número mayor que 0, activa también
+                    la característica Ascensor.
+                  </small>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>Disponible desde</span>
+
+                  <input
+                    type="date"
+                    value={form.availableFrom}
+                    onChange={(event) =>
+                      updateForm(
+                        'availableFrom',
+                        event.target.value,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  />
+
+                  <small className="admin-property-form__helper">
+                    Déjalo vacío si ya está disponible o no quieres
+                    indicar una fecha concreta.
+                  </small>
+                </label>
+              </div>
+
+              <div className="admin-property-subsection">
+                <h3>Certificaciones del edificio</h3>
+
+                <div className="admin-property-form__checks">
+                  {buildingCertificationOptions.map(
+                    (certification) => (
+                      <label
+                        className="admin-property-form__check"
+                        key={certification}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={form.buildingCertifications.includes(
+                            certification,
+                          )}
+                          onChange={(event) =>
+                            updateForm(
+                              'buildingCertifications',
+                              event.target.checked
+                                ? [
+                                  ...form.buildingCertifications,
+                                  certification,
+                                ]
+                                : form.buildingCertifications.filter(
+                                  (item) =>
+                                    item !== certification,
+                                ),
+                            )
+                          }
+                          disabled={isDeletingProperty}
+                        />
+
+                        <span>{certification}</span>
+                      </label>
+                    ),
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           <div className="admin-property-subsection">
             <h3>Características</h3>
@@ -2486,9 +3063,9 @@ export function AdminPropertyEditPage() {
           </div>
 
           <p className="admin-property-form__check-help">
-            Los campos específicos de casas, chalets o
-            fincas son opcionales y no impiden guardar
-            otros tipos de inmueble.
+            {isOffice
+              ? 'Los campos específicos de oficina son opcionales y permiten describir correctamente espacios profesionales sin mezclar datos residenciales.'
+              : 'Los campos específicos de casas, chalets o fincas son opcionales y no impiden guardar otros tipos de inmueble.'}
           </p>
         </section>
 
@@ -3122,15 +3699,15 @@ export function AdminPropertyEditPage() {
           </p>
 
           {(selectedStatus === 'published' ||
-  selectedStatus === 'reserved' ||
-  selectedStatus === 'sold' ||
-  selectedStatus === 'rented') &&
-photos.length === 0 ? (
-  <p className="admin-property-form__error">
-    Para mostrar el inmueble en la web debes
-    añadir al menos una fotografía.
-  </p>
-) : null}
+            selectedStatus === 'reserved' ||
+            selectedStatus === 'sold' ||
+            selectedStatus === 'rented') &&
+          photos.length === 0 ? (
+            <p className="admin-property-form__error">
+              Para mostrar el inmueble en la web debes
+              añadir al menos una fotografía.
+            </p>
+          ) : null}
         </section>
 
         {saveError ? (
