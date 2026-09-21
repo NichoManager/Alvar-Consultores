@@ -8,6 +8,7 @@ import {
 import {
   addressVisibilityOptions,
   buildingCertificationOptions,
+  chaletTypeOptions,
   communityFeePeriodOptions,
   energyRatingOptions,
   energyCertificateStatusOptions,
@@ -22,6 +23,7 @@ import {
   propertyTypeOptions,
   type AddressVisibility,
   type BuildingCertification,
+  type ChaletType,
   type CommunityFeePeriod,
   type EnergyRating,
   type EnergyCertificateStatus,
@@ -94,6 +96,7 @@ type AdminProperty = {
   door: string | null;
   urbanization_name: string | null;
   cadastral_reference: string | null;
+  chalet_type: ChaletType | null;
   bedrooms: number | null;
   bathrooms: number | null;
   built_area: number | null;
@@ -158,6 +161,7 @@ type PropertyFormState = {
   door: string;
   urbanizationName: string;
   cadastralReference: string;
+  chaletType: ChaletType | '';
   bedrooms: string;
   bathrooms: string;
   builtArea: string;
@@ -322,6 +326,7 @@ function createFormState(property: AdminProperty): PropertyFormState {
     door: property.door ?? '',
     urbanizationName: property.urbanization_name ?? '',
     cadastralReference: property.cadastral_reference ?? '',
+    chaletType: property.chalet_type ?? '',
     bedrooms:
       property.bedrooms !== null
         ? String(property.bedrooms)
@@ -565,6 +570,7 @@ export function AdminPropertyEditPage() {
               door,
               urbanization_name,
               cadastral_reference,
+              chalet_type,
               bedrooms,
               bathrooms,
               built_area,
@@ -753,6 +759,20 @@ export function AdminPropertyEditPage() {
     const isOffice =
       form.propertyType === 'Oficina';
 
+    const isChalet =
+      form.propertyType === 'Chalet';
+
+    if (
+      isChalet &&
+      !form.chaletType
+    ) {
+      setSaveError(
+        'Selecciona la tipología del chalet.',
+      );
+
+      return;
+    }
+
     const addressVisibility: AddressVisibility =
       isOffice
         ? form.addressVisibility
@@ -871,6 +891,10 @@ export function AdminPropertyEditPage() {
       cadastral_reference:
         isOffice
           ? nullableText(form.cadastralReference)
+          : null,
+      chalet_type:
+        isChalet
+          ? form.chaletType || null
           : null,
       bedrooms:
         isOffice
@@ -1773,6 +1797,9 @@ export function AdminPropertyEditPage() {
 
   const isOffice =
     form.propertyType === 'Oficina';
+
+  const isChalet =
+    form.propertyType === 'Chalet';
 
   const isPropertyPublic =
     property.status === 'published' ||
@@ -3702,7 +3729,7 @@ export function AdminPropertyEditPage() {
             selectedStatus === 'reserved' ||
             selectedStatus === 'sold' ||
             selectedStatus === 'rented') &&
-          photos.length === 0 ? (
+            photos.length === 0 ? (
             <p className="admin-property-form__error">
               Para mostrar el inmueble en la web debes
               añadir al menos una fotografía.

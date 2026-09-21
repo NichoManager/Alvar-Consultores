@@ -268,15 +268,15 @@ export function AdminPropertyCreatePage() {
           ) ?? '',
         );
 
-const isOffice =
-  propertyType ===
-  'Oficina';
+      const isOffice =
+        propertyType ===
+        'Oficina';
 
-const isChalet =
-  propertyType ===
-  'Chalet';
+      const isChalet =
+        propertyType ===
+        'Chalet';
 
-const officeAddressVisibility =
+      const officeAddressVisibility =
         isOffice
           ? String(
             formData.get(
@@ -377,31 +377,31 @@ const officeAddressVisibility =
         return;
       }
 
-   if (!province) {
-  setError(
-    'Introduce la provincia del inmueble.',
-  );
+      if (!province) {
+        setError(
+          'Introduce la provincia del inmueble.',
+        );
 
-  return;
-}
+        return;
+      }
 
-if (
-  isChalet &&
-  !nullableText(
-    formData.get(
-      'chalet_type',
-    ),
-  )
-) {
-  setError(
-    'Selecciona la tipología del chalet.',
-  );
+      if (
+        isChalet &&
+        !nullableText(
+          formData.get(
+            'chalet_type',
+          ),
+        )
+      ) {
+        setError(
+          'Selecciona la tipología del chalet.',
+        );
 
-  return;
-}
+        return;
+      }
 
-if (
-  featuredPosition !== null &&
+      if (
+        featuredPosition !== null &&
         (
           !Number.isInteger(
             featuredPosition,
@@ -672,27 +672,27 @@ if (
                   'furnished',
                 ),
 
-exterior:
-  exposure ===
-  'exterior',
+              exterior:
+                exposure ===
+                'exterior',
 
-chalet_type:
-  isChalet
-    ? nullableText(
-        formData.get(
-          'chalet_type',
-        ),
-      )
-    : null,
+              chalet_type:
+                isChalet
+                  ? nullableText(
+                    formData.get(
+                      'chalet_type',
+                    ),
+                  )
+                  : null,
 
-office_space_type:
-  isOffice
-    ? nullableText(
-        formData.get(
-          'office_space_type',
-        ),
-      )
-    : null,
+              office_space_type:
+                isOffice
+                  ? nullableText(
+                    formData.get(
+                      'office_space_type',
+                    ),
+                  )
+                  : null,
 
               gross_leasable_area:
                 isOffice
@@ -934,15 +934,15 @@ office_space_type:
       }
     };
 
-const isOffice =
-  selectedPropertyType ===
-  'Oficina';
+  const isOffice =
+    selectedPropertyType ===
+    'Oficina';
 
-const isChalet =
-  selectedPropertyType ===
-  'Chalet';
+  const isChalet =
+    selectedPropertyType ===
+    'Chalet';
 
-return (
+  return (
     <main className="admin-property-form-page">
       <header className="admin-property-form__header">
         <div className="admin-property-form__header-inner">
@@ -1059,80 +1059,70 @@ return (
               </select>
             </label>
 
-   <label className="admin-property-form__field">
-  <span>
-    Tipo de inmueble *
-  </span>
+            <label className="admin-property-form__field">
+              <span>
+                Tipo de inmueble *
+              </span>
 
-  <select
-    name="property_type"
-    value={
-      selectedPropertyType
-    }
-    onChange={(
-      event,
-    ) =>
-      setSelectedPropertyType(
-        event.target.value,
-      )
-    }
-    required
-  >
-    {propertyTypeOptions.map(
-      (option) => (
-        <option
-          value={
-            option.value
-          }
-          key={
-            option.value
-          }
-        >
-          {
-            option.label
-          }
-        </option>
-      ),
-    )}
-  </select>
-</label>
+              <select
+                name="property_type"
+                value={selectedPropertyType}
+                onChange={(event) =>
+                  setSelectedPropertyType(
+                    event.target.value,
+                  )
+                }
+                required
+              >
+                {propertyTypeOptions.map(
+                  (option) => (
+                    <option
+                      value={option.value}
+                      key={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
 
-{isChalet ? (
-  <label className="admin-property-form__field">
-    <span>
-      Tipología *
-    </span>
+            {isChalet ? (
+              <label className="admin-property-form__field">
+                <span>
+                  Tipología *
+                </span>
 
-    <select
-      name="chalet_type"
-      defaultValue=""
-      required
-    >
-      <option
-        value=""
-        disabled
-      >
-        Selecciona una tipología
-      </option>
+                <select
+                  name="chalet_type"
+                  defaultValue=""
+                  required
+                >
+                  <option
+                    value=""
+                    disabled
+                  >
+                    Selecciona una tipología
+                  </option>
 
-      {chaletTypeOptions.map(
-        (option) => (
-          <option
-            key={option.value}
-            value={option.value}
-          >
-            {option.label}
-          </option>
-        ),
-      )}
-    </select>
+                  {chaletTypeOptions.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
+                    ),
+                  )}
+                </select>
 
-    <small className="admin-property-form__helper">
-      Indica si se trata de un chalet
-      adosado, pareado o independiente.
-    </small>
-  </label>
-) : null}
+                <small className="admin-property-form__helper">
+                  Indica si se trata de un chalet
+                  adosado, pareado o independiente.
+                </small>
+              </label>
+            ) : null}
 
             <label className="admin-property-form__field">
               <span>
