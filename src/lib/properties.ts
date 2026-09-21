@@ -1,11 +1,19 @@
 import {
+  chaletTypeOptions,
   getOptionLabel,
   heatingTypeOptions,
+  officeBuildingUseOptions,
+  officeSpaceTypeOptions,
   orientationOptions,
   parkingTypeOptions,
   propertyConditionOptions,
+  type AddressVisibility,
+  type BuildingCertification,
+  type ChaletType,
   type CommunityFeePeriod,
   type EnergyCertificateStatus,
+  type OfficeBuildingUse,
+  type OfficeSpaceType,
 } from '../data/propertyOptions';
 import type {
   Property,
@@ -68,6 +76,14 @@ type PublicPropertyRow = {
 
   show_exact_address: boolean;
 
+  address_visibility:
+    | AddressVisibility
+    | null;
+
+  chalet_type:
+    | ChaletType
+    | null;
+
   bedrooms: number | null;
   bathrooms: number | null;
 
@@ -116,6 +132,44 @@ type PublicPropertyRow = {
   terrace: boolean;
   furnished: boolean;
   exterior: boolean;
+
+  office_space_type:
+    | OfficeSpaceType
+    | null;
+
+  gross_leasable_area:
+    | number
+    | string
+    | null;
+
+  workstation_area:
+    | number
+    | string
+    | null;
+
+  building_use:
+    | OfficeBuildingUse
+    | null;
+
+  available_from:
+    | string
+    | null;
+
+  building_certifications:
+    | BuildingCertification[]
+    | null;
+
+  building_floors_count:
+    | number
+    | null;
+
+  office_floors_count:
+    | number
+    | null;
+
+  elevators_count:
+    | number
+    | null;
 
   video_url:
     | string
@@ -273,6 +327,64 @@ function uniqueFeatures(
   );
 }
 
+function formatArea(
+  value:
+    | number
+    | string
+    | null,
+) {
+  if (value === null) {
+    return null;
+  }
+
+  const numericValue =
+    Number(value);
+
+  if (
+    !Number.isFinite(
+      numericValue,
+    )
+  ) {
+    return null;
+  }
+
+  return numericValue.toLocaleString(
+    'es-ES',
+  );
+}
+
+function formatAvailabilityDate(
+  value:
+    | string
+    | null,
+) {
+  if (!value) {
+    return null;
+  }
+
+  const date =
+    new Date(
+      `${value}T12:00:00`,
+    );
+
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
+    return null;
+  }
+
+  return new Intl.DateTimeFormat(
+    'es-ES',
+    {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    },
+  ).format(date);
+}
+
 function buildFeatureGroups(
   row: PublicPropertyRow,
 ) {
@@ -320,6 +432,24 @@ function buildFeatureGroups(
       row.parking_type,
     );
 
+  const chaletType =
+    getOptionLabel(
+      chaletTypeOptions,
+      row.chalet_type,
+    );
+
+  const officeSpaceType =
+    getOptionLabel(
+      officeSpaceTypeOptions,
+      row.office_space_type,
+    );
+
+  const buildingUse =
+    getOptionLabel(
+      officeBuildingUseOptions,
+      row.building_use,
+    );
+
   const orientations =
     (
       row.orientations ?? []
@@ -337,30 +467,60 @@ function buildFeatureGroups(
           Boolean(value),
       );
 
+  const builtArea =
+    formatArea(
+      row.built_area,
+    );
+
+  const usableArea =
+    formatArea(
+      row.usable_area,
+    );
+
+  const plotArea =
+    formatArea(
+      row.plot_area,
+    );
+
+  const grossLeasableArea =
+    formatArea(
+      row.gross_leasable_area,
+    );
+
+  const workstationArea =
+    formatArea(
+      row.workstation_area,
+    );
+
+  const availableFrom =
+    formatAvailabilityDate(
+      row.available_from,
+    );
+
   const characteristics =
     uniqueFeatures([
-      row.built_area !== null
-        ? `${Number(
-            row.built_area,
-          ).toLocaleString(
-            'es-ES',
-          )} m² construidos`
+      chaletType,
+
+      officeSpaceType,
+
+      builtArea
+        ? `${builtArea} m² construidos`
         : null,
 
-      row.usable_area !== null
-        ? `${Number(
-            row.usable_area,
-          ).toLocaleString(
-            'es-ES',
-          )} m² útiles`
+      usableArea
+        ? `${usableArea} m² útiles`
         : null,
 
-      row.plot_area !== null
-        ? `${Number(
-            row.plot_area,
-          ).toLocaleString(
-            'es-ES',
-          )} m² de parcela`
+      plotArea
+        ? `${plotArea} m² de parcela`
+        : null,
+
+      grossLeasableArea
+        ? `${grossLeasableArea} m² de superficie bruta alquilable`
+        : null,
+
+      workstationArea
+        ? `${workstationArea} m² de puesto de trabajo`
         : null,
 
       row.bedrooms !== null
@@ -391,6 +551,43 @@ function buildFeatureGroups(
           }`
         : null,
 
+      row.building_floors_count !==
+      null
+        ? `${
+            row.building_floors_count
+          } ${
+            row.building_floors_count ===
+            1
+              ? 'planta en el edificio'
+              : 'plantas en el edificio'
+          }`
+        : null,
+
+      row.office_floors_count !==
+      null
+        ? `${
+            row.office_floors_count
+          } ${
+            row.office_floors_count ===
+            1
+              ? 'planta de oficina'
+              : 'plantas de oficina'
+          }`
+        : null,
+
+      buildingUse,
+
+      availableFrom
+        ? `Disponible desde ${availableFrom}`
+        : null,
+
+      row.building_certifications
+        ?.length
+        ? `Certificaciones ${row.building_certifications.join(
+            ', ',
+          )}`
+        : null,
+
       condition,
 
       row.terrace
@@ -419,9 +616,19 @@ function buildFeatureGroups(
     uniqueFeatures([
       ...equipmentAmenities,
 
-      row.elevator
-        ? 'Ascensor'
-        : null,
+      row.elevators_count !==
+      null
+        ? `${
+            row.elevators_count
+          } ${
+            row.elevators_count ===
+            1
+              ? 'ascensor'
+              : 'ascensores'
+          }`
+        : row.elevator
+          ? 'Ascensor'
+          : null,
 
       row.furnished
         ? 'Amueblado'
@@ -590,24 +797,37 @@ function mapMedia(
 function buildMapLocation(
   row: PublicPropertyRow,
 ) {
+  const addressVisibility =
+    row.address_visibility ??
+    (
+      row.show_exact_address
+        ? 'exact'
+        : 'hidden'
+    );
+
+  const postalCity = [
+    row.postal_code?.trim(),
+    row.city?.trim(),
+  ]
+    .filter(
+      (
+        value,
+      ): value is string =>
+        Boolean(
+          value?.trim(),
+        ),
+    )
+    .join(' ');
+
   if (
-    row.show_exact_address &&
+    (
+      addressVisibility ===
+        'exact' ||
+      addressVisibility ===
+        'street_only'
+    ) &&
     row.address?.trim()
   ) {
-    const postalCity = [
-      row.postal_code,
-      row.city,
-    ]
-      .filter(
-        (
-          value,
-        ): value is string =>
-          Boolean(
-            value?.trim(),
-          ),
-      )
-      .join(' ');
-
     return [
       row.address.trim(),
       postalCity,
@@ -626,8 +846,7 @@ function buildMapLocation(
   }
 
   return [
-    row.postal_code?.trim(),
-    row.city?.trim(),
+    postalCity,
     row.province?.trim(),
     'España',
   ]
@@ -656,6 +875,14 @@ function mapPublicProperty(
     equipment,
   } =
     buildFeatureGroups(row);
+
+  const addressVisibility =
+    row.address_visibility ??
+    (
+      row.show_exact_address
+        ? 'exact'
+        : 'hidden'
+    );
 
   return {
     id: row.id,
@@ -716,16 +943,21 @@ function mapPublicProperty(
       undefined,
 
     address:
-      row.show_exact_address
-        ? row.address ??
-          undefined
-        : undefined,
+      row.address?.trim() ||
+      undefined,
 
     showExactAddress:
-      row.show_exact_address,
+      addressVisibility ===
+      'exact',
+
+    addressVisibility,
 
     mapLocation:
       buildMapLocation(row),
+
+    chaletType:
+      row.chalet_type ??
+      undefined,
 
     bedrooms:
       row.bedrooms ??
@@ -796,6 +1028,44 @@ function mapPublicProperty(
 
     exterior:
       row.exterior,
+
+    officeSpaceType:
+      row.office_space_type ??
+      undefined,
+
+    grossLeasableArea:
+      optionalNumber(
+        row.gross_leasable_area,
+      ),
+
+    workstationArea:
+      optionalNumber(
+        row.workstation_area,
+      ),
+
+    buildingUse:
+      row.building_use ??
+      undefined,
+
+    availableFrom:
+      row.available_from ??
+      undefined,
+
+    buildingCertifications:
+      row.building_certifications ??
+      [],
+
+    buildingFloorsCount:
+      row.building_floors_count ??
+      undefined,
+
+    officeFloorsCount:
+      row.office_floors_count ??
+      undefined,
+
+    elevatorsCount:
+      row.elevators_count ??
+      undefined,
 
     videoUrl:
       safePublicUrl(
@@ -999,8 +1269,13 @@ export async function getFeaturedProperties(
       return aPosition - bPosition;
     }
 
-    if (aHasPosition !== bHasPosition) {
-      return aHasPosition ? -1 : 1;
+    if (
+      aHasPosition !==
+      bHasPosition
+    ) {
+      return aHasPosition
+        ? -1
+        : 1;
     }
 
     return compareByExistingPublicOrder(
