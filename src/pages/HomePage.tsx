@@ -58,7 +58,7 @@ export function HomePage() {
     const loadFeaturedProperties = async () => {
       try {
         const publishedFeatured =
-  await getFeaturedProperties();
+          await getFeaturedProperties();
 
         if (isMounted) {
           setFeaturedProperties(
@@ -485,9 +485,12 @@ export function HomePage() {
         <Container className="about-home__grid">
           <Reveal className="about-home__visual">
             <div className="about-home__media-card">
-              <ArchitecturalVisual
-                variant="facade"
-                label="Composición editorial inspirada en arquitectura residencial"
+              <img
+                className="about-home__image h-[clamp(27rem,42vw,39rem)] w-full object-cover object-center"
+                src="/images/alvar/nosotros/alvar-consultor-inmobiliario-oficina-madrid.webp"
+                alt="Alvar Consultores Inmobiliarios trabajando en su oficina de Madrid"
+                loading="lazy"
+                decoding="async"
               />
 
               <div
