@@ -28,6 +28,17 @@ export const propertyAmenityGroups = [
   },
 ] as const;
 
+export const garageFeatureOptions = [
+  'Personal de seguridad',
+  'Plaza cubierta',
+  'Sistemas de alarma',
+  'Circuito cerrado de seguridad',
+  'Puerta automática',
+] as const;
+
+export type GarageFeature =
+  (typeof garageFeatureOptions)[number];
+
 export const propertyTypeOptions = [
   {
     value: 'Piso',
@@ -85,11 +96,13 @@ const amenityFeatures =
   );
 
 export type ManagedPropertyFeature =
-  (typeof amenityFeatures)[number] |
-  'Interior';
+  | (typeof amenityFeatures)[number]
+  | GarageFeature
+  | 'Interior';
 
 export const managedPropertyFeatures: readonly ManagedPropertyFeature[] = [
   ...amenityFeatures,
+  ...garageFeatureOptions,
   'Interior',
 ];
 
@@ -172,6 +185,32 @@ export const parkingTypeOptions = [
 
 export type ParkingType =
   (typeof parkingTypeOptions)[number]['value'];
+
+export const garageCapacityOptions = [
+  {
+    value: 'motorcycle',
+    label: 'Moto',
+  },
+  {
+    value: 'small_car',
+    label: 'Coche pequeño',
+  },
+  {
+    value: 'large_car',
+    label: 'Coche grande',
+  },
+  {
+    value: 'car_and_motorcycle',
+    label: 'Coche y moto',
+  },
+  {
+    value: 'two_cars_or_more',
+    label: '2 coches o más',
+  },
+] as const;
+
+export type GarageCapacity =
+  (typeof garageCapacityOptions)[number]['value'];
 
 export const energyRatingOptions = [
   'A',
