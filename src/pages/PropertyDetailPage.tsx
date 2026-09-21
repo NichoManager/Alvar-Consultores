@@ -509,9 +509,11 @@ export function PropertyDetailPage() {
       mapSearchLocation,
     );
 
-  const mapZoom =
-    property.showExactAddress
-      ? 16
+ const mapZoom =
+  property.addressVisibility === 'exact'
+    ? 16
+    : property.addressVisibility === 'street_only'
+      ? 15
       : 14;
 
   const googleMapsEmbedUrl =
@@ -661,22 +663,29 @@ export function PropertyDetailPage() {
         seoLocationLabel ||
         property.city,
 
-      address: {
-        '@type':
-          'PostalAddress',
+address: {
+  '@type':
+    'PostalAddress',
 
-        addressLocality:
-          property.city,
+  ...(property.address
+    ? {
+        streetAddress:
+          property.address,
+      }
+    : {}),
 
-        addressRegion:
-          property.province,
+  addressLocality:
+    property.city,
 
-        postalCode:
-          property.postalCode,
+  addressRegion:
+    property.province,
 
-        addressCountry:
-          'ES',
-      },
+  postalCode:
+    property.postalCode,
+
+  addressCountry:
+    'ES',
+},
     },
 
     ...(coverImageUrl
