@@ -1616,10 +1616,10 @@ em {
 }
 
 .property-card__badge--status {
-  top: 2.7rem;
-  left: -3.7rem;
-  width: 14rem;
-  min-height: 2.65rem;
+  top: 2.55rem;
+  left: -4.35rem;
+  width: 15rem;
+  min-height: 2.75rem;
   padding: 0.55rem 1.5rem;
   border-radius: 0;
   box-shadow: 0 10px 28px rgba(17, 24, 50, 0.18);
@@ -1627,7 +1627,7 @@ em {
   font-weight: 850;
   letter-spacing: 0.12em;
   text-align: center;
-  transform: rotate(-38deg);
+  transform: rotate(-45deg);
   transform-origin: center;
 }
 
