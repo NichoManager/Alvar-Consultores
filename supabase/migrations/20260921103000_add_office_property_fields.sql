@@ -1,11 +1,6 @@
 -- Add optional structured fields for office properties.
---
--- All office-specific fields remain nullable so existing residential,
--- commercial and previously created properties remain fully compatible.
---
--- The current show_exact_address boolean is preserved for backwards
--- compatibility. address_visibility will allow the CRM to evolve towards
--- three public visibility levels: exact address, street only or hidden.
+-- Existing properties remain compatible because all office-specific
+-- values are optional.
 
 alter table public.properties
   add column if not exists office_space_type text,
@@ -24,12 +19,9 @@ alter table public.properties
   add column if not exists office_floors_count integer,
   add column if not exists elevators_count integer;
 
--- Preserve the current public-address behaviour for all existing rows.
---
--- Properties that previously exposed their exact address remain exact.
--- Properties that previously hid their exact address remain hidden.
---
--- The new street_only option will be available for future CRM edits.
+-- Preserve the current address privacy behaviour.
+-- Existing properties that expose their exact address stay exact.
+-- Existing properties that hide it stay hidden.
 
 update public.properties
 set address_visibility =
@@ -122,7 +114,7 @@ comment on column public.properties.address_visibility is
   'Public address visibility: exact, street_only or hidden.';
 
 comment on column public.properties.street_number is
-  'Optional street or building number, stored separately to support street-only public visibility.';
+  'Optional street or building number stored separately for address privacy controls.';
 
 comment on column public.properties.block is
   'Optional building block or staircase identifier.';
@@ -134,25 +126,25 @@ comment on column public.properties.urbanization_name is
   'Optional residential or commercial complex name.';
 
 comment on column public.properties.gross_leasable_area is
-  'Optional gross leasable area in square metres, mainly for commercial and office properties.';
+  'Optional gross leasable area in square metres.';
 
 comment on column public.properties.workstation_area is
-  'Optional workstation area in square metres when the office is offered as an individual workstation.';
+  'Optional workstation area in square metres.';
 
 comment on column public.properties.building_use is
   'Building use for office properties: offices_only or mixed.';
 
 comment on column public.properties.available_from is
-  'Optional future availability date. Null means the property can be available immediately.';
+  'Optional future availability date. Null means immediate availability or unspecified.';
 
 comment on column public.properties.building_certifications is
-  'Optional building sustainability certifications such as LEED, BREEAM or WELL.';
+  'Optional sustainability certifications such as LEED, BREEAM or WELL.';
 
 comment on column public.properties.building_floors_count is
   'Optional total number of floors in the building.';
 
 comment on column public.properties.office_floors_count is
-  'Optional number of floors occupied by the office itself.';
+  'Optional number of floors occupied by the office.';
 
 comment on column public.properties.elevators_count is
   'Optional number of elevators available in the building.';
