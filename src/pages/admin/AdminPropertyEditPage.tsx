@@ -12,6 +12,8 @@ import {
   communityFeePeriodOptions,
   energyRatingOptions,
   energyCertificateStatusOptions,
+  garageCapacityOptions,
+  garageFeatureOptions,
   heatingTypeOptions,
   isManagedPropertyFeature,
   officeBuildingUseOptions,
@@ -27,6 +29,7 @@ import {
   type CommunityFeePeriod,
   type EnergyRating,
   type EnergyCertificateStatus,
+  type GarageCapacity,
   type HeatingType,
   type ManagedPropertyFeature,
   type OfficeBuildingUse,
@@ -97,6 +100,7 @@ type AdminProperty = {
   urbanization_name: string | null;
   cadastral_reference: string | null;
   chalet_type: ChaletType | null;
+  garage_capacity: GarageCapacity | null;
   bedrooms: number | null;
   bathrooms: number | null;
   built_area: number | null;
@@ -162,6 +166,7 @@ type PropertyFormState = {
   urbanizationName: string;
   cadastralReference: string;
   chaletType: ChaletType | '';
+  garageCapacity: GarageCapacity | '';
   bedrooms: string;
   bathrooms: string;
   builtArea: string;
@@ -327,6 +332,7 @@ function createFormState(property: AdminProperty): PropertyFormState {
     urbanizationName: property.urbanization_name ?? '',
     cadastralReference: property.cadastral_reference ?? '',
     chaletType: property.chalet_type ?? '',
+    garageCapacity: property.garage_capacity ?? '',
     bedrooms:
       property.bedrooms !== null
         ? String(property.bedrooms)
@@ -571,6 +577,7 @@ export function AdminPropertyEditPage() {
               urbanization_name,
               cadastral_reference,
               chalet_type,
+              garage_capacity,
               bedrooms,
               bathrooms,
               built_area,
@@ -762,6 +769,9 @@ export function AdminPropertyEditPage() {
     const isChalet =
       form.propertyType === 'Chalet';
 
+    const isGarage =
+      form.propertyType === 'Garaje';
+
     if (
       isChalet &&
       !form.chaletType
@@ -895,6 +905,10 @@ export function AdminPropertyEditPage() {
       chalet_type:
         isChalet
           ? form.chaletType || null
+          : null,
+      garage_capacity:
+        isGarage
+          ? form.garageCapacity || null
           : null,
       bedrooms:
         isOffice
@@ -1801,6 +1815,9 @@ export function AdminPropertyEditPage() {
   const isChalet =
     form.propertyType === 'Chalet';
 
+  const isGarage =
+    form.propertyType === 'Garaje';
+
   const isPropertyPublic =
     property.status === 'published' ||
     property.status === 'reserved' ||
@@ -1928,77 +1945,77 @@ export function AdminPropertyEditPage() {
               </select>
             </label>
 
-<label className="admin-property-form__field">
-  <span>
-    Tipo de inmueble *
-  </span>
+            <label className="admin-property-form__field">
+              <span>
+                Tipo de inmueble *
+              </span>
 
-  <select
-    value={form.propertyType}
-    onChange={(event) =>
-      updateForm(
-        'propertyType',
-        event.target.value,
-      )
-    }
-    disabled={isDeletingProperty}
-    required
-  >
-    {propertyTypeOptionsForForm.map(
-      (option) => (
-        <option
-          value={option.value}
-          key={option.value}
-        >
-          {option.label}
-        </option>
-      ),
-    )}
-  </select>
-</label>
+              <select
+                value={form.propertyType}
+                onChange={(event) =>
+                  updateForm(
+                    'propertyType',
+                    event.target.value,
+                  )
+                }
+                disabled={isDeletingProperty}
+                required
+              >
+                {propertyTypeOptionsForForm.map(
+                  (option) => (
+                    <option
+                      value={option.value}
+                      key={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ),
+                )}
+              </select>
+            </label>
 
-{isChalet ? (
-  <label className="admin-property-form__field">
-    <span>
-      Tipología *
-    </span>
+            {isChalet ? (
+              <label className="admin-property-form__field">
+                <span>
+                  Tipología *
+                </span>
 
-    <select
-      value={form.chaletType}
-      onChange={(event) =>
-        updateForm(
-          'chaletType',
-          event.target.value as ChaletType | '',
-        )
-      }
-      disabled={isDeletingProperty}
-      required
-    >
-      <option
-        value=""
-        disabled
-      >
-        Selecciona una tipología
-      </option>
+                <select
+                  value={form.chaletType}
+                  onChange={(event) =>
+                    updateForm(
+                      'chaletType',
+                      event.target.value as ChaletType | '',
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                  required
+                >
+                  <option
+                    value=""
+                    disabled
+                  >
+                    Selecciona una tipología
+                  </option>
 
-      {chaletTypeOptions.map(
-        (option) => (
-          <option
-            key={option.value}
-            value={option.value}
-          >
-            {option.label}
-          </option>
-        ),
-      )}
-    </select>
+                  {chaletTypeOptions.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
+                    ),
+                  )}
+                </select>
 
-    <small className="admin-property-form__helper">
-      Indica si se trata de un chalet adosado,
-      pareado o independiente.
-    </small>
-  </label>
-) : null}
+                <small className="admin-property-form__helper">
+                  Indica si se trata de un chalet adosado,
+                  pareado o independiente.
+                </small>
+              </label>
+            ) : null}
 
             <label className="admin-property-form__field">
               <span>Título *</span>
@@ -2417,9 +2434,46 @@ export function AdminPropertyEditPage() {
               />
             </label>
 
+            {isGarage ? (
+              <label className="admin-property-form__field">
+                <span>
+                  Capacidad de la plaza
+                </span>
+
+                <select
+                  value={form.garageCapacity}
+                  onChange={(event) =>
+                    updateForm(
+                      'garageCapacity',
+                      event.target
+                        .value as PropertyFormState['garageCapacity'],
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                >
+                  <option value="">
+                    Selecciona opción
+                  </option>
+
+                  {garageCapacityOptions.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+            ) : null}
+
             <label className="admin-property-form__field">
               <span>
-                Superficie construida (m²)
+                {isGarage
+                  ? 'Superficie (m²)'
+                  : 'Superficie construida (m²)'}
               </span>
 
               <input
@@ -2877,76 +2931,133 @@ export function AdminPropertyEditPage() {
             <h3>Características</h3>
 
             <div className="admin-property-form__checks">
-              {[
-                ['elevator', 'Ascensor'],
-                ['terrace', 'Terraza'],
-                ['furnished', 'Amueblado'],
-              ].map(([key, label]) => {
-                const field =
-                  key as keyof Pick<
-                    PropertyFormState,
-                    | 'elevator'
-                    | 'terrace'
-                    | 'furnished'
-                  >;
+              <label className="admin-property-form__check">
+                <input
+                  type="checkbox"
+                  checked={form.elevator}
+                  onChange={(event) =>
+                    updateForm(
+                      'elevator',
+                      event.target.checked,
+                    )
+                  }
+                  disabled={isDeletingProperty}
+                />
 
-                return (
-                  <label
-                    className="admin-property-form__check"
-                    key={key}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={form[field]}
-                      onChange={(event) =>
-                        updateForm(
-                          field,
-                          event.target.checked,
-                        )
-                      }
-                      disabled={isDeletingProperty}
-                    />
+                <span>Ascensor</span>
+              </label>
 
-                    <span>{label}</span>
-                  </label>
-                );
-              })}
+              {isGarage ? (
+                garageFeatureOptions.map(
+                  (feature) => (
+                    <label
+                      className="admin-property-form__check"
+                      key={feature}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={form.managedFeatures.includes(
+                          feature,
+                        )}
+                        onChange={(event) =>
+                          updateForm(
+                            'managedFeatures',
+                            event.target.checked
+                              ? [
+                                ...form.managedFeatures,
+                                feature,
+                              ]
+                              : form.managedFeatures.filter(
+                                (item) =>
+                                  item !== feature,
+                              ),
+                          )
+                        }
+                        disabled={isDeletingProperty}
+                      />
 
-              {propertyAmenityGroups
-                .flatMap(
-                  (group) =>
-                    group.options,
+                      <span>
+                        {feature}
+                      </span>
+                    </label>
+                  ),
                 )
-                .map((feature) => (
-                  <label
-                    className="admin-property-form__check"
-                    key={feature}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={form.managedFeatures.includes(
-                        feature,
-                      )}
-                      onChange={(event) =>
-                        updateForm(
-                          'managedFeatures',
-                          event.target.checked
-                            ? [
-                              ...form.managedFeatures,
-                              feature,
-                            ]
-                            : form.managedFeatures.filter(
-                              (item) =>
-                                item !== feature,
-                            ),
-                        )
-                      }
-                      disabled={isDeletingProperty}
-                    />
+              ) : (
+                <>
+                  {[
+                    ['terrace', 'Terraza'],
+                    ['furnished', 'Amueblado'],
+                  ].map(([key, label]) => {
+                    const field =
+                      key as keyof Pick<
+                        PropertyFormState,
+                        | 'terrace'
+                        | 'furnished'
+                      >;
 
-                    <span>{feature}</span>
-                  </label>
-                ))}
+                    return (
+                      <label
+                        className="admin-property-form__check"
+                        key={key}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={form[field]}
+                          onChange={(event) =>
+                            updateForm(
+                              field,
+                              event.target.checked,
+                            )
+                          }
+                          disabled={isDeletingProperty}
+                        />
+
+                        <span>
+                          {label}
+                        </span>
+                      </label>
+                    );
+                  })}
+
+                  {propertyAmenityGroups
+                    .flatMap(
+                      (group) =>
+                        group.options,
+                    )
+                    .map((feature) => (
+                      <label
+                        className="admin-property-form__check"
+                        key={feature}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={form.managedFeatures.includes(
+                            feature,
+                          )}
+                          onChange={(event) =>
+                            updateForm(
+                              'managedFeatures',
+                              event.target.checked
+                                ? [
+                                  ...form.managedFeatures,
+                                  feature,
+                                ]
+                                : form.managedFeatures.filter(
+                                  (item) =>
+                                    item !== feature,
+                                ),
+                            )
+                          }
+                          disabled={isDeletingProperty}
+                        />
+
+                        <span>
+                          {feature}
+                        </span>
+                      </label>
+                    ))}
+                </>
+              )}
             </div>
 
             <div className="admin-featured-controls">
@@ -2984,9 +3095,7 @@ export function AdminPropertyEditPage() {
                   min="1"
                   step="1"
                   inputMode="numeric"
-                  value={
-                    form.featuredPosition
-                  }
+                  value={form.featuredPosition}
                   onChange={(event) =>
                     updateForm(
                       'featuredPosition',
@@ -3009,86 +3118,88 @@ export function AdminPropertyEditPage() {
             </div>
           </div>
 
-          <div className="admin-property-subsection">
-            <h3>Garaje</h3>
+          {!isGarage ? (
+            <div className="admin-property-subsection">
+              <h3>Garaje</h3>
 
-            <div className="admin-property-form__checks">
-              <label className="admin-property-form__check">
-                <input
-                  type="checkbox"
-                  checked={form.parking}
-                  onChange={(event) =>
-                    updateForm(
-                      'parking',
-                      event.target.checked,
-                    )
-                  }
-                  disabled={isDeletingProperty}
-                />
+              <div className="admin-property-form__checks">
+                <label className="admin-property-form__check">
+                  <input
+                    type="checkbox"
+                    checked={form.parking}
+                    onChange={(event) =>
+                      updateForm(
+                        'parking',
+                        event.target.checked,
+                      )
+                    }
+                    disabled={isDeletingProperty}
+                  />
 
-                <span>Tiene garaje</span>
-              </label>
+                  <span>Tiene garaje</span>
+                </label>
+              </div>
+
+              <div className="admin-property-form__grid">
+                <label className="admin-property-form__field">
+                  <span>Modalidad</span>
+
+                  <select
+                    value={form.parkingType}
+                    onChange={(event) =>
+                      updateForm(
+                        'parkingType',
+                        event.target
+                          .value as ParkingType | '',
+                      )
+                    }
+                    disabled={
+                      !form.parking ||
+                      isDeletingProperty
+                    }
+                  >
+                    <option value="">
+                      Sin especificar
+                    </option>
+
+                    {parkingTypeOptions.map(
+                      (option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Número de plazas
+                  </span>
+
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={form.parkingSpaces}
+                    onChange={(event) =>
+                      updateForm(
+                        'parkingSpaces',
+                        event.target.value,
+                      )
+                    }
+                    disabled={
+                      !form.parking ||
+                      isDeletingProperty
+                    }
+                  />
+                </label>
+              </div>
             </div>
-
-            <div className="admin-property-form__grid">
-              <label className="admin-property-form__field">
-                <span>Modalidad</span>
-
-                <select
-                  value={form.parkingType}
-                  onChange={(event) =>
-                    updateForm(
-                      'parkingType',
-                      event.target
-                        .value as ParkingType | '',
-                    )
-                  }
-                  disabled={
-                    !form.parking ||
-                    isDeletingProperty
-                  }
-                >
-                  <option value="">
-                    Sin especificar
-                  </option>
-
-                  {parkingTypeOptions.map(
-                    (option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                      >
-                        {option.label}
-                      </option>
-                    ),
-                  )}
-                </select>
-              </label>
-
-              <label className="admin-property-form__field">
-                <span>
-                  Número de plazas
-                </span>
-
-                <input
-                  type="number"
-                  min="1"
-                  step="1"
-                  value={form.parkingSpaces}
-                  onChange={(event) =>
-                    updateForm(
-                      'parkingSpaces',
-                      event.target.value,
-                    )
-                  }
-                  disabled={
-                    !form.parking ||
-                    isDeletingProperty
-                  }
-                />
-              </label>
-            </div>
-          </div>
+          ) : null}
 
           <div className="admin-property-subsection">
             <h3>Orientación</h3>
