@@ -281,6 +281,24 @@ export const buildingCertificationOptions = [
 export type BuildingCertification =
   (typeof buildingCertificationOptions)[number];
 
+export const chaletTypeOptions = [
+  {
+    value: 'terraced',
+    label: 'Chalet adosado',
+  },
+  {
+    value: 'semi_detached',
+    label: 'Chalet pareado',
+  },
+  {
+    value: 'independent',
+    label: 'Chalet independiente',
+  },
+] as const;
+
+export type ChaletType =
+  (typeof chaletTypeOptions)[number]['value'];
+
 export function isManagedPropertyFeature(
   value: string,
 ): value is ManagedPropertyFeature {

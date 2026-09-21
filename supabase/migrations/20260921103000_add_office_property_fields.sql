@@ -1,5 +1,6 @@
--- Add optional structured fields for office properties.
--- Existing properties remain compatible because all office-specific
+-- Add optional structured fields for office and chalet properties.
+--
+-- Existing properties remain compatible because all type-specific
 -- values are optional.
 
 alter table public.properties
@@ -17,9 +18,11 @@ alter table public.properties
   add column if not exists building_certifications text[] not null default '{}',
   add column if not exists building_floors_count integer,
   add column if not exists office_floors_count integer,
-  add column if not exists elevators_count integer;
+  add column if not exists elevators_count integer,
+  add column if not exists chalet_type text;
 
 -- Preserve the current address privacy behaviour.
+--
 -- Existing properties that expose their exact address stay exact.
 -- Existing properties that hide it stay hidden.
 
@@ -102,6 +105,16 @@ alter table public.properties
     check (
       elevators_count is null
       or elevators_count >= 0
+    ),
+
+  add constraint properties_chalet_type_check
+    check (
+      chalet_type is null
+      or chalet_type in (
+        'terraced',
+        'semi_detached',
+        'independent'
+      )
     );
 
 comment on column public.properties.office_space_type is
@@ -148,3 +161,6 @@ comment on column public.properties.office_floors_count is
 
 comment on column public.properties.elevators_count is
   'Optional number of elevators available in the building.';
+
+comment on column public.properties.chalet_type is
+  'Chalet typology: terraced, semi_detached or independent.';
