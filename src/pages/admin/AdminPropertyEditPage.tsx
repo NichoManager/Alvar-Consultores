@@ -1928,34 +1928,77 @@ export function AdminPropertyEditPage() {
               </select>
             </label>
 
-            <label className="admin-property-form__field">
-              <span>
-                Tipo de inmueble *
-              </span>
+<label className="admin-property-form__field">
+  <span>
+    Tipo de inmueble *
+  </span>
 
-              <select
-                value={form.propertyType}
-                onChange={(event) =>
-                  updateForm(
-                    'propertyType',
-                    event.target.value,
-                  )
-                }
-                disabled={isDeletingProperty}
-                required
-              >
-                {propertyTypeOptionsForForm.map(
-                  (option) => (
-                    <option
-                      value={option.value}
-                      key={option.value}
-                    >
-                      {option.label}
-                    </option>
-                  ),
-                )}
-              </select>
-            </label>
+  <select
+    value={form.propertyType}
+    onChange={(event) =>
+      updateForm(
+        'propertyType',
+        event.target.value,
+      )
+    }
+    disabled={isDeletingProperty}
+    required
+  >
+    {propertyTypeOptionsForForm.map(
+      (option) => (
+        <option
+          value={option.value}
+          key={option.value}
+        >
+          {option.label}
+        </option>
+      ),
+    )}
+  </select>
+</label>
+
+{isChalet ? (
+  <label className="admin-property-form__field">
+    <span>
+      Tipología *
+    </span>
+
+    <select
+      value={form.chaletType}
+      onChange={(event) =>
+        updateForm(
+          'chaletType',
+          event.target.value as ChaletType | '',
+        )
+      }
+      disabled={isDeletingProperty}
+      required
+    >
+      <option
+        value=""
+        disabled
+      >
+        Selecciona una tipología
+      </option>
+
+      {chaletTypeOptions.map(
+        (option) => (
+          <option
+            key={option.value}
+            value={option.value}
+          >
+            {option.label}
+          </option>
+        ),
+      )}
+    </select>
+
+    <small className="admin-property-form__helper">
+      Indica si se trata de un chalet adosado,
+      pareado o independiente.
+    </small>
+  </label>
+) : null}
 
             <label className="admin-property-form__field">
               <span>Título *</span>
