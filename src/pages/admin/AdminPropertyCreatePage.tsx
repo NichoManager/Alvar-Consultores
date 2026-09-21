@@ -9,6 +9,7 @@ import { AdminCurrentUser } from '../../components/admin/AdminCurrentUser';
 import {
   addressVisibilityOptions,
   buildingCertificationOptions,
+  chaletTypeOptions,
   communityFeePeriodOptions,
   energyRatingOptions,
   energyCertificateStatusOptions,
@@ -267,30 +268,34 @@ export function AdminPropertyCreatePage() {
           ) ?? '',
         );
 
-      const isOffice =
-        propertyType ===
-        'Oficina';
+const isOffice =
+  propertyType ===
+  'Oficina';
 
-      const officeAddressVisibility =
+const isChalet =
+  propertyType ===
+  'Chalet';
+
+const officeAddressVisibility =
         isOffice
           ? String(
-              formData.get(
-                'address_visibility',
-              ) ?? 'hidden',
-            )
+            formData.get(
+              'address_visibility',
+            ) ?? 'hidden',
+          )
           : formData.has(
-              'show_exact_address',
-            )
+            'show_exact_address',
+          )
             ? 'exact'
             : 'hidden';
 
       const officeElevatorsCount =
         isOffice
           ? nullableNumber(
-              formData.get(
-                'elevators_count',
-              ),
-            )
+            formData.get(
+              'elevators_count',
+            ),
+          )
           : null;
 
       const title =
@@ -346,10 +351,10 @@ export function AdminPropertyCreatePage() {
       const featuredPosition =
         featured
           ? nullableNumber(
-              formData.get(
-                'featured_position',
-              ),
-            )
+            formData.get(
+              'featured_position',
+            ),
+          )
           : null;
 
       if (
@@ -372,16 +377,31 @@ export function AdminPropertyCreatePage() {
         return;
       }
 
-      if (!province) {
-        setError(
-          'Introduce la provincia del inmueble.',
-        );
+   if (!province) {
+  setError(
+    'Introduce la provincia del inmueble.',
+  );
 
-        return;
-      }
+  return;
+}
 
-      if (
-        featuredPosition !== null &&
+if (
+  isChalet &&
+  !nullableText(
+    formData.get(
+      'chalet_type',
+    ),
+  )
+) {
+  setError(
+    'Selecciona la tipología del chalet.',
+  );
+
+  return;
+}
+
+if (
+  featuredPosition !== null &&
         (
           !Number.isInteger(
             featuredPosition,
@@ -487,56 +507,56 @@ export function AdminPropertyCreatePage() {
               street_number:
                 isOffice
                   ? nullableText(
-                      formData.get(
-                        'street_number',
-                      ),
-                    )
+                    formData.get(
+                      'street_number',
+                    ),
+                  )
                   : null,
 
               block:
                 isOffice
                   ? nullableText(
-                      formData.get(
-                        'block',
-                      ),
-                    )
+                    formData.get(
+                      'block',
+                    ),
+                  )
                   : null,
 
               door:
                 isOffice
                   ? nullableText(
-                      formData.get(
-                        'door',
-                      ),
-                    )
+                    formData.get(
+                      'door',
+                    ),
+                  )
                   : null,
 
               urbanization_name:
                 isOffice
                   ? nullableText(
-                      formData.get(
-                        'urbanization_name',
-                      ),
-                    )
+                    formData.get(
+                      'urbanization_name',
+                    ),
+                  )
                   : null,
 
               cadastral_reference:
                 isOffice
                   ? nullableText(
-                      formData.get(
-                        'cadastral_reference',
-                      ),
-                    )
+                    formData.get(
+                      'cadastral_reference',
+                    ),
+                  )
                   : null,
 
               bedrooms:
                 isOffice
                   ? null
                   : nullableNumber(
-                      formData.get(
-                        'bedrooms',
-                      ),
+                    formData.get(
+                      'bedrooms',
                     ),
+                  ),
 
               bathrooms:
                 nullableNumber(
@@ -563,10 +583,10 @@ export function AdminPropertyCreatePage() {
                 isOffice
                   ? null
                   : nullableNumber(
-                      formData.get(
-                        'plot_area',
-                      ),
+                    formData.get(
+                      'plot_area',
                     ),
+                  ),
 
               floor:
                 nullableText(
@@ -579,10 +599,10 @@ export function AdminPropertyCreatePage() {
                 isOffice
                   ? null
                   : nullableNumber(
-                      formData.get(
-                        'floors_count',
-                      ),
+                    formData.get(
+                      'floors_count',
                     ),
+                  ),
 
               construction_year:
                 nullableNumber(
@@ -614,12 +634,12 @@ export function AdminPropertyCreatePage() {
 
               elevator:
                 officeElevatorsCount !==
-                null
+                  null
                   ? officeElevatorsCount >
-                    0
+                  0
                   : formData.has(
-                      'elevator',
-                    ),
+                    'elevator',
+                  ),
 
               parking:
                 hasParking,
@@ -627,19 +647,19 @@ export function AdminPropertyCreatePage() {
               parking_type:
                 hasParking
                   ? nullableText(
-                      formData.get(
-                        'parking_type',
-                      ),
-                    )
+                    formData.get(
+                      'parking_type',
+                    ),
+                  )
                   : null,
 
               parking_spaces:
                 hasParking
                   ? nullableNumber(
-                      formData.get(
-                        'parking_spaces',
-                      ),
-                    )
+                    formData.get(
+                      'parking_spaces',
+                    ),
+                  )
                   : null,
 
               terrace:
@@ -652,80 +672,89 @@ export function AdminPropertyCreatePage() {
                   'furnished',
                 ),
 
-              exterior:
-                exposure ===
-                'exterior',
+exterior:
+  exposure ===
+  'exterior',
 
-              office_space_type:
-                isOffice
-                  ? nullableText(
-                      formData.get(
-                        'office_space_type',
-                      ),
-                    )
-                  : null,
+chalet_type:
+  isChalet
+    ? nullableText(
+        formData.get(
+          'chalet_type',
+        ),
+      )
+    : null,
+
+office_space_type:
+  isOffice
+    ? nullableText(
+        formData.get(
+          'office_space_type',
+        ),
+      )
+    : null,
 
               gross_leasable_area:
                 isOffice
                   ? nullableNumber(
-                      formData.get(
-                        'gross_leasable_area',
-                      ),
-                    )
+                    formData.get(
+                      'gross_leasable_area',
+                    ),
+                  )
                   : null,
 
               workstation_area:
                 isOffice
                   ? nullableNumber(
-                      formData.get(
-                        'workstation_area',
-                      ),
-                    )
+                    formData.get(
+                      'workstation_area',
+                    ),
+                  )
                   : null,
 
               building_use:
                 isOffice
                   ? nullableText(
-                      formData.get(
-                        'building_use',
-                      ),
-                    )
+                    formData.get(
+                      'building_use',
+                    ),
+                  )
                   : null,
 
               available_from:
                 isOffice
                   ? nullableText(
-                      formData.get(
-                        'available_from',
-                      ),
-                    )
+                    formData.get(
+                      'available_from',
+                    ),
+                  )
                   : null,
 
               building_certifications:
                 isOffice
                   ? formData
-                      .getAll(
-                        'building_certifications',
-                      )
-                      .map(String)
+                    .getAll(
+                      'building_certifications',
+                    )
+                    .map(String)
                   : [],
 
               building_floors_count:
                 isOffice
                   ? nullableNumber(
-                      formData.get(
-                        'building_floors_count',
-                      ),
-                    )
+                    formData.get(
+                      'building_floors_count',
+                    ),
+                  )
                   : null,
 
               office_floors_count:
                 isOffice
                   ? nullableNumber(
-                      formData.get(
-                        'office_floors_count',
-                      ),
-                    )
+                    formData.get(
+                      'office_floors_count',
+                    ),
+                  )
                   : null,
 
               elevators_count:
@@ -750,12 +779,12 @@ export function AdminPropertyCreatePage() {
 
               community_fee_period:
                 communityFeeAmount !==
-                null
+                  null
                   ? nullableText(
-                      formData.get(
-                        'community_fee_period',
-                      ),
-                    )
+                    formData.get(
+                      'community_fee_period',
+                    ),
+                  )
                   : null,
 
               ibi_annual_amount:
@@ -808,10 +837,10 @@ export function AdminPropertyCreatePage() {
                   .map(String),
 
                 ...(exposure ===
-                'interior'
+                  'interior'
                   ? [
-                      'Interior',
-                    ]
+                    'Interior',
+                  ]
                   : []),
               ],
 
@@ -879,16 +908,16 @@ export function AdminPropertyCreatePage() {
                 .errors
                 .length
                 ? {
-                    floorplanUploadWarning:
-                      uploadResult.errors.join(
-                        ' ',
-                      ),
-                  }
+                  floorplanUploadWarning:
+                    uploadResult.errors.join(
+                      ' ',
+                    ),
+                }
                 : undefined,
           },
         );
       } catch (
-        unexpectedError
+      unexpectedError
       ) {
         console.error(
           'Unexpected property creation error:',
@@ -905,11 +934,15 @@ export function AdminPropertyCreatePage() {
       }
     };
 
-  const isOffice =
-    selectedPropertyType ===
-    'Oficina';
+const isOffice =
+  selectedPropertyType ===
+  'Oficina';
 
-  return (
+const isChalet =
+  selectedPropertyType ===
+  'Chalet';
+
+return (
     <main className="admin-property-form-page">
       <header className="admin-property-form__header">
         <div className="admin-property-form__header-inner">
@@ -1026,43 +1059,80 @@ export function AdminPropertyCreatePage() {
               </select>
             </label>
 
-            <label className="admin-property-form__field">
-              <span>
-                Tipo de inmueble *
-              </span>
+   <label className="admin-property-form__field">
+  <span>
+    Tipo de inmueble *
+  </span>
 
-              <select
-                name="property_type"
-                value={
-                  selectedPropertyType
-                }
-                onChange={(
-                  event,
-                ) =>
-                  setSelectedPropertyType(
-                    event.target.value,
-                  )
-                }
-                required
-              >
-                {propertyTypeOptions.map(
-                  (option) => (
-                    <option
-                      value={
-                        option.value
-                      }
-                      key={
-                        option.value
-                      }
-                    >
-                      {
-                        option.label
-                      }
-                    </option>
-                  ),
-                )}
-              </select>
-            </label>
+  <select
+    name="property_type"
+    value={
+      selectedPropertyType
+    }
+    onChange={(
+      event,
+    ) =>
+      setSelectedPropertyType(
+        event.target.value,
+      )
+    }
+    required
+  >
+    {propertyTypeOptions.map(
+      (option) => (
+        <option
+          value={
+            option.value
+          }
+          key={
+            option.value
+          }
+        >
+          {
+            option.label
+          }
+        </option>
+      ),
+    )}
+  </select>
+</label>
+
+{isChalet ? (
+  <label className="admin-property-form__field">
+    <span>
+      Tipología *
+    </span>
+
+    <select
+      name="chalet_type"
+      defaultValue=""
+      required
+    >
+      <option
+        value=""
+        disabled
+      >
+        Selecciona una tipología
+      </option>
+
+      {chaletTypeOptions.map(
+        (option) => (
+          <option
+            key={option.value}
+            value={option.value}
+          >
+            {option.label}
+          </option>
+        ),
+      )}
+    </select>
+
+    <small className="admin-property-form__helper">
+      Indica si se trata de un chalet
+      adosado, pareado o independiente.
+    </small>
+  </label>
+) : null}
 
             <label className="admin-property-form__field">
               <span>
@@ -1101,7 +1171,7 @@ export function AdminPropertyCreatePage() {
                   inputMode="numeric"
                   placeholder={
                     operation ===
-                    'alquiler'
+                      'alquiler'
                       ? 'Ej. 1.500'
                       : 'Ej. 250.000'
                   }
@@ -1112,7 +1182,7 @@ export function AdminPropertyCreatePage() {
                   aria-hidden="true"
                 >
                   {operation ===
-                  'alquiler'
+                    'alquiler'
                     ? '€/mes'
                     : '€'}
                 </span>
@@ -1122,7 +1192,7 @@ export function AdminPropertyCreatePage() {
                 Puedes escribir,
                 por ejemplo,{' '}
                 {operation ===
-                'alquiler'
+                  'alquiler'
                   ? '1500 o 1.500'
                   : '250000 o 250.000'}
                 .
@@ -2284,7 +2354,7 @@ export function AdminPropertyCreatePage() {
                     Array.from(
                       event.target
                         .files ??
-                        [],
+                      [],
                     ),
                   );
 
