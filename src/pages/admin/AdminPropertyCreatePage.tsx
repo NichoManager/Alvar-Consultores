@@ -13,6 +13,8 @@ import {
   communityFeePeriodOptions,
   energyRatingOptions,
   energyCertificateStatusOptions,
+  garageCapacityOptions,
+  garageFeatureOptions,
   heatingTypeOptions,
   officeBuildingUseOptions,
   officeSpaceTypeOptions,
@@ -275,6 +277,10 @@ export function AdminPropertyCreatePage() {
       const isChalet =
         propertyType ===
         'Chalet';
+
+      const isGarage =
+        propertyType ===
+        'Garaje';
 
       const officeAddressVisibility =
         isOffice
@@ -685,6 +691,15 @@ export function AdminPropertyCreatePage() {
                   )
                   : null,
 
+              garage_capacity:
+                isGarage
+                  ? nullableText(
+                    formData.get(
+                      'garage_capacity',
+                    ),
+                  )
+                  : null,
+
               office_space_type:
                 isOffice
                   ? nullableText(
@@ -941,6 +956,10 @@ export function AdminPropertyCreatePage() {
   const isChalet =
     selectedPropertyType ===
     'Chalet';
+
+  const isGarage =
+    selectedPropertyType ===
+    'Garaje';
 
   return (
     <main className="admin-property-form-page">
@@ -1469,10 +1488,39 @@ export function AdminPropertyCreatePage() {
               />
             </label>
 
+            {isGarage ? (
+              <label className="admin-property-form__field">
+                <span>
+                  Capacidad de la plaza
+                </span>
+
+                <select
+                  name="garage_capacity"
+                  defaultValue=""
+                >
+                  <option value="">
+                    Selecciona opción
+                  </option>
+
+                  {garageCapacityOptions.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.label}
+                      </option>
+                    ),
+                  )}
+                </select>
+              </label>
+            ) : null}
+
             <label className="admin-property-form__field">
               <span>
-                Superficie
-                construida (m²)
+                {isGarage
+                  ? 'Superficie (m²)'
+                  : 'Superficie construida (m²)'}
               </span>
 
               <input
@@ -1844,57 +1892,74 @@ export function AdminPropertyCreatePage() {
                 </span>
               </label>
 
-              <label className="admin-property-form__check">
-                <input
-                  type="checkbox"
-                  name="terrace"
-                />
-
-                <span>
-                  Terraza
-                </span>
-              </label>
-
-              <label className="admin-property-form__check">
-                <input
-                  type="checkbox"
-                  name="furnished"
-                />
-
-                <span>
-                  Amueblado
-                </span>
-              </label>
-
-              {propertyAmenityGroups
-                .flatMap(
-                  (group) =>
-                    group.options,
-                )
-                .map(
+              {isGarage ? (
+                garageFeatureOptions.map(
                   (feature) => (
                     <label
                       className="admin-property-form__check"
-                      key={
-                        feature
-                      }
+                      key={feature}
                     >
                       <input
                         type="checkbox"
                         name="features"
-                        value={
-                          feature
-                        }
+                        value={feature}
                       />
 
                       <span>
-                        {
-                          feature
-                        }
+                        {feature}
                       </span>
                     </label>
                   ),
-                )}
+                )
+              ) : (
+                <>
+                  <label className="admin-property-form__check">
+                    <input
+                      type="checkbox"
+                      name="terrace"
+                    />
+
+                    <span>
+                      Terraza
+                    </span>
+                  </label>
+
+                  <label className="admin-property-form__check">
+                    <input
+                      type="checkbox"
+                      name="furnished"
+                    />
+
+                    <span>
+                      Amueblado
+                    </span>
+                  </label>
+
+                  {propertyAmenityGroups
+                    .flatMap(
+                      (group) =>
+                        group.options,
+                    )
+                    .map(
+                      (feature) => (
+                        <label
+                          className="admin-property-form__check"
+                          key={feature}
+                        >
+                          <input
+                            type="checkbox"
+                            name="features"
+                            value={feature}
+                          />
+
+                          <span>
+                            {feature}
+                          </span>
+                        </label>
+                      ),
+                    )}
+                </>
+              )}
             </div>
 
             <div className="admin-featured-controls">
@@ -1902,15 +1967,10 @@ export function AdminPropertyCreatePage() {
                 <input
                   type="checkbox"
                   name="featured"
-                  checked={
-                    featured
-                  }
-                  onChange={(
-                    event,
-                  ) =>
+                  checked={featured}
+                  onChange={(event) =>
                     setFeatured(
-                      event.target
-                        .checked,
+                      event.target.checked,
                     )
                   }
                 />
@@ -1941,9 +2001,7 @@ export function AdminPropertyCreatePage() {
                   min="1"
                   step="1"
                   inputMode="numeric"
-                  disabled={
-                    !featured
-                  }
+                  disabled={!featured}
                   placeholder="Sin prioridad manual"
                 />
 
@@ -1958,71 +2016,73 @@ export function AdminPropertyCreatePage() {
             </div>
           </div>
 
-          <div className="admin-property-subsection">
-            <h3>
-              Garaje
-            </h3>
+          {!isGarage ? (
+            <div className="admin-property-subsection">
+              <h3>
+                Garaje
+              </h3>
 
-            <div className="admin-property-form__checks">
-              <label className="admin-property-form__check">
-                <input
-                  type="checkbox"
-                  name="parking"
-                />
+              <div className="admin-property-form__checks">
+                <label className="admin-property-form__check">
+                  <input
+                    type="checkbox"
+                    name="parking"
+                  />
 
-                <span>
-                  Tiene garaje
-                </span>
-              </label>
+                  <span>
+                    Tiene garaje
+                  </span>
+                </label>
+              </div>
+
+              <div className="admin-property-form__grid">
+                <label className="admin-property-form__field">
+                  <span>
+                    Modalidad
+                  </span>
+
+                  <select
+                    name="parking_type"
+                    defaultValue=""
+                  >
+                    <option value="">
+                      Sin especificar
+                    </option>
+
+                    {parkingTypeOptions.map(
+                      (option) => (
+                        <option
+                          key={
+                            option.value
+                          }
+                          value={
+                            option.value
+                          }
+                        >
+                          {
+                            option.label
+                          }
+                        </option>
+                      ),
+                    )}
+                  </select>
+                </label>
+
+                <label className="admin-property-form__field">
+                  <span>
+                    Número de plazas
+                  </span>
+
+                  <input
+                    type="number"
+                    name="parking_spaces"
+                    min="1"
+                    step="1"
+                  />
+                </label>
+              </div>
             </div>
-
-            <div className="admin-property-form__grid">
-              <label className="admin-property-form__field">
-                <span>
-                  Modalidad
-                </span>
-
-                <select
-                  name="parking_type"
-                  defaultValue=""
-                >
-                  <option value="">
-                    Sin especificar
-                  </option>
-
-                  {parkingTypeOptions.map(
-                    (option) => (
-                      <option
-                        key={
-                          option.value
-                        }
-                        value={
-                          option.value
-                        }
-                      >
-                        {
-                          option.label
-                        }
-                      </option>
-                    ),
-                  )}
-                </select>
-              </label>
-
-              <label className="admin-property-form__field">
-                <span>
-                  Número de plazas
-                </span>
-
-                <input
-                  type="number"
-                  name="parking_spaces"
-                  min="1"
-                  step="1"
-                />
-              </label>
-            </div>
-          </div>
+          ) : null}
 
           <div className="admin-property-subsection">
             <h3>
