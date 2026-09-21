@@ -1,9 +1,19 @@
--- Keep sold and rented properties visible in the public catalogue
--- with their corresponding status labels.
+-- Expose structured Chalet and Office data through the public property API.
 --
--- Also expose the postal code through the public RPC even when the
--- exact street address is private. The street address remains redacted
--- unless show_exact_address is enabled.
+-- Keeps all previous public catalogue behaviour:
+-- - published / reserved / sold / rented
+-- - SEO metadata
+-- - featured ordering
+-- - property media
+-- - public postal code
+--
+-- Address privacy:
+-- - exact: street + number may be returned
+-- - street_only: only the street / road name is returned
+-- - hidden: street address remains private
+--
+-- Sensitive/admin-only location data such as cadastral reference,
+-- block and door are intentionally not exposed publicly.
 
 drop function if exists public.get_public_properties(text, boolean, integer);
 
@@ -30,6 +40,10 @@ returns table (
   postal_code text,
   address text,
   show_exact_address boolean,
+  address_visibility text,
+
+  chalet_type text,
+
   bedrooms integer,
   bathrooms integer,
   built_area numeric,
@@ -48,6 +62,17 @@ returns table (
   terrace boolean,
   furnished boolean,
   exterior boolean,
+
+  office_space_type text,
+  gross_leasable_area numeric,
+  workstation_area numeric,
+  building_use text,
+  available_from date,
+  building_certifications text[],
+  building_floors_count integer,
+  office_floors_count integer,
+  elevators_count integer,
+
   video_url text,
   virtual_tour_url text,
   community_fee_amount numeric,
@@ -58,6 +83,7 @@ returns table (
   energy_consumption_value numeric,
   energy_emissions_rating text,
   energy_emissions_value numeric,
+
   description text,
   features text[],
   featured boolean,
@@ -87,16 +113,50 @@ as $$
     p.area,
     p.province,
 
-    -- Postal code is safe to expose and improves map accuracy.
+    -- Postal code remains public for useful location context and maps.
     p.postal_code,
 
-    -- Exact street address remains private unless explicitly enabled.
+    -- Public street address follows the new three-level privacy model.
     case
-      when p.show_exact_address then p.address
+      when p.address_visibility = 'exact' then
+        nullif(
+          trim(
+            concat_ws(
+              ' ',
+              nullif(trim(p.address), ''),
+              nullif(trim(p.street_number), '')
+            )
+          ),
+          ''
+        )
+
+      when p.address_visibility = 'street_only' then
+        nullif(
+          trim(p.address),
+          ''
+        )
+
+      -- Backwards compatibility for properties created before
+      -- address_visibility existed.
+      when p.address_visibility is null
+        and p.show_exact_address then
+        p.address
+
       else null
-    end,
+    end as address,
 
     p.show_exact_address,
+
+    coalesce(
+      p.address_visibility,
+      case
+        when p.show_exact_address then 'exact'
+        else 'hidden'
+      end
+    ) as address_visibility,
+
+    p.chalet_type,
+
     p.bedrooms,
     p.bathrooms,
     p.built_area,
@@ -115,6 +175,17 @@ as $$
     p.terrace,
     p.furnished,
     p.exterior,
+
+    p.office_space_type,
+    p.gross_leasable_area,
+    p.workstation_area,
+    p.building_use,
+    p.available_from,
+    p.building_certifications,
+    p.building_floors_count,
+    p.office_floors_count,
+    p.elevators_count,
+
     p.video_url,
     p.virtual_tour_url,
     p.community_fee_amount,
@@ -125,6 +196,7 @@ as $$
     p.energy_consumption_value,
     p.energy_emissions_rating,
     p.energy_emissions_value,
+
     p.description,
     p.features,
     p.featured,
@@ -154,7 +226,7 @@ as $$
         where pi.property_id = p.id
       ),
       '[]'::jsonb
-    )
+    ) as property_images
 
   from public.properties as p
 
@@ -199,7 +271,7 @@ as $$
 $$;
 
 comment on function public.get_public_properties(text, boolean, integer) is
-  'Read-only public property API. Returns published, reserved, sold and rented properties, featured ordering metadata, SEO metadata and media. Postal code is public for map accuracy while the exact street address remains private unless explicitly enabled.';
+  'Read-only public property API. Returns published, reserved, sold and rented properties with SEO, media, Chalet and Office structured data. Address exposure follows exact, street_only or hidden privacy settings. Sensitive administrative address data remains private.';
 
 revoke all
 on function public.get_public_properties(text, boolean, integer)
@@ -209,7 +281,8 @@ grant execute
 on function public.get_public_properties(text, boolean, integer)
 to anon, authenticated;
 
--- Anonymous users keep no direct access to the base tables.
+-- Anonymous visitors still receive property data only through
+-- the controlled public RPC.
 
 revoke select
 on table public.properties
@@ -218,3 +291,5 @@ from anon;
 revoke select
 on table public.property_images
 from anon;
+
+notify pgrst, 'reload schema';
