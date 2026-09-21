@@ -25,6 +25,34 @@ const SITE_URL = (
   'https://www.alvarconsultoresinmobiliarios.es'
 ).replace(/\/$/, '');
 
+const COOKIE_CONSENT_STORAGE_KEY =
+  'alvar-cookie-consent-v1';
+
+function readExternalContentConsent() {
+  try {
+    const storedValue =
+      window.localStorage.getItem(
+        COOKIE_CONSENT_STORAGE_KEY,
+      );
+
+    if (!storedValue) {
+      return false;
+    }
+
+    const parsedValue =
+      JSON.parse(storedValue) as {
+        externalContent?: boolean;
+      };
+
+    return (
+      parsedValue.externalContent ===
+      true
+    );
+  } catch {
+    return false;
+  }
+}
+
 function isRentalOperation(
   value: string,
 ) {
@@ -240,6 +268,11 @@ export function PropertyDetailPage() {
     setLoadError,
   ] = useState(false);
 
+  const [
+    externalContentAllowed,
+    setExternalContentAllowed,
+  ] = useState(false);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -289,6 +322,64 @@ export function PropertyDetailPage() {
       isMounted = false;
     };
   }, [slug]);
+
+  useEffect(() => {
+    const syncConsent =
+      () => {
+        setExternalContentAllowed(
+          readExternalContentConsent(),
+        );
+      };
+
+    const handleConsentChange =
+      (
+        event: Event,
+      ) => {
+        const consentEvent =
+          event as CustomEvent<{
+            externalContent?: boolean;
+          }>;
+
+        if (
+          typeof consentEvent.detail
+            ?.externalContent ===
+          'boolean'
+        ) {
+          setExternalContentAllowed(
+            consentEvent.detail
+              .externalContent,
+          );
+
+          return;
+        }
+
+        syncConsent();
+      };
+
+    syncConsent();
+
+    window.addEventListener(
+      'alvar-cookie-consent-change',
+      handleConsentChange,
+    );
+
+    window.addEventListener(
+      'storage',
+      syncConsent,
+    );
+
+    return () => {
+      window.removeEventListener(
+        'alvar-cookie-consent-change',
+        handleConsentChange,
+      );
+
+      window.removeEventListener(
+        'storage',
+        syncConsent,
+      );
+    };
+  }, []);
 
   if (isLoading) {
     return (
@@ -509,12 +600,14 @@ export function PropertyDetailPage() {
       mapSearchLocation,
     );
 
- const mapZoom =
-  property.addressVisibility === 'exact'
-    ? 16
-    : property.addressVisibility === 'street_only'
-      ? 15
-      : 14;
+  const mapZoom =
+    property.addressVisibility ===
+    'exact'
+      ? 16
+      : property.addressVisibility ===
+          'street_only'
+        ? 15
+        : 14;
 
   const googleMapsEmbedUrl =
     `https://www.google.com/maps?q=${encodedMapLocation}&z=${mapZoom}&output=embed`;
@@ -663,29 +756,29 @@ export function PropertyDetailPage() {
         seoLocationLabel ||
         property.city,
 
-address: {
-  '@type':
-    'PostalAddress',
+      address: {
+        '@type':
+          'PostalAddress',
 
-  ...(property.address
-    ? {
-        streetAddress:
-          property.address,
-      }
-    : {}),
+        ...(property.address
+          ? {
+              streetAddress:
+                property.address,
+            }
+          : {}),
 
-  addressLocality:
-    property.city,
+        addressLocality:
+          property.city,
 
-  addressRegion:
-    property.province,
+        addressRegion:
+          property.province,
 
-  postalCode:
-    property.postalCode,
+        postalCode:
+          property.postalCode,
 
-  addressCountry:
-    'ES',
-},
+        addressCountry:
+          'ES',
+      },
     },
 
     ...(coverImageUrl
@@ -1276,15 +1369,40 @@ address: {
                 </div>
 
                 <div className="property-map">
-                  <iframe
-                    src={
-                      googleMapsEmbedUrl
-                    }
-                    title={`Mapa de la zona de ${property.city}`}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    allowFullScreen
-                  />
+                  {externalContentAllowed ? (
+                    <iframe
+                      src={
+                        googleMapsEmbedUrl
+                      }
+                      title={`Mapa de la zona de ${property.city}`}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="flex min-h-[320px] items-center justify-center bg-[#F8F6F0] px-6 py-12 text-center">
+                      <div className="max-w-md">
+                        <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-[#B8944D]">
+                          Contenido externo
+                        </span>
+
+                        <h4 className="mb-3 font-serif text-2xl font-medium text-[#111832]">
+                          Google Maps está
+                          desactivado
+                        </h4>
+
+                        <p className="text-sm leading-6 text-[#111832]/70">
+                          Para visualizar
+                          el mapa debes
+                          permitir el
+                          contenido externo
+                          desde tus
+                          preferencias de
+                          cookies.
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <a
