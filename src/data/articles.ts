@@ -3,6 +3,252 @@ import { blogArticleMetadata } from '../../api/_blogArticleMetadata';
 
 export const articles: Article[] = [
   {
+    ...blogArticleMetadata.sellFlatInMadrid,
+
+    image: '/images/alvar/heroes/hero-vender-inmueble.webp',
+
+    imageAlt:
+      'Mesa de trabajo editorial con planos, llaves y documentación para la venta de un piso en Madrid',
+
+    title:
+      'Cómo vender un piso en Madrid: pasos, documentación y errores que evitar',
+
+    seoTitle:
+      'Cómo vender un piso en Madrid | Pasos, documentos y errores',
+
+    seoDescription:
+      'Guía paso a paso para vender un piso en Madrid: valoración realista de mercado, documentación obligatoria, preparación, visitas, arras y firma notarial sin imprevistos.',
+
+    category: 'Vender',
+
+    excerpt:
+      'Una guía integral y rigurosa para propietarios en Madrid: desde la fijación del precio real de mercado y la recopilación documental hasta el contrato de arras y la firma en notaría.',
+
+    readingTime: '11 min',
+
+    intro:
+      'Vender un piso en Madrid exige mucho más que subir unas fotografías a un portal inmobiliario y aguardar contactos. El mercado madrileño se caracteriza por una alta demanda, pero también por una competencia exigente y una regulación documental estricta que no admite improvisaciones. Ya se trate de una vivienda habitual en Chamberí o Retiro, un piso en un barrio consolidado de la capital o un inmueble en municipios del área metropolitana, una venta ordenada requiere fijar un precio defendible, preparar los espacios, reunir la documentación técnica y jurídica con antelación y conducir la negociación con criterio profesional para proteger tu patrimonio en cada etapa.',
+
+    sections: [
+      {
+        title: 'Qué conviene revisar antes de poner la vivienda en el mercado',
+        paragraphs: [
+          'Antes de tomar fotografías o calcular expectativas económicas, el primer paso consiste en analizar con serenidad el contexto personal y patrimonial que motiva la venta. No requiere la misma estrategia vender una vivienda habitual libre de cargas que transmitir un piso procedente de una herencia con varios copropietarios, un inmueble arrendado con contrato en vigor o una propiedad supeditada a una compra posterior simultánea.',
+          'El factor tiempo resulta determinante. Si necesitas vender con agilidad para adquirir otra vivienda, los plazos del contrato de arras deberán sincronizarse con exactitud para evitar penalizaciones. Si, por el contrario, dispones de margen temporal para explorar el mercado, la estrategia comercial puede estructurarse con mayor holgura.',
+          'Asimismo, es fundamental revisar la situación registral y fiscal de la vivienda: comprobar si existen hipotecas pendientes de cancelación registral, servidumbres, afecciones fiscales o discrepancias de metros entre el Catastro y el Registro de la Propiedad. Ordenar este punto de partida evita bloqueos cuando surja un comprador con financiación preaprobada.',
+        ],
+      },
+      {
+        title: 'Cómo valorar el inmueble: precios de oferta frente a precios reales de cierre',
+        paragraphs: [
+          'El error más extendido entre los propietarios particulares es fijar el precio de salida basándose de forma exclusiva en los anuncios publicados en portales inmobiliarios. Esas cifras representan pretensiones iniciales de otros vendedores —muchas de ellas infladas con márgenes irreales de regateo—, pero en ningún caso reflejan el valor real al que finalmente se firman las compraventas en notaría.',
+          'Madrid no es un mercado homogéneo. La cotización por metro cuadrado varía notablemente de un distrito a otro, pero también dentro de una misma calle según el tramo, la orientación solar, la altura de la planta, la presencia de ascensor, el estado de la finca o la existencia de terraza y plaza de garaje. Dos viviendas contiguas con idéntica superficie pueden tener valores de mercado dispares si una de ellas disfruta de luz natural despejada y la otra da a un patio interior sombrío.',
+          'Para definir un precio de salida competitivo y defendible conviene apoyarse en datos reales de transacciones notariales recientes de inmuebles comparables en la misma microzona. Si deseas conocer el rango real de tu propiedad sin sesgos, puedes consultar nuestra metodología en la [guía para calcular el precio de venta](/blog/calcular-precio-venta-vivienda) o solicitar un estudio profesional a nuestro equipo.',
+        ],
+      },
+      {
+        title: 'Documentación obligatoria para vender en la Comunidad de Madrid',
+        paragraphs: [
+          'Tener el expediente documental listo antes de comercializar el piso no solo transmite seriedad al comprador, sino que previene cancelaciones de última hora cuando la entidad bancaria del adquiriente solicita la documentación para tasar.',
+          'Entre la documentación esencial que debes reunir se encuentran:',
+          '1. Título de propiedad: copia autorizada de la escritura notarial de compraventa, herencia o donación debidamente inscrita.',
+          '2. Nota Simple informativa del Registro de la Propiedad: con una antigüedad inferior a tres meses, para acreditar titularidad y verificar cargas o hipotecas.',
+          '3. Certificado de Eficiencia Energética (CEE): obligatorio por normativa estatal ([Real Decreto 390/2021](https://www.boe.es/buscar/act.php?id=BOE-A-2021-9176)) y debidamente registrado en el registro autonómico de la Dirección General de Descarbonización y Transición Energética de la Comunidad de Madrid.',
+          '4. Último recibo del Impuesto sobre Bienes Inmuebles (IBI): justificante bancario de haber liquidado la anualidad en curso.',
+          '5. Certificado de la comunidad de propietarios: firmado por el administrador con el visto bueno del presidente, acreditando estar al corriente de pago de cuotas ordinarias y extraordinarias, según el artículo 9 de la Ley de Propiedad Horizontal.',
+          '6. Certificado de aptitud del edificio (ITE/IEE): si la edificación tiene más de 30 años, acreditando el estado favorable de la Inspección Técnica o Informe de Evaluación.',
+          '7. Certificado de deuda pendiente: expedido por el banco acreedor en caso de existir una hipoteca viva, para coordinar la cancelación económica y notarial simultánea el día de la firma.',
+          'Puedes profundizar en el detalle y los plazos de cada uno de estos trámites en nuestro artículo específico sobre los [documentos necesarios para vender una vivienda](/blog/documentos-vender-vivienda).',
+        ],
+      },
+      {
+        title: 'Preparación de la vivienda: home staging y fotografía profesional',
+        paragraphs: [
+          'La decisión de compra suele gestarse en los primeros segundos de visualización de un anuncio y consolidarse durante los primeros tres minutos de una visita presencial. Una vivienda sobrecargada, oscura o con excesivos objetos personales dificulta que el comprador se proyecte viviendo en ella.',
+          'El acondicionamiento básico o home staging no requiere reformas estructurales costosas: consiste en despersonalizar estancias, retirar muebles innecesarios para ganar amplitud visual, reparar pequeños desperfectos visibles (como grifos que gotean, enchufes sueltos o persianas encalladas) y optimizar la iluminación natural y artificial.',
+          'La presentación en portales debe realizarse con un reportaje fotográfico profesional de óptica adecuada, sin deformaciones angulares engañosas, complementado con un plano arquitectónico a escala acotado. En el mercado residencial madrileño, los inmuebles que presentan planos claros y fotografías de calidad editorial reciben un volumen significativamente mayor de consultas cualificadas y reducen el tiempo medio de comercialización.',
+        ],
+      },
+      {
+        title: 'Estrategia de comercialización y filtro de compradores',
+        paragraphs: [
+          'Publicar un anuncio en un portal es solo una pequeña fracción de la comercialización. Las dos primeras semanas de lanzamiento constituyen la ventana de máxima visibilidad en el mercado: los compradores activos que tienen alertas configuradas para esa zona recibirán la novedad de inmediato.',
+          'Si la vivienda sale al mercado con un sobreprecio, esos compradores cualificados la descartarán o la dejarán en espera, y cuando el propietario decida rebajar semanas después, el inmueble ya habrá perdido el atractivo de la novedad y transmitirá la imagen errónea de propiedad problemática o difícil de vender.',
+          'Asimismo, una comercialización profesional debe cribar y filtrar las llamadas entrantes antes de abrir la puerta de tu hogar. Es imprescindible distinguir a los compradores con solvencia acreditada o precalificación hipotecaria concedida de aquellos que solo curiosean o desconocen su capacidad real de endeudamiento.',
+        ],
+      },
+      {
+        title: 'Organización de visitas y conducción de la negociación',
+        paragraphs: [
+          'Las visitas deben planificarse en franjas horarias donde la vivienda reciba su mejor iluminación natural. Durante el recorrido es aconsejable mantener un trato cordial y sobrio, permitiendo que los interesados recorran los espacios con tranquilidad y resolviendo con solvencia técnica las dudas sobre costes de comunidad, orientación, reformas comunitarias aprobadas o servicios del entorno.',
+          'Cuando surge una oferta económica en firme, la negociación debe abordarse con serenidad y visión global. El precio es crucial, pero las condiciones accesorias tienen un peso idéntico en el éxito de la venta: los plazos estipulados para la firma, la cuantía entregada en concepto de señal o las condiciones suspensivas vinculadas a la concesión de su hipoteca.',
+          'Ceder en precio sin exigir a cambio compromisos firmes en plazos o garantías de solvencia suele debilitar la posición negociadora del propietario. Contar con un interlocutor profesional permite defender el valor del inmueble sin que las emociones interfieran en el acuerdo.',
+        ],
+      },
+      {
+        title: 'Contrato de arras y preparación de la escritura notarial',
+        paragraphs: [
+          'Una vez pactadas las condiciones, el compromiso debe formalizarse documentalmente. No basta con una reserva informal: lo habitual y seguro en el tráfico inmobiliario español es suscribir un contrato de arras penitenciales conforme al artículo 1454 del Código Civil.',
+          'Este documento debe identificar con precisión a las partes, la finca registral completa con sus anexos (trastero o plaza de garaje), el precio total pactado, la cantidad entregada a cuenta (generalmente entre el 5% y el 10% del total), la fecha límite improrrogable para elevar a escritura pública y la distribución de gastos de compraventa según ley o pacto.',
+          'Entre la firma de las arras y la notaría se coordinan los trámites finales: la remisión de la minuta al notario elegido por el comprador, la aportación de los justificantes de pago bancarios previos y la preparación de los medios de pago para el saldo restante mediante cheque bancario nominativo o transferencia OMF a través del Banco de España.',
+        ],
+      },
+      {
+        title: 'Errores frecuentes de los propietarios al vender en Madrid',
+        paragraphs: [
+          'A lo largo de los años en el mercado madrileño identificamos errores que se repiten con frecuencia y que acaban mermando el beneficio final del vendedor:',
+          '• Fijar el precio con apego emocional: confundir el valor sentimental de los recuerdos vividos con el valor objetivo de mercado que los compradores están dispuestos a desembolsar.',
+          '• Demorar la preparación de documentos: llegar a un acuerdo con un comprador y tener que paralizar la operación durante semanas por no disponer del certificado energético registrado o la nota registral limpia.',
+          '• Aceptar reservas ambiguas sin asesoramiento: firmar documentos redactados por terceros que atan la vivienda sin plazos claros ni penalizaciones por desistimiento.',
+          '• Descuidar la repercusión fiscal posterior: no calcular con antelación el impacto del IRPF por ganancia patrimonial ni la Plusvalía Municipal (IIVTNU) del Ayuntamiento correspondiente, lo que puede provocar sorpresas desagradables tras la firma.',
+        ],
+      },
+      {
+        title: 'El valor de un asesoramiento inmobiliario profesional',
+        paragraphs: [
+          'Vender un piso por cuenta propia es factible, pero supone asumir una carga de tiempo considerable, gestionar decenas de contactos de perfiles heterogéneos, negociar directamente sin barreras de protección y asumir la responsabilidad jurídica sobre los contratos y declaraciones emitidas.',
+          'Una consultoría inmobiliaria como Alvar Consultores no se limita a publicar un inmueble en internet. Aportamos una valoración sustentada en transacciones reales de la zona, una presentación editorial cuidada con fotografía profesional y planos, filtrado riguroso de solvencia económica de los interesados, redacción jurídica rigurosa de contratos y presencia activa junto a ti hasta la firma definitiva en notaría.',
+          'Nuestra prioridad es garantizar que obtengas el mejor valor de mercado posible para tu patrimonio con absoluta seguridad técnica y tranquilidad personal.',
+        ],
+      },
+      {
+        title: 'Planifica tu venta con criterio y solvencia',
+        paragraphs: [
+          'Si estás valorando vender tu piso en Madrid o en municipios de su corona metropolitana, el mejor punto de partida es disponer de un análisis objetivo de la situación.',
+          'Te invitamos a conocer en detalle nuestra propuesta de servicio para propietarios en nuestra sección de [venta de inmuebles](/vender), donde podrás solicitar una valoración profesional y personalizada de tu propiedad.',
+          'También puedes ponerte en contacto directo con nuestro equipo a través de la página de [contacto](/contacto) para plantearnos las particularidades de tu caso sin ningún compromiso.',
+        ],
+      },
+    ],
+  },
+  {
+    ...blogArticleMetadata.expensesBuyingHomeMadrid,
+
+    image: '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp',
+
+    imageAlt:
+      'Perspectiva de arquitectura residencial en Madrid y documentación para la compra de una vivienda',
+
+    title:
+      'Gastos al comprar una vivienda en Madrid: impuestos, notaría y otros costes',
+
+    seoTitle:
+      'Gastos al comprar vivienda en Madrid | Impuestos y costes reales',
+
+    seoDescription:
+      'Desglose actualizado de gastos e impuestos al comprar piso en Madrid: ITP al 6%, IVA, AJD, aranceles notariales, registro, tasación y ejemplo con presupuesto real.',
+
+    category: 'Comprar',
+
+    excerpt:
+      'Descubre con exactitud qué impuestos, aranceles y gastos adicionales acompañan a la compra de una vivienda en Madrid, con ejemplos prácticos y normativa vigente.',
+
+    readingTime: '12 min',
+
+    intro:
+      'Uno de los errores más habituales al planificar la adquisición de una vivienda en la Comunidad de Madrid es calcular únicamente el precio acordado de compraventa. En la práctica, cualquier comprador debe prever una provisión económica adicional para hacer frente a los tributos autonómicos o estatales, los aranceles de notaría y registro, la tasación y los posibles costes de gestión. Esta partida suplementaria suele oscilar entre el 10% y el 12% del precio del inmueble, lo que significa que, junto con el 20% de entrada no financiado por una hipoteca convencional, es imprescindible disponer de un ahorro previo cercano al 30% o 32% del valor total de la operación.',
+
+    sections: [
+      {
+        title: 'Por qué calcular solo el precio de compra conduce a errores graves',
+        paragraphs: [
+          'Al iniciar la búsqueda de piso, es fácil entusiasmarse con las cuotas hipotecarias que ofrecen los simuladores en línea. Sin embargo, la concesión hipotecaria habitual por parte de las entidades bancarias cubre, como norma general, hasta el 80% del valor de tasación o del precio de compraventa (el menor de ambos). El 20% restante debe aportarse con fondos propios.',
+          'A ese 20% de entrada hay que añadir obligatoriamente los tributos de la transmisión patrimonial y los gastos de formalización jurídica. Si no se calculan estos costes con precisión desde el primer día, el comprador puede encontrarse con dificultades financieras imprevistas tras haber suscrito un contrato de arras o haber comprometido una señal.',
+          'Tener claras las partidas desde el principio permite definir un rango de búsqueda realista y negociar la compraventa con margen de seguridad económica.',
+        ],
+      },
+      {
+        title: 'Vivienda de segunda mano vs. obra nueva: la gran diferencia fiscal',
+        paragraphs: [
+          'La naturaleza del inmueble determina por completo la factura fiscal inicial de la compraventa. En el sistema tributario español no se pagan los mismos impuestos si el piso se adquiere a un particular o si se compra directamente a un promotor como primera entrega.',
+          'Para viviendas de segunda mano (transmisiones onerosas entre particulares), el tributo aplicable es el Impuesto sobre Transmisiones Patrimoniales (ITP), cedido y gestionado por la Comunidad de Madrid.',
+          'Para viviendas de obra nueva (primera transmisión efectuada por el promotor o constructor), la operación queda sujeta al Impuesto sobre el Valor Añadido (IVA), de carácter estatal, y de forma complementaria al impuesto de Actos Jurídicos Documentados (AJD) en su modalidad de documentos notariales, gestionado por la comunidad autónoma.',
+        ],
+      },
+      {
+        title: 'El ITP en la Comunidad de Madrid y el valor de referencia de Catastro',
+        paragraphs: [
+          'En la Comunidad de Madrid, el tipo general del Impuesto sobre Transmisiones Patrimoniales (ITP) para la compra de vivienda es del 6%, regulado en el [Decreto Legislativo 1/2010](https://www.comunidad.madrid/servicios/atencion-contribuyente/impuesto-transmisiones-patrimoniales-actos-juridicos-documentados). Se trata de uno de los tipos más moderados de España en comparación con otras comunidades autónomas donde oscila entre el 8% y el 10%.',
+          'Existen tipos reducidos en la normativa madrileña, como el 4% aplicable a familias numerosas que adquieran su vivienda habitual, siempre que cumplan los requisitos de límite de superficie y plazos de ocupación previstos legalmente.',
+          'Aspecto crucial sobre la base imponible: desde la entrada en vigor de la Ley 11/2021 de medidas contra el fraude fiscal, la base sobre la que se calcula el ITP es el mayor entre dos valores: el precio escriturado en la notaría o el Valor de Referencia determinado por la Dirección General del Catastro. Si adquieres un inmueble por 220.000 € pero el Catastro le asigna un valor de referencia de 240.000 €, tributarás el 6% sobre 240.000 €, salvo que inicies un procedimiento de rectificación de autoliquidación con prueba pericial en contrario.',
+          'El impuesto se liquida a través del Modelo 600 de la Comunidad de Madrid en un plazo improrrogable de 30 días hábiles a contar desde el día siguiente a la firma de la escritura notarial.',
+        ],
+      },
+      {
+        title: 'Impuestos en vivienda de obra nueva: IVA y AJD',
+        paragraphs: [
+          'Si la vivienda adquirida es a estrenar, el comprador debe abonar al promotor el 10% de IVA (o el 4% si se trata de una vivienda de protección oficial de régimen especial o de promoción pública). Este importe se abona fraccionado en los pagos a cuenta previos y en el desembolso final el día de la firma de la escritura.',
+          'Además del IVA, la primera copia de la escritura de compraventa de vivienda nueva tributa por Actos Jurídicos Documentados (AJD). En la Comunidad de Madrid, el tipo general de AJD es del 0,75% sobre el valor escriturado.',
+          'En conjunto, la carga impositiva directa de una vivienda nueva en Madrid asciende al 10,75% (10% IVA + 0,75% AJD), sensiblemente superior al 6% de una vivienda de segunda mano.',
+        ],
+      },
+      {
+        title: 'Aranceles de Notaría y Registro de la Propiedad',
+        paragraphs: [
+          'Los honorarios de los notarios y los registradores de la propiedad están regulados por el Estado mediante aranceles oficiales aprobados por el [Real Decreto 1426/1989](https://www.boe.es/buscar/act.php?id=BOE-A-1989-28157) (para notarios) y el [Real Decreto 1427/1989](https://www.boe.es/buscar/act.php?id=BOE-A-1989-28158) (para registradores). Ningún profesional puede cobrar libremente fuera de esta escala.',
+          'El coste de la escritura de compraventa en notaría oscila habitualmente entre 600 € y 1.100 €, en función del importe del inmueble, el número de páginas de la escritura, la cantidad de copias autorizadas y la complejidad del otorgamiento.',
+          'La inscripción de la titularidad en el Registro de la Propiedad correspondiente garantiza la plena seguridad jurídica frente a terceros y protege al comprador. El arancel registral suele situarse entre 400 € y 750 €, variando igualmente según el valor del bien.',
+        ],
+      },
+      {
+        title: 'Gastos de la hipoteca: qué asume el banco y qué paga el comprador',
+        paragraphs: [
+          'Desde la aprobación de la [Ley 5/2019 reguladora de los contratos de crédito inmobiliario](https://www.boe.es/buscar/act.php?id=BOE-A-2019-3814), el reparto de los costes de constitución del préstamo hipotecario cambió radicalmente a favor del prestatario.',
+          'Por imperativo legal, la entidad bancaria que concede el préstamo debe asumir obligatoriamente:',
+          '• Los aranceles de la notaría para la escritura de préstamo hipotecario.',
+          '• Los gastos de inscripción de la hipoteca en el Registro de la Propiedad.',
+          '• Los honorarios de la gestoría encargada de tramitar la escritura hipotecaria.',
+          '• El impuesto de Actos Jurídicos Documentados (AJD) correspondiente a la garantía hipotecaria.',
+          'Por su parte, el comprador únicamente tiene que pagar:',
+          '1. La tasación hipotecaria oficial: necesaria para que el banco conozca el valor de garantía del inmueble. El comprador tiene derecho legal a elegir cualquier sociedad de tasación homologada por el Banco de España, cuyo coste suele rondar entre 300 € y 600 €.',
+          '2. Las copias de la escritura hipotecaria que solicite para su propio archivo personal (unos 30 € a 50 €).',
+        ],
+      },
+      {
+        title: 'Tasación, gestoría de compraventa y gastos adicionales',
+        paragraphs: [
+          'Conviene distinguir entre la gestoría de la hipoteca (que paga el banco) y la gestoría de la compraventa. Si compras al contado o decides encargar la liquidación del ITP y la inscripción registral a una gestoría profesional, su tarifa suele rondar los 300 € a 500 € más IVA.',
+          'Otros desembolsos menores que conviene considerar en la planificación financiera son:',
+          '• Solicitud de notas simples previas en el Registro para comprobar cargas (unos 9 € a 20 € si se gestiona telemáticamente).',
+          '• Comisiones bancarias por emisión de cheques bancarios nominativos o transferencias especiales OMF del Banco de España para el pago en notaría (que varían según las condiciones pactadas con tu entidad).',
+          '• Alta o cambio de titularidad en suministros básicos de agua, luz y gas (habitualmente entre 50 € y 200 € en función de si los contratos estaban de alta o precisan boletín actualizado).',
+        ],
+      },
+      {
+        title: 'Ejemplo práctico de presupuesto: compra de un piso de 250.000 € en Madrid',
+        paragraphs: [
+          'Para ilustrar con absoluta claridad cómo se distribuyen estas partidas, planteamos un supuesto práctico realista en la Comunidad de Madrid:',
+          'Hipótesis del ejemplo: Compra de una vivienda de segunda mano por 250.000 €, cuyo valor de referencia catastral no supera el precio pactado, financiada mediante hipoteca al 80% (200.000 € de préstamo y 50.000 € de fondos propios para la entrada):',
+          '1. Impuesto de Transmisiones Patrimoniales (ITP al 6% en Madrid): 15.000 €.',
+          '2. Arancel notarial (escritura de compraventa): aprox. 850 €.',
+          '3. Arancel registral (inscripción en el Registro de la Propiedad): aprox. 520 €.',
+          '4. Tasación oficial homologada: aprox. 400 €.',
+          '5. Gestoría para tramitación de compraventa e impuestos: aprox. 430 €.',
+          'Total gastos e impuestos: 17.200 € (un 6,88% sobre el precio de compra).',
+          'Ahorro previo total necesario: los 50.000 € de la entrada del 20% más los 17.200 € de gastos e impuestos suman 67.200 € de desembolso inicial imprescindible.',
+          'Si la misma vivienda fuera de obra nueva, el coste fiscal ascendería al 10% de IVA (25.000 €) más el 0,75% de AJD (1.875 €), elevando los gastos e impuestos a unos 28.675 € (un 11,47% del precio).',
+        ],
+      },
+      {
+        title: 'Preguntas frecuentes de compradores de vivienda en Madrid',
+        paragraphs: [
+          '• ¿Se pueden financiar los gastos con la hipoteca? Salvo casos muy excepcionales o perfiles de funcionarios con convenios singulares, la inmensa mayoría de las entidades financieras no prestan dinero para sufragar impuestos ni aranceles. Deben proceder de ahorro previo acumulado.',
+          '• ¿Qué plazo hay para pagar los impuestos? Dispones de 30 días hábiles desde el día siguiente a la firma de la escritura pública para liquidar el ITP (segunda mano) o el AJD (obra nueva). Superar este plazo genera recargos automáticos e intereses de demora.',
+          '• ¿Puedo impugnar el valor de referencia de Catastro si es superior al precio de compra? Sí. Si el valor catastral asignado al inmueble es notablemente superior al precio real acordado por encontrarse el piso para reformar o deteriorado, puedes autoliquidar por el valor de referencia y solicitar posteriormente la rectificación y devolución de ingresos indebidos aportando fotografías, informe de tasación y presupuesto de reforma.',
+          '• ¿Cómo puedo revisar opciones de vivienda disponibles en Madrid? Puedes consultar nuestra selección actualizada de propiedades residenciales en nuestro catálogo de [inmuebles en venta y alquiler](/inmuebles).',
+        ],
+      },
+      {
+        title: 'Asesoramiento inmobiliario con criterio para comprar con seguridad',
+        paragraphs: [
+          'Comprar una vivienda es probablemente una de las decisiones patrimoniales más relevantes de tu vida. Contar con un asesoramiento profesional riguroso te protege frente a cláusulas abusivas en contratos de reserva, detecta cargas ocultas en el Registro y verifica la situación real de la comunidad de vecinos y del edificio antes de comprometer tu dinero.',
+          'En Alvar Consultores Inmobiliarios acompañamos a los compradores con total transparencia técnica, ayudándote a estudiar la viabilidad económica y jurídica de cada inmueble para que tomes decisiones informadas y con plena serenidad.',
+          'Si estás buscando tu próximo hogar o necesitas orientación sobre una operación en marcha, contacta con nosotros a través de nuestro formulario de [contacto](/contacto) y analizaremos tu situación con el criterio y la cercanía que nos caracteriza.',
+        ],
+      },
+    ],
+  },
+  {
     ...blogArticleMetadata.sellHomeInPinto,
 
     image: '/images/alvar/blog/blog-vender-vivienda-pinto.webp',
