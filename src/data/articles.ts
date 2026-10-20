@@ -5,10 +5,10 @@ export const articles: Article[] = [
   {
     ...blogArticleMetadata.sellFlatInMadrid,
 
-    image: '/images/alvar/heroes/hero-vender-inmueble.webp',
+    image: '/images/alvar/blog/como-vender-piso-madrid.webp',
 
     imageAlt:
-      'Mesa de trabajo editorial con planos, llaves y documentación para la venta de un piso en Madrid',
+      'Llaves y planos sobre una mesa de trabajo para preparar la venta de un piso en Madrid',
 
     title:
       'Cómo vender un piso en Madrid: pasos, documentación y errores que evitar',
@@ -124,10 +124,10 @@ export const articles: Article[] = [
   {
     ...blogArticleMetadata.expensesBuyingHomeMadrid,
 
-    image: '/images/alvar/heroes/hero-comprar-inmuebles-madrid.webp',
+    image: '/images/alvar/blog/gastos-comprar-vivienda-madrid.webp',
 
     imageAlt:
-      'Perspectiva de arquitectura residencial en Madrid y documentación para la compra de una vivienda',
+      'Fachada residencial elegante que ilustra los gastos de comprar una vivienda en Madrid',
 
     title:
       'Gastos al comprar una vivienda en Madrid: impuestos, notaría y otros costes',
