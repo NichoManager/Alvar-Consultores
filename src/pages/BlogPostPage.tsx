@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { Breadcrumbs } from '../components/seo/Breadcrumbs';
 import { JsonLd } from '../components/seo/JsonLd';
@@ -9,6 +10,56 @@ import { getArticleBySlug } from '../data/articles';
 import { formatDate } from '../utils/contact';
 
 const SITE_URL = 'https://www.alvarconsultoresinmobiliarios.es';
+
+function renderParagraphWithLinks(text: string): ReactNode {
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  if (!linkRegex.test(text)) {
+    return text;
+  }
+
+  const elements: (string | ReactNode)[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  linkRegex.lastIndex = 0;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    const [fullMatch, label, href] = match;
+    const startIndex = match.index;
+
+    if (startIndex > lastIndex) {
+      elements.push(text.slice(lastIndex, startIndex));
+    }
+
+    const isInternal = href.startsWith('/') || href.startsWith('#');
+    if (isInternal) {
+      elements.push(
+        <Link key={`${href}-${startIndex}`} to={href} className="blog-link">
+          {label}
+        </Link>,
+      );
+    } else {
+      elements.push(
+        <a
+          key={`${href}-${startIndex}`}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="blog-link"
+        >
+          {label}
+        </a>,
+      );
+    }
+
+    lastIndex = startIndex + fullMatch.length;
+  }
+
+  if (lastIndex < text.length) {
+    elements.push(text.slice(lastIndex));
+  }
+
+  return elements;
+}
 
 export function BlogPostPage() {
   const { slug = '' } = useParams();
@@ -145,7 +196,9 @@ export function BlogPostPage() {
               <header className="blog-post__content-intro">
                 <p className="eyebrow">ANÁLISIS INMOBILIARIO</p>
 
-                <p className="lead-copy">{article.intro}</p>
+                <p className="lead-copy">
+                  {renderParagraphWithLinks(article.intro)}
+                </p>
 
                 <div className="blog-post__content-meta">
                   <span>{article.category}</span>
@@ -174,9 +227,9 @@ export function BlogPostPage() {
                     <div>
                       <h2>{section.title}</h2>
 
-                      {section.paragraphs.map((paragraph) => (
-                        <p key={paragraph}>
-                          {paragraph}
+                      {section.paragraphs.map((paragraph, pIndex) => (
+                        <p key={`${section.title}-${pIndex}`}>
+                          {renderParagraphWithLinks(paragraph)}
                         </p>
                       ))}
                     </div>

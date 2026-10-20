@@ -3133,6 +3133,22 @@
   margin-bottom: 0;
 }
 
+.blog-post__section p a,
+.blog-post__section .blog-link {
+  color: var(--forest);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--sand-dark);
+  font-weight: 500;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.blog-post__section p a:hover,
+.blog-post__section .blog-link:hover {
+  color: var(--gold);
+  text-decoration-color: var(--gold);
+}
+
 .article-cta {
   position: relative;
   display: grid;
