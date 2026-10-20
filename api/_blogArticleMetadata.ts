@@ -1,6 +1,14 @@
 const defineArticleMetadata = (slug: string, date: string) => ({ slug, date });
 
 export const blogArticleMetadata = {
+  sellFlatInMadrid: defineArticleMetadata(
+    'como-vender-piso-madrid',
+    '2026-10-15',
+  ),
+  expensesBuyingHomeMadrid: defineArticleMetadata(
+    'gastos-comprar-vivienda-madrid',
+    '2026-10-20',
+  ),
   sellHomeInPinto: defineArticleMetadata(
     'como-vender-vivienda-pinto',
     '2026-08-22',
