@@ -94,6 +94,17 @@ export function HomePage() {
       <JsonLd
         data={{
           '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          '@id': 'https://alvarconsultoresinmobiliarios.es/#website',
+          url: 'https://alvarconsultoresinmobiliarios.es/',
+          name: business.name,
+          inLanguage: 'es-ES',
+        }}
+      />
+
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
           '@type': [
             'RealEstateAgent',
             'LocalBusiness',
