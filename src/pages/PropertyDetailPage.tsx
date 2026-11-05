@@ -20,10 +20,7 @@ import type { Property } from '../types/content';
 import { whatsappUrl } from '../utils/contact';
 import '../styles/property-details.css';
 
-const SITE_URL = (
-  import.meta.env.VITE_SITE_URL ??
-  'https://www.alvarconsultoresinmobiliarios.es'
-).replace(/\/$/, '');
+const SITE_URL = 'https://alvarconsultoresinmobiliarios.es';
 
 const COOKIE_CONSENT_STORAGE_KEY =
   'alvar-cookie-consent-v1';

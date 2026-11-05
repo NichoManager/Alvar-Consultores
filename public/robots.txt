@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.alvarconsultoresinmobiliarios.es/sitemap.xml
+Sitemap: https://alvarconsultoresinmobiliarios.es/sitemap.xml

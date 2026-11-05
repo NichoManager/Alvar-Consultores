@@ -9,7 +9,7 @@ import { InternalHero } from '../components/ui/InternalHero';
 import { getArticleBySlug } from '../data/articles';
 import { formatDate } from '../utils/contact';
 
-const SITE_URL = 'https://www.alvarconsultoresinmobiliarios.es';
+const SITE_URL = 'https://alvarconsultoresinmobiliarios.es';
 
 function renderParagraphWithLinks(text: string): ReactNode {
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;

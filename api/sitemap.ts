@@ -5,7 +5,7 @@ declare const process: {
   env: Record<string, string | undefined>;
 };
 
-const DEFAULT_SITE_URL = 'https://www.alvarconsultoresinmobiliarios.es';
+const DEFAULT_SITE_URL = 'https://alvarconsultoresinmobiliarios.es';
 const STATIC_PATHS = [
   '/',
   '/inmuebles',
@@ -33,6 +33,10 @@ function getSiteUrl() {
     const url = new URL(configuredUrl || DEFAULT_SITE_URL);
     if (url.protocol !== 'https:' && url.protocol !== 'http:') {
       return DEFAULT_SITE_URL;
+    }
+    // Production redirects www to apex; avoid redirecting URLs in the sitemap.
+    if (url.hostname === 'www.alvarconsultoresinmobiliarios.es') {
+      url.hostname = 'alvarconsultoresinmobiliarios.es';
     }
     return url.toString().replace(/\/+$/, '');
   } catch {

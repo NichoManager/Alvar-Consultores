@@ -10,10 +10,7 @@ interface SeoHeadProps {
   imageAlt?: string;
 }
 
-const SITE_URL = (
-  import.meta.env.VITE_SITE_URL ??
-  'https://www.alvarconsultoresinmobiliarios.es'
-).replace(/\/$/, '');
+const SITE_URL = 'https://alvarconsultoresinmobiliarios.es';
 
 const DEFAULT_SOCIAL_IMAGE =
   '/images/alvar/og-alvar-consultores.png';
