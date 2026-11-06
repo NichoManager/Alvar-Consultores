@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { isIndexableHost } from './indexing';
 
 interface SeoHeadProps {
   title: string;
@@ -17,9 +18,6 @@ const DEFAULT_SOCIAL_IMAGE =
 
 const DEFAULT_IMAGE_ALT =
   'Alvar Consultores Inmobiliarios';
-
-const SITE_IS_INDEXABLE =
-  import.meta.env.VITE_ALLOW_INDEXING === 'true';
 
 function setMeta(
   property: string,
@@ -95,7 +93,7 @@ export function SeoHead({
     const imageType =
       getImageType(image);
 
-    const robots = !SITE_IS_INDEXABLE
+    const robots = !isIndexableHost(window.location.hostname)
       ? 'noindex, nofollow'
       : noIndex
         ? 'noindex, follow'

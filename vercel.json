@@ -8,5 +8,25 @@
       "source": "/((?!api/|assets/|images/|video/|robots.txt|sitemap.xml|favicon.svg|favicon.ico).*)",
       "destination": "/index.html"
     }
+  ],
+  "headers": [
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/admin",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
   ]
 }

@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import { NoIndex } from '../../components/seo/NoIndex';
 import '../../styles/admin.css';
 
 export function AdminLoginPage() {
@@ -132,6 +133,7 @@ export function AdminLoginPage() {
 
   return (
     <main className="admin-login">
+      <NoIndex />
       <section
         className="admin-login__panel"
         aria-labelledby="admin-login-title"

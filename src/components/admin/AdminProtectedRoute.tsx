@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { Navigate, Outlet } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import { NoIndex } from '../seo/NoIndex';
 
 type AuthStatus = 'loading' | 'allowed' | 'denied';
 
@@ -60,6 +61,7 @@ export function AdminProtectedRoute() {
   if (status === 'loading') {
     return (
       <main className="admin-loading">
+        <NoIndex />
         <p>Accediendo al CRM...</p>
       </main>
     );
@@ -78,5 +80,10 @@ export function AdminProtectedRoute() {
     return null;
   }
 
-  return <Outlet context={{ user } satisfies AdminRouteContext} />;
+  return (
+    <>
+      <NoIndex />
+      <Outlet context={{ user } satisfies AdminRouteContext} />
+    </>
+  );
 }
