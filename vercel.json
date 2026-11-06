@@ -1,33 +1,15 @@
 {
-  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap"
     },
     {
-      "source": "/inmuebles/:slug",
-      "destination": "/_spa.html"
-    },
-    {
-      "source": "/admin",
-      "destination": "/_spa.html"
-    },
-    {
-      "source": "/admin/:path*",
-      "destination": "/_spa.html"
+      "source": "/((?!api/|assets/|images/|video/|robots.txt|sitemap.xml|favicon.svg|favicon.ico).*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
-    {
-      "source": "/admin",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        }
-      ]
-    },
     {
       "source": "/admin/(.*)",
       "headers": [
@@ -38,7 +20,7 @@
       ]
     },
     {
-      "source": "/_spa",
+      "source": "/admin",
       "headers": [
         {
           "key": "X-Robots-Tag",

@@ -1,18 +1,33 @@
 import { useEffect } from 'react';
 import { isIndexableHost } from './indexing';
-import { buildSeoMeta, type SeoProps } from './seoMeta';
 
-/**
- * Durante el prerender (Node, sin `window`) SeoHead no escribe en ningún <head>:
- * deja sus propiedades en una variable global que scripts/prerender.mjs lee para
- * escribir los metadatos en el HTML inicial. En el navegador no tiene ningún efecto.
- */
-declare global {
-  var __SEO_HEAD__: SeoProps | undefined;
+interface SeoHeadProps {
+  title: string;
+  description: string;
+  path?: string;
+  type?: 'website' | 'article';
+  noIndex?: boolean;
+  image?: string;
+  imageAlt?: string;
 }
 
-function setMeta(property: string, content: string, attribute = 'name') {
-  let element = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${property}"]`);
+const SITE_URL = 'https://alvarconsultoresinmobiliarios.es';
+
+const DEFAULT_SOCIAL_IMAGE =
+  '/images/alvar/og-alvar-consultores.png';
+
+const DEFAULT_IMAGE_ALT =
+  'Alvar Consultores Inmobiliarios';
+
+function setMeta(
+  property: string,
+  content: string,
+  attribute = 'name',
+) {
+  let element =
+    document.head.querySelector<HTMLMetaElement>(
+      `meta[${attribute}="${property}"]`,
+    );
 
   if (!element) {
     element = document.createElement('meta');
@@ -23,48 +38,219 @@ function setMeta(property: string, content: string, attribute = 'name') {
   element.content = content;
 }
 
-function removeMeta(property: string, attribute = 'name') {
-  document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${property}"]`)?.remove();
-}
-
-export function SeoHead(props: SeoProps) {
-  if (typeof window === 'undefined') {
-    globalThis.__SEO_HEAD__ = props;
-  }
-
-  const { title, description, path, type, noIndex, image, imageAlt } = props;
-
-  useEffect(() => {
-    const meta = buildSeoMeta(
-      { title, description, path, type, noIndex, image, imageAlt },
-      isIndexableHost(window.location.hostname),
+function removeMeta(
+  property: string,
+  attribute = 'name',
+) {
+  const element =
+    document.head.querySelector<HTMLMetaElement>(
+      `meta[${attribute}="${property}"]`,
     );
 
-    document.title = meta.title;
+  element?.remove();
+}
 
-    for (const [name, content] of Object.entries(meta.names)) {
-      setMeta(name, content);
+function getImageType(image: string) {
+  const cleanImage = image
+    .split('?')[0]
+    .toLowerCase();
+
+  if (cleanImage.endsWith('.png')) {
+    return 'image/png';
+  }
+
+  if (
+    cleanImage.endsWith('.jpg') ||
+    cleanImage.endsWith('.jpeg')
+  ) {
+    return 'image/jpeg';
+  }
+
+  if (cleanImage.endsWith('.webp')) {
+    return 'image/webp';
+  }
+
+  return '';
+}
+
+export function SeoHead({
+  title,
+  description,
+  path = '/',
+  type = 'website',
+  noIndex = false,
+  image = DEFAULT_SOCIAL_IMAGE,
+  imageAlt = DEFAULT_IMAGE_ALT,
+}: SeoHeadProps) {
+  useEffect(() => {
+    const canonicalUrl =
+      `${SITE_URL}${path}`;
+
+    const imageUrl = image.startsWith('http')
+      ? image
+      : `${SITE_URL}${image}`;
+
+    const imageType =
+      getImageType(image);
+
+    const robots = !isIndexableHost(window.location.hostname)
+      ? 'noindex, nofollow'
+      : noIndex
+        ? 'noindex, follow'
+        : 'index, follow';
+
+    document.title = title;
+
+    setMeta(
+      'description',
+      description,
+    );
+
+    setMeta(
+      'robots',
+      robots,
+    );
+
+    setMeta(
+      'og:title',
+      title,
+      'property',
+    );
+
+    setMeta(
+      'og:description',
+      description,
+      'property',
+    );
+
+    setMeta(
+      'og:type',
+      type,
+      'property',
+    );
+
+    setMeta(
+      'og:url',
+      canonicalUrl,
+      'property',
+    );
+
+    setMeta(
+      'og:site_name',
+      'Alvar Consultores Inmobiliarios',
+      'property',
+    );
+
+    setMeta(
+      'og:locale',
+      'es_ES',
+      'property',
+    );
+
+    setMeta(
+      'og:image',
+      imageUrl,
+      'property',
+    );
+
+    setMeta(
+      'og:image:alt',
+      imageAlt,
+      'property',
+    );
+
+    if (imageType) {
+      setMeta(
+        'og:image:type',
+        imageType,
+        'property',
+      );
+    } else {
+      removeMeta(
+        'og:image:type',
+        'property',
+      );
     }
 
-    for (const [property, content] of Object.entries(meta.properties)) {
-      setMeta(property, content, 'property');
+    if (
+      image === DEFAULT_SOCIAL_IMAGE
+    ) {
+      setMeta(
+        'og:image:width',
+        '1731',
+        'property',
+      );
+
+      setMeta(
+        'og:image:height',
+        '909',
+        'property',
+      );
+    } else {
+      removeMeta(
+        'og:image:width',
+        'property',
+      );
+
+      removeMeta(
+        'og:image:height',
+        'property',
+      );
     }
 
-    // Estas dos solo se declaran con la imagen social por defecto; se retiran en otro caso.
-    for (const property of ['og:image:type', 'og:image:width', 'og:image:height']) {
-      if (!(property in meta.properties)) removeMeta(property, 'property');
-    }
+    setMeta(
+      'twitter:card',
+      'summary_large_image',
+    );
 
-    let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    setMeta(
+      'twitter:title',
+      title,
+    );
+
+    setMeta(
+      'twitter:description',
+      description,
+    );
+
+    setMeta(
+      'twitter:image',
+      imageUrl,
+    );
+
+    setMeta(
+      'twitter:image:alt',
+      imageAlt,
+    );
+
+    let canonical =
+      document.head.querySelector<HTMLLinkElement>(
+        'link[rel="canonical"]',
+      );
 
     if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.rel = 'canonical';
-      document.head.appendChild(canonical);
+      canonical =
+        document.createElement('link');
+
+      canonical.rel =
+        'canonical';
+
+      document.head.appendChild(
+        canonical,
+      );
     }
 
-    canonical.href = meta.canonical;
-  }, [description, image, imageAlt, noIndex, path, title, type]);
+    canonical.href =
+      canonicalUrl;
+  }, [
+    description,
+    image,
+    imageAlt,
+    noIndex,
+    path,
+    title,
+    type,
+  ]);
 
   return null;
 }
