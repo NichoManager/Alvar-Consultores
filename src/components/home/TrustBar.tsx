@@ -1,10 +1,10 @@
 const items = [
-  'Valoración profesional',
-  'Madrid capital y alrededores',
+  'Valdemoro · Sur de Madrid · Madrid',
+  'Valoración realista, sin compromiso',
   'Compra · Venta · Alquiler',
   'Acompañamiento hasta la firma',
   '18+ años de experiencia',
-  'Asesoramiento inmobiliario personalizado',
+  'Trato directo en cada operación',
 ];
 
 export function TrustBar() {

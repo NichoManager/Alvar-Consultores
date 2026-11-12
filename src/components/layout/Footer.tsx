@@ -3,7 +3,11 @@ import { business } from '../../data/business';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Container';
 
-export function Footer() {
+type FooterProps = {
+  onOpenCookiePreferences: () => void;
+};
+
+export function Footer({ onOpenCookiePreferences }: FooterProps) {
   return (
     <footer className="site-footer">
       <Container>
@@ -110,6 +114,14 @@ export function Footer() {
             <Link to="/aviso-legal">Aviso legal</Link>
             <Link to="/privacidad">Privacidad</Link>
             <Link to="/cookies">Cookies</Link>
+            <button
+              type="button"
+              className="site-footer__cookie-button"
+              onClick={onOpenCookiePreferences}
+              aria-haspopup="dialog"
+            >
+              Configurar cookies
+            </button>
             <Link
               to="/admin/login"
               aria-label="Acceder al área privada de Alvar Consultores"

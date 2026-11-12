@@ -7,11 +7,11 @@ export function LocationBlock() {
       <Container>
         <div className="location-block__grid">
           <div className="location-block__content">
-            <p className="eyebrow">PRESENCIA Y ÁREA DE TRABAJO</p>
-            <h2 id="location-title">Madrid como punto de partida. Alrededores como terreno de trabajo.</h2>
+            <p className="eyebrow">NUESTRA OFICINA</p>
+            <h2 id="location-title">Empieza por una conversación. Te recibimos con cita previa en Madrid.</h2>
             <p className="location-block__lead">
-              Trabajamos con clientes en Madrid capital, área metropolitana y municipios próximos, combinando lectura
-              local y acompañamiento personalizado.
+              Puedes llamarnos o escribirnos por WhatsApp para contarnos tu caso. Si después prefieres vernos, te
+              esperamos en {business.addressLine1}.
             </p>
           </div>
 
@@ -34,23 +34,23 @@ export function LocationBlock() {
           </div>
         </div>
 
-       <div className="location-block__area">
-  <div className="location-block__area-copy">
-    <span>Área de trabajo</span>
-    <strong>Madrid capital</strong>
-    <p>Área metropolitana · Municipios próximos</p>
-  </div>
+        <div className="location-block__area">
+          <div className="location-block__area-copy">
+            <span>Sede</span>
+            <strong>Madrid capital</strong>
+            <p>Desde aquí atendemos Valdemoro y el sur de Madrid.</p>
+          </div>
 
-  <div className="location-block__area-lines" aria-hidden="true">
-    <span />
-    <span />
-    <span />
-  </div>
+          <div className="location-block__area-lines" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
 
-  <small>
-    Lectura local · Acompañamiento personalizado
-  </small>
-</div>
+          <small>
+            {business.name}
+          </small>
+        </div>
       </Container>
     </section>
   );

@@ -23,24 +23,23 @@ export function Hero() {
       <Container className="hero__video-content">
         <div className="hero__content">
           <p className="eyebrow hero-animate hero-animate--1">
-            INMOBILIARIA EN MADRID · ASESORAMIENTO PERSONAL
+            ASESORAMIENTO INMOBILIARIO PERSONAL
           </p>
 
           <h1 className="hero-animate hero-animate--2">
-            Inmobiliaria en Madrid.
+            Inmobiliaria en Valdemoro{' '}
             <br />
             <em>
-              Con criterio en cada operación.
+              y el sur de Madrid.
             </em>
           </h1>
 
           <p className="hero__lead hero-animate hero-animate--3">
-            Con base en Madrid y experiencia en su mercado
-            inmobiliario, acompañamos operaciones de compra,
-            venta e inversión con análisis, estrategia y trato
-            directo. También estudiamos operaciones en otras
-            ubicaciones cuando el inmueble y el servicio lo
-            requieren.
+            Tu próxima decisión, bien acompañada. Te ayudamos a
+            vender, comprar y alquilar con una valoración
+            realista, una estrategia personalizada y
+            acompañamiento hasta la firma. Atención con cita
+            previa desde nuestra oficina en Madrid.
           </p>
 
           <div className="button-row hero-animate hero-animate--4">

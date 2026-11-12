@@ -5673,13 +5673,40 @@ em {
   gap: 0.65rem 1.5rem;
 }
 
-.site-footer__legal a {
+.site-footer__legal a,
+.site-footer__cookie-button {
   transition: color 0.25s var(--ease);
 }
 
+.site-footer__cookie-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 @media (hover: hover) and (pointer: fine) {
-  .site-footer__legal a:hover {
+  .site-footer__legal a:hover,
+  .site-footer__cookie-button:hover {
     color: var(--sand);
+  }
+}
+
+/*
+ * Reserva la franja inferior del Footer para el botón flotante de WhatsApp:
+ * al llegar al final de la página no debe tapar los enlaces legales.
+ */
+.site-footer .site-footer__legal {
+  padding-bottom: calc(5.25rem + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 700px) {
+  .site-footer .site-footer__legal {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom));
   }
 }
 

@@ -72,6 +72,16 @@
   }
 }
 
+/*
+ * En pantallas muy estrechas los dos CTA del Hero se apilan a todo el ancho
+ * y el botón flotante tapaba su extremo derecho. Se reserva esa columna.
+ */
+@media (max-width: 360px) {
+  .hero .button-row {
+    padding-right: 4rem;
+  }
+}
+
 @media (max-width: 900px) {
   .whatsapp-floating-button--property-detail {
     display: none;

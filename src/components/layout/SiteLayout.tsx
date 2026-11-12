@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -102,6 +103,14 @@ export function SiteLayout() {
     setExternalContentAllowed,
   ] = useState(false);
 
+  const consentPanelRef =
+    useRef<HTMLDivElement>(null);
+
+  const returnFocusRef =
+    useRef<HTMLElement | null>(
+      null,
+    );
+
   useEffect(() => {
     if (!location.hash) {
       return;
@@ -172,6 +181,51 @@ export function SiteLayout() {
     );
   }
 
+  // Reabre el panel de preferencias existente desde el Footer.
+  // Solo lee el consentimiento guardado: no lo modifica.
+  function openCookiePreferences() {
+    const savedPreferences =
+      readCookiePreferences();
+
+    if (savedPreferences) {
+      setExternalContentAllowed(
+        savedPreferences.externalContent,
+      );
+    }
+
+    returnFocusRef.current =
+      document.activeElement instanceof
+      HTMLElement
+        ? document.activeElement
+        : null;
+
+    setShowPreferences(
+      true,
+    );
+  }
+
+  // Foco: al abrir desde el Footer pasa al panel y,
+  // al cerrarlo, vuelve al enlace que lo abrió.
+  useEffect(() => {
+    if (showPreferences) {
+      if (returnFocusRef.current) {
+        consentPanelRef.current?.focus();
+      }
+
+      return;
+    }
+
+    const trigger =
+      returnFocusRef.current;
+
+    returnFocusRef.current =
+      null;
+
+    if (trigger?.isConnected) {
+      trigger.focus();
+    }
+  }, [showPreferences]);
+
   const shouldShowConsentPanel =
     consentLoaded &&
     (
@@ -194,13 +248,19 @@ export function SiteLayout() {
         <Outlet />
       </main>
 
-      <Footer />
+      <Footer
+        onOpenCookiePreferences={
+          openCookiePreferences
+        }
+      />
 
       <WhatsAppFloatingButton />
 
       {shouldShowConsentPanel ? (
         <div
-          className="fixed inset-x-4 bottom-4 z-[100] mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[#B8944D]/40 bg-[#111832] text-white shadow-2xl md:bottom-6"
+          ref={consentPanelRef}
+          tabIndex={-1}
+          className="fixed inset-x-4 bottom-4 z-[100] mx-auto max-w-5xl overflow-hidden rounded-2xl border border-[#B8944D]/40 bg-[#111832] text-white shadow-2xl focus:outline-none md:bottom-6"
           role="dialog"
           aria-modal="false"
           aria-labelledby="cookie-consent-title"
@@ -361,23 +421,6 @@ export function SiteLayout() {
             </div>
           </div>
         </div>
-      ) : null}
-
-      {consentLoaded &&
-      hasSavedConsent &&
-      !showPreferences ? (
-        <button
-          type="button"
-          onClick={() =>
-            setShowPreferences(
-              true,
-            )
-          }
-          className="fixed bottom-4 left-4 z-[90] max-w-[180px] rounded-full border border-[#111832]/15 bg-[#F8F6F0] px-4 py-2 text-left text-xs font-semibold leading-4 text-[#111832] shadow-lg transition hover:border-[#B8944D] md:bottom-6 md:left-6"
-        >
-          Cambiar consentimiento
-          de cookies
-        </button>
       ) : null}
 
       <ScrollRestoration />
