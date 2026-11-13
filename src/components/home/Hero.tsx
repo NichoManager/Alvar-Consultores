@@ -27,16 +27,16 @@ export function Hero() {
           </p>
 
           <h1 className="hero-animate hero-animate--2">
-            Inmobiliaria en Valdemoro{' '}
+            Inmobiliaria en Madrid.
             <br />
             <em>
-              y el sur de Madrid.
+              Con criterio en cada operación.
             </em>
           </h1>
 
           <p className="hero__lead hero-animate hero-animate--3">
-            Tu próxima decisión, bien acompañada. Te ayudamos a
-            vender, comprar y alquilar con una valoración
+            Te ayudamos a vender, comprar y alquilar viviendas
+            en Madrid capital y la zona sur, con una valoración
             realista, una estrategia personalizada y
             acompañamiento hasta la firma. Atención con cita
             previa desde nuestra oficina en Madrid.

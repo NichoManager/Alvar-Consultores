@@ -1,5 +1,5 @@
 const items = [
-  'Valdemoro · Sur de Madrid · Madrid',
+  'Madrid capital · Zona sur de Madrid',
   'Valoración realista, sin compromiso',
   'Compra · Venta · Alquiler',
   'Acompañamiento hasta la firma',

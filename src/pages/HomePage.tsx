@@ -86,8 +86,8 @@ export function HomePage() {
   return (
     <>
       <SeoHead
-        title="Inmobiliaria en Valdemoro y sur de Madrid | Alvar Consultores"
-        description="Asesoramiento inmobiliario personal para vender, comprar o alquilar en Valdemoro y el sur de Madrid. Valoración profesional y acompañamiento hasta la firma."
+        title="Inmobiliaria en Madrid | Alvar Consultores Inmobiliarios"
+        description="Asesoramiento inmobiliario en Madrid capital y la zona sur. Te ayudamos a vender, comprar y alquilar con valoración profesional y atención personalizada."
         imageAlt="Alvar Consultores Inmobiliarios, inmobiliaria en Madrid"
       />
 
@@ -327,7 +327,7 @@ export function HomePage() {
 
                   <div>
                     <strong>
-                      Zona Sur de Madrid
+                      Madrid capital
                     </strong>
 
                     <small>
@@ -751,24 +751,22 @@ export function HomePage() {
             </p>
 
             <h2>
-              Valdemoro, nuestra prioridad.{' '}
+              Madrid capital, nuestro punto de partida.{' '}
 
               <em>
-                El sur de Madrid, nuestro ámbito de trabajo.
+                La zona sur, parte de nuestro ámbito de trabajo.
               </em>
             </h2>
 
             <p className="areas-section__lead">
-              Ponemos el foco de nuestra
-              actividad en Valdemoro y el
-              sur de Madrid, acompañando a
-              propietarios y compradores en
-              operaciones de venta, compra
-              y alquiler. También atendemos
-              operaciones en Madrid capital
-              y estudiamos otras
-              ubicaciones según las
-              necesidades de cada inmueble.
+              Acompañamos operaciones
+              inmobiliarias en Madrid
+              capital y municipios de la
+              zona sur, adaptando cada
+              estrategia a las
+              características del inmueble,
+              su mercado y las necesidades
+              de cada cliente.
             </p>
 
             <div
@@ -776,19 +774,19 @@ export function HomePage() {
               aria-label="Zonas de trabajo por orden de prioridad"
             >
               <span>
-                Valdemoro
-              </span>
-
-              <i aria-hidden="true" />
-
-              <span>
-                Sur de Madrid
-              </span>
-
-              <i aria-hidden="true" />
-
-              <span>
                 Madrid capital
+              </span>
+
+              <i aria-hidden="true" />
+
+              <span>
+                Zona sur de Madrid
+              </span>
+
+              <i aria-hidden="true" />
+
+              <span>
+                Comunidad de Madrid
               </span>
             </div>
 
@@ -819,23 +817,23 @@ export function HomePage() {
             {[
               [
                 '01',
-                'Valdemoro',
-                'Nuestra zona comercial prioritaria. Valoración realista, estrategia de venta y acompañamiento personalizado desde el primer análisis hasta la firma.',
+                'Madrid capital',
+                'Nuestro mercado principal. Asesoramos en operaciones de venta, compra y alquiler, con una estrategia adaptada a cada inmueble y a sus objetivos.',
               ],
               [
                 '02',
-                'Sur de Madrid',
-                'Trabajamos con las particularidades de cada municipio, teniendo en cuenta la ubicación, los precios, la demanda y las necesidades de cada operación.',
+                'Zona sur de Madrid',
+                'Acompañamos operaciones en municipios del sur de Madrid, analizando cada caso según su ubicación, demanda y características.',
               ],
               [
                 '03',
-                'Madrid capital',
-                'También acompañamos operaciones de compraventa e inversión en Madrid capital, donde se encuentra nuestra oficina de atención con cita previa.',
+                'Otros municipios de la Comunidad de Madrid',
+                'Estudiamos oportunidades en otras localidades de la Comunidad de Madrid cuando podemos aportar un asesoramiento adecuado.',
               ],
               [
                 '04',
                 'Otras ubicaciones',
-                'Estudiamos operaciones fuera de nuestro ámbito habitual según el inmueble, el servicio necesario y la posibilidad de ofrecer un acompañamiento adecuado.',
+                'Valoramos operaciones fuera de nuestro ámbito habitual según el inmueble, el servicio necesario y la viabilidad de ofrecer acompañamiento.',
               ],
             ].map(
               ([number, place, detail]) => (

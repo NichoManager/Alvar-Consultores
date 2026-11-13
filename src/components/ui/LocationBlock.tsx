@@ -38,7 +38,7 @@ export function LocationBlock() {
           <div className="location-block__area-copy">
             <span>Sede</span>
             <strong>Madrid capital</strong>
-            <p>Desde aquí atendemos Valdemoro y el sur de Madrid.</p>
+            <p>Desde nuestra oficina en Madrid atendemos operaciones en la capital y la zona sur.</p>
           </div>
 
           <div className="location-block__area-lines" aria-hidden="true">
