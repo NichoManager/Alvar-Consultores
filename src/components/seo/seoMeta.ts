@@ -5,7 +5,7 @@
  * Mantener la lógica en un solo sitio evita que el HTML inicial y el renderizado difieran.
  */
 export const SITE_URL = 'https://alvarconsultoresinmobiliarios.es';
-export const DEFAULT_SOCIAL_IMAGE = '/images/alvar/og-alvar-consultores.png';
+export const DEFAULT_SOCIAL_IMAGE = '/images/alvar/og-alvar-consultores.jpg';
 export const DEFAULT_IMAGE_ALT = 'Alvar Consultores Inmobiliarios';
 
 export interface SeoProps {
@@ -64,8 +64,8 @@ export function buildSeoMeta(
   };
   if (imageType) properties['og:image:type'] = imageType;
   if (image === DEFAULT_SOCIAL_IMAGE) {
-    properties['og:image:width'] = '1731';
-    properties['og:image:height'] = '909';
+    properties['og:image:width'] = '1200';
+    properties['og:image:height'] = '630';
   }
 
   return {
