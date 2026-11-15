@@ -7,6 +7,11 @@
 export const SITE_URL = 'https://alvarconsultoresinmobiliarios.es';
 export const DEFAULT_SOCIAL_IMAGE = '/images/alvar/og-alvar-consultores.jpg';
 export const DEFAULT_IMAGE_ALT = 'Alvar Consultores Inmobiliarios';
+/**
+ * Carpeta de imágenes sociales de artículos. Todo archivo de esta carpeta mide exactamente 1200 × 630,
+ * por lo que es seguro declarar esas dimensiones. Para cualquier otra imagen no se declaran dimensiones.
+ */
+export const SOCIAL_IMAGE_DIR = '/images/alvar/blog/social/';
 
 export interface SeoProps {
   title: string;
@@ -63,7 +68,7 @@ export function buildSeoMeta(
     'og:image:alt': imageAlt,
   };
   if (imageType) properties['og:image:type'] = imageType;
-  if (image === DEFAULT_SOCIAL_IMAGE) {
+  if (image === DEFAULT_SOCIAL_IMAGE || image.startsWith(SOCIAL_IMAGE_DIR)) {
     properties['og:image:width'] = '1200';
     properties['og:image:height'] = '630';
   }

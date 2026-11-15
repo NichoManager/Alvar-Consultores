@@ -7,6 +7,8 @@ export const articles: Article[] = [
 
     image: '/images/alvar/blog/como-vender-piso-madrid.webp',
 
+    socialImage: '/images/alvar/blog/social/como-vender-piso-madrid-og.jpg',
+
     imageAlt:
       'Llaves y planos sobre una mesa de trabajo para preparar la venta de un piso en Madrid',
 
@@ -125,6 +127,8 @@ export const articles: Article[] = [
     ...blogArticleMetadata.expensesBuyingHomeMadrid,
 
     image: '/images/alvar/blog/gastos-comprar-vivienda-madrid.webp',
+
+    socialImage: '/images/alvar/blog/social/gastos-comprar-vivienda-madrid-og.jpg',
 
     imageAlt:
       'Fachada residencial elegante que ilustra los gastos de comprar una vivienda en Madrid',

@@ -210,6 +210,12 @@ export interface Article {
 
   imageAlt?: string;
 
+  /**
+   * Imagen JPG de 1200 × 630 para compartir en redes (Open Graph y Twitter).
+   * Si no existe, se usa `image`.
+   */
+  socialImage?: string;
+
   sections: Array<{
     title: string;
 
