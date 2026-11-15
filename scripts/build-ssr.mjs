@@ -65,13 +65,23 @@ async function main() {
     platform: 'node',
     format: 'esm',
     target: 'node22',
-    // Los paquetes (react, react-router-dom, supabase-js...) los resuelve Node desde node_modules,
-    // y Vercel los incluye en la función mediante el rastreo de archivos.
-    packages: 'external',
+    // Todas las dependencias (react, react-dom, react-router-dom, supabase-js...) se empaquetan DENTRO del módulo.
+    // Dejarlas externas dependía del rastreo de archivos de Vercel y falló en producción: react-router-dom es un
+    // paquete dual (ESM/CJS) y el rastreo solo incluyó una de las dos variantes de `react-router/dom`
+    // ("Cannot find module .../react-router/dist/development/dom-export.js"). Así la función no necesita
+    // react ni react-router en node_modules. Solo quedan externos los módulos integrados de Node.
     jsx: 'automatic',
     loader: { '.css': 'empty' },
     logLevel: 'error',
+    // Algunas dependencias empaquetadas son CommonJS y llaman a require() de módulos integrados de Node
+    // (util, stream...). En un módulo ESM, require no existe: se crea con createRequire.
+    banner: {
+      js: "import { createRequire as __alvarCreateRequire } from 'node:module'; const require = __alvarCreateRequire(import.meta.url);",
+    },
     define: {
+      // Se fija NODE_ENV=production en el empaquetado (React elige su build de producción) sin tocar
+      // process.env.NODE_ENV en tiempo de ejecución.
+      'process.env.NODE_ENV': JSON.stringify('production'),
       // Variables públicas (no secretas) del propio proyecto: se leen en tiempo de ejecución de la función.
       'import.meta.env.VITE_SUPABASE_URL': 'process.env.VITE_SUPABASE_URL',
       'import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY': 'process.env.VITE_SUPABASE_PUBLISHABLE_KEY',

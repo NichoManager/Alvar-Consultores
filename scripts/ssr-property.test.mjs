@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import { access, cp, mkdir, readdir, readFile, rm } from 'node:fs/promises';
 import http from 'node:http';
+import { builtinModules } from 'node:module';
 import { join } from 'node:path';
 import { after, before, beforeEach, test } from 'node:test';
 import { pathToFileURL } from 'node:url';
@@ -384,11 +385,51 @@ test('privacidad · ninguna credencial privada ni variable no pública en el có
   for (const file of files) {
     const text = await readFile(join(ROOT, file), 'utf8');
     assert.doesNotMatch(text, /service_role|SERVICE_ROLE|SUPABASE_SECRET|SUPABASE_JWT|POSTGRES_/i, `${file} no puede usar credenciales privadas`);
+    // NODE_ENV solo es válida como clave de `define` al empaquetar (scripts/build-ssr.mjs), nunca en la función.
+    const allowedHere = file === 'scripts/build-ssr.mjs' ? new Set([...allowedEnv, 'NODE_ENV']) : allowedEnv;
     for (const [, name] of text.matchAll(/process\.env\.(\w+)/g)) {
-      assert.ok(allowedEnv.has(name), `${file} usa la variable no prevista ${name}`);
+      assert.ok(allowedHere.has(name), `${file} usa la variable no prevista ${name}`);
     }
   }
   assert.deepEqual(state.badAuth, [], 'toda consulta debe ir solo con la clave pública');
+});
+
+// ---------- Empaquetado para Vercel ----------
+test('empaquetado · el render generado no importa paquetes externos (react, react-router, supabase...)', async () => {
+  // SSR_RENDER_FILE permite apuntar la misma comprobación a otro archivo (control negativo en revisión).
+  const file = process.env.SSR_RENDER_FILE ?? join(ROOT, 'api/_ssr/render-property.mjs');
+  const source = await readFile(file, 'utf8');
+
+  // Especificadores de importación: sentencias `import` a principio de línea y llamadas a require()/import().
+  const specifiers = new Set();
+  for (const re of [
+    /^import\s+(?:[^'"]*?\sfrom\s*)?["']([^"']+)["']/gm,
+    /(?<![\w.$])(?:require|import)\(\s*["']([^"']+)["']\s*\)/g,
+  ]) {
+    for (const match of source.matchAll(re)) specifiers.add(match[1]);
+  }
+
+  const isBuiltin = (name) => name.startsWith('node:') || builtinModules.includes(name);
+  const isRelative = (name) => name.startsWith('.') || name.startsWith('/');
+  const external = [...specifiers].filter((name) => !isBuiltin(name) && !isRelative(name));
+
+  // Regresión real (producción, 15-11-2026): con react-router externo, Vercel no empaquetó la variante CJS de
+  // react-router/dom y la función devolvía 503. Debe ser autosuficiente: solo módulos integrados de Node.
+  assert.deepEqual(external, [], `el render depende de paquetes de node_modules: ${external.join(', ')}`);
+  assert.ok(
+    ![...specifiers].some((name) => /^(react|react-dom|react-router|react-router-dom|@supabase)(\/|$)/.test(name)),
+    'react, react-dom, react-router y supabase deben ir empaquetados',
+  );
+
+  // Los require() de módulos integrados de dependencias CommonJS necesitan createRequire en un módulo ESM.
+  assert.match(source, /createRequire/, 'falta el banner de createRequire');
+  // NODE_ENV=production se fija con `define` en el empaquetado, no en tiempo de ejecución.
+  assert.doesNotMatch(source, /process\.env\.NODE_ENV/, 'process.env.NODE_ENV debe resolverse al empaquetar');
+  for (const code of ['api/property.ts', 'src/ssr/renderProperty.tsx', 'scripts/build-ssr.mjs']) {
+    const text = await readFile(join(ROOT, code), 'utf8');
+    assert.doesNotMatch(text, /process\.env\.NODE_ENV\s*=[^=]/, `${code} no puede modificar process.env.NODE_ENV`);
+  }
+  assert.ok(source.length < 8 * 1024 * 1024, 'el render empaquetado es sospechosamente grande');
 });
 
 // ---------- Separación de rutas ----------
