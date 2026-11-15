@@ -257,6 +257,8 @@ export const articles: Article[] = [
 
     image: '/images/alvar/blog/blog-vender-vivienda-pinto.webp',
 
+    socialImage: '/images/alvar/blog/social/como-vender-vivienda-pinto-og.jpg',
+
     imageAlt: 'Documentación y estrategia para vender una vivienda en Pinto',
 
     title: 'Cómo vender una vivienda en Pinto: pasos y documentación',
@@ -379,6 +381,8 @@ export const articles: Article[] = [
 
     image: '/images/alvar/blog/blog-comprar-piso-mostoles.webp',
 
+    socialImage: '/images/alvar/blog/social/comprar-piso-mostoles-og.jpg',
+
     imageAlt: 'Análisis inmobiliario para comprar piso en Móstoles',
 
     title: 'Qué tener en cuenta antes de comprar piso en Móstoles',
@@ -497,6 +501,8 @@ export const articles: Article[] = [
 
     image: '/images/alvar/blog/blog-calcular-precio-venta-vivienda.webp',
 
+    socialImage: '/images/alvar/blog/social/calcular-precio-venta-vivienda-og.jpg',
+
     imageAlt: 'Análisis y valoración para calcular el precio de venta de una vivienda',
 
     title: 'Cómo calcular el precio de venta de una vivienda',
@@ -614,6 +620,8 @@ export const articles: Article[] = [
     ...blogArticleMetadata.documentsToSellHome,
 
     image: '/images/alvar/blog/blog-documentos-vender-vivienda.webp',
+
+    socialImage: '/images/alvar/blog/social/documentos-vender-vivienda-og.jpg',
 
     imageAlt: 'Documentación necesaria para vender una vivienda',
 
@@ -753,6 +761,8 @@ export const articles: Article[] = [
 
     image: '/images/alvar/blog/blog-invertir-vivienda-alquiler.webp',
 
+    socialImage: '/images/alvar/blog/social/invertir-vivienda-alquiler-og.jpg',
+
     imageAlt: 'Análisis de inversión inmobiliaria para vivienda en alquiler',
 
     title: '¿Es buen momento para invertir en vivienda para alquiler?',
@@ -870,6 +880,8 @@ export const articles: Article[] = [
     ...blogArticleMetadata.southMadridPropertyMarket,
 
     image: '/images/alvar/blog/blog-mercado-inmobiliario-sur-madrid.webp',
+
+    socialImage: '/images/alvar/blog/social/mercado-inmobiliario-sur-madrid-og.jpg',
 
     imageAlt: 'Mercado residencial y vivienda en el sur de Madrid',
 
