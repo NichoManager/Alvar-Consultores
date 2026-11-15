@@ -45,6 +45,15 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/api/property",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
   ]
 }

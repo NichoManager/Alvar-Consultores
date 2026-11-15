@@ -8,3 +8,6 @@ dist
 .DS_Store
 Thumbs.db
 .vite
+# SSR de fichas: salida generada por scripts/build-ssr.mjs (los .d.mts sí se versionan)
+api/_ssr/*.mjs
+.ssr-test/

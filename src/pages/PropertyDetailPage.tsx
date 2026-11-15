@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -15,7 +16,14 @@ import { SeoHead } from '../components/seo/SeoHead';
 import { Container } from '../components/ui/Container';
 import { InternalHero } from '../components/ui/InternalHero';
 import { business } from '../data/business';
-import { getPublishedPropertyBySlug } from '../lib/properties';
+import {
+  getPublishedPropertyBySlug,
+  mapPublicProperty,
+} from '../lib/properties';
+import {
+  markEmbeddedPropertyConsumed,
+  readEmbeddedPropertyRow,
+} from '../lib/propertySsr';
 import type { Property } from '../types/content';
 import { whatsappUrl } from '../utils/contact';
 import '../styles/property-details.css';
@@ -247,18 +255,40 @@ export function PropertyDetailPage() {
   const { slug = '' } =
     useParams();
 
+  // Inmueble ya entregado por el servidor (SSR) para este slug, si existe. Se transforma con el mismo
+  // mapeo que usa la consulta normal, de modo que el primer render coincide con el HTML del servidor.
+  const [
+    embeddedProperty,
+  ] = useState<Property | null>(
+    () => {
+      const row =
+        readEmbeddedPropertyRow(
+          slug,
+        );
+
+      return row
+        ? mapPublicProperty(row)
+        : null;
+    },
+  );
+
+  const embeddedPropertyRef =
+    useRef(embeddedProperty);
+
   const [
     property,
     setProperty,
   ] =
     useState<Property | null>(
-      null,
+      embeddedProperty,
     );
 
   const [
     isLoading,
     setIsLoading,
-  ] = useState(true);
+  ] = useState(
+    embeddedProperty === null,
+  );
 
   const [
     loadError,
@@ -271,6 +301,22 @@ export function PropertyDetailPage() {
   ] = useState(false);
 
   useEffect(() => {
+    const embedded =
+      embeddedPropertyRef.current;
+
+    // El servidor ya entregó este inmueble: no se repite la consulta.
+    if (
+      embedded &&
+      embedded.slug === slug
+    ) {
+      markEmbeddedPropertyConsumed();
+
+      return;
+    }
+
+    embeddedPropertyRef.current =
+      null;
+
     let isMounted = true;
 
     const loadProperty =

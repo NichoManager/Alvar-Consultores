@@ -47,7 +47,7 @@ type PropertyImageRow = {
     | 'floorplan';
 };
 
-type PublicPropertyRow = {
+export type PublicPropertyRow = {
   id: string;
   reference: string | null;
   title: string;
@@ -885,7 +885,7 @@ function buildMapLocation(
     .join(', ');
 }
 
-function mapPublicProperty(
+export function mapPublicProperty(
   row: PublicPropertyRow,
 ): Property {
   const {
