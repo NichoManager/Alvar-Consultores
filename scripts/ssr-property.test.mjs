@@ -109,7 +109,8 @@ before(async () => {
   await rm(out, { recursive: true, force: true });
   await mkdir(out, { recursive: true });
   await build({
-    entryPoints: [join(ROOT, 'api/property.ts')],
+    // SSR_FUNCTION_FILE permite ejecutar esta misma batería contra otra versión de la función (control negativo en revisión).
+    entryPoints: [process.env.SSR_FUNCTION_FILE ?? join(ROOT, 'api/property.ts')],
     outfile: join(out, 'property.mjs'),
     bundle: true,
     platform: 'node',
@@ -432,21 +433,164 @@ test('empaquetado · el render generado no importa paquetes externos (react, rea
   assert.ok(source.length < 8 * 1024 * 1024, 'el render empaquetado es sospechosamente grande');
 });
 
-// ---------- Separación de rutas ----------
-test('rutas · el rewrite de fichas NO está activo y /admin sigue separado', async () => {
-  const config = JSON.parse(await readFile(join(ROOT, 'vercel.json'), 'utf8'));
-  const rewrites = Object.fromEntries(config.rewrites.map((r) => [r.source, r.destination]));
-  assert.equal(rewrites['/inmuebles/:slug'], '/_spa', 'el rewrite de fichas debe seguir apuntando al shell SPA en la fase 1');
-  assert.equal(rewrites['/admin'], '/_spa');
-  assert.equal(rewrites['/admin/:path*'], '/_spa');
-  assert.ok(!config.rewrites.some((r) => String(r.destination).includes('api/property')));
+// ---------- Resolución del slug: parámetros duplicados, manipulados y codificados ----------
+// En producción la ruta pública /inmuebles/<slug> llega a la función por el rewrite de vercel.json.
+// Regla: nunca puede mostrarse un inmueble distinto del solicitado.
+const getPath = (path, method = 'GET') => fn[method](new Request(`${SITE}${path}`, { method }));
+const pisoRow = publicRows.find((r) => r.slug === 'piso-en-venta-en-madrid');
+const PISO = 'piso-en-venta-en-madrid';
 
-  const header = (source) => config.headers.find((h) => h.source === source);
-  assert.equal(header('/api/property')?.headers[0].value, 'noindex, nofollow', 'el acceso directo a la función va con noindex');
-  assert.equal(header('/admin')?.headers[0].value, 'noindex, nofollow');
-  assert.equal(header('/admin/(.*)')?.headers[0].value, 'noindex, nofollow');
-  assert.ok(!header('/inmuebles/:slug'), 'las fichas públicas no deben llevar cabeceras noindex');
+test('slug · ruta pública con query manipulada: siempre el inmueble del path, nunca otro', async () => {
+  const manipulated = [
+    '?slug=atico-reservado',
+    '?slug=atico-reservado&slug=chalet-vendido',
+    '?slug=chalet-vendido&slug=atico-reservado',
+    '?%73lug=atico-reservado',
+    '?slug=',
+    '?slug[]=atico-reservado',
+    '?Slug=atico-reservado',
+    '?slug=atico-reservado%26slug=chalet-vendido',
+    '?slug=%2e%2e%2f',
+    '?utm_source=x&slug=local-alquilado',
+    '?a=1&a=2',
+  ];
+  for (const query of manipulated) {
+    state.calls = [];
+    const res = await getPath(`/inmuebles/${PISO}${query}`);
+    const html = await res.text();
+    assert.equal(res.status, 200, query);
+    assert.equal(res.headers.get('x-robots-tag'), null, `la ruta pública no puede llevar noindex (${query})`);
+    assert.equal(canonical(html), `${SITE}/inmuebles/${PISO}`, query);
+    assert.equal(h1s(html)[0], pisoRow.title, query);
+    assert.equal(embedded(html).value.slug, PISO, query);
+    assert.deepEqual(state.calls.map((c) => c.body.p_slug), [PISO], `solo se consulta el inmueble del path (${query})`);
+  }
+});
+
+test('slug · cualquier pareja (path A, query slug=B) devuelve A y solo consulta A', async () => {
+  const slugs = publicRows.map((r) => r.slug);
+  let checked = 0;
+  for (const a of slugs) {
+    for (const b of slugs) {
+      if (a === b) continue;
+      state.calls = [];
+      const res = await getPath(`/inmuebles/${a}?slug=${b}`);
+      const html = await res.text();
+      assert.equal(res.status, 200, `${a}?slug=${b}`);
+      assert.equal(canonical(html), `${SITE}/inmuebles/${a}`, `${a}?slug=${b}`);
+      assert.deepEqual(state.calls.map((c) => c.body.p_slug), [a]);
+      checked += 1;
+    }
+  }
+  assert.equal(checked, slugs.length * (slugs.length - 1));
+});
+
+test('slug · ruta pública con codificaciones o caracteres no permitidos: 404 sin consultar la base de datos', async () => {
+  const bad = [
+    `/inmuebles/${PISO.replace(/-/g, '%2D')}`,
+    `/inmuebles/%70iso-en-venta-en-madrid`,
+    `/inmuebles/${PISO}%00`,
+    `/inmuebles/${PISO}%0A`,
+    `/inmuebles/${PISO}%20`,
+    `/inmuebles/${PISO}%2Fatico-reservado`,
+    `/inmuebles/${PISO}%2F..%2Fatico-reservado`,
+    `/inmuebles/${PISO}%252Fatico-reservado`,
+    `/inmuebles/${PISO}%E2%80%8B`,
+    '/inmuebles/Piso-En-Venta-En-Madrid',
+    '/inmuebles/piso--en-venta',
+    '/inmuebles/-piso',
+    '/inmuebles/%C3%B1and%C3%BA',
+    `/inmuebles/${'a'.repeat(121)}`,
+    `/inmuebles/${PISO}/`,
+    '/inmuebles/',
+  ];
+  for (const path of bad) {
+    state.calls = [];
+    const res = await getPath(path);
+    assert.equal(res.status, 404, path);
+    assert.equal(res.headers.get('x-robots-tag'), 'noindex', path);
+    assert.equal(state.calls.length, 0, `no debe consultar Supabase (${path})`);
+  }
+});
+
+test('slug · acceso directo /api/property: exactamente un parámetro slug', async () => {
+  for (const query of [`?slug=${PISO}`, `?slug=${PISO}&utm_source=x`, `?slug=${PISO.replace(/-/g, '%2D')}`]) {
+    state.calls = [];
+    const res = await getPath(`/api/property${query}`);
+    const html = await res.text();
+    assert.equal(res.status, 200, query);
+    assert.equal(canonical(html), `${SITE}/inmuebles/${PISO}`, query);
+    assert.deepEqual(state.calls.map((c) => c.body.p_slug), [PISO]);
+  }
+
+  const ambiguous = [
+    '',
+    '?slug=',
+    '?slug=atico-reservado&slug=chalet-vendido',
+    `?slug=${PISO}&slug=${PISO}`,
+    `?slug=${PISO}&slug=atico-reservado`,
+    `?slug=atico-reservado&slug=${PISO}`,
+    `?x=1&slug=${PISO}&%73lug=atico-reservado`,
+    `?slug[]=${PISO}`,
+    `?Slug=${PISO}`,
+    `?slug=${PISO}%26slug=atico-reservado`,
+    `?slug=${PISO};slug=atico-reservado`,
+    `?slug=${PISO}%00`,
+    `?slug=${PISO}%20`,
+    '?slug=../atico-reservado',
+  ];
+  for (const query of ambiguous) {
+    state.calls = [];
+    const res = await getPath(`/api/property${query}`);
+    assert.equal(res.status, 404, query);
+    assert.equal(state.calls.length, 0, `petición ambigua o manipulada: no debe consultar Supabase (${query})`);
+  }
+});
+
+test('slug · HEAD en ruta pública manipulada: mismas cabeceras, sin cuerpo y del inmueble correcto', async () => {
+  state.calls = [];
+  const res = await getPath(`/inmuebles/${PISO}?slug=atico-reservado`, 'HEAD');
+  assert.equal(res.status, 200);
+  assert.equal(await res.text(), '');
+  assert.deepEqual(state.calls.map((c) => c.body.p_slug), [PISO]);
+});
+
+test('slug · estados y errores se conservan con la ruta pública (200, 404 y 503)', async () => {
+  for (const [slug, status] of [['atico-reservado', 200], ['chalet-vendido', 200], ['local-alquilado', 200], ['inmueble-borrador', 404], ['inmueble-archivado', 404], ['no-existe', 404]]) {
+    const res = await getPath(`/inmuebles/${slug}`);
+    assert.equal(res.status, status, slug);
+    assert.equal(res.headers.get('cache-control'), status === 200 ? 'public, max-age=0, s-maxage=60' : 'public, max-age=0, s-maxage=30', slug);
+  }
+  state.mode = 'error500';
+  const down = await getPath(`/inmuebles/${PISO}`);
+  assert.equal(down.status, 503);
+  assert.equal(down.headers.get('cache-control'), 'no-store');
+  assert.equal(down.headers.get('retry-after'), '60');
+});
+
+// ---------- Configuración de rutas (activación) ----------
+test('rutas · vercel.json: rewrite de fichas activo, administración y sitemap intactos, sin cambios de región', async () => {
+  const config = JSON.parse(await readFile(join(ROOT, 'vercel.json'), 'utf8'));
+
+  assert.deepEqual(config.rewrites, [
+    { source: '/sitemap.xml', destination: '/api/sitemap' },
+    { source: '/inmuebles/:slug', destination: '/api/property?slug=:slug' },
+    { source: '/admin', destination: '/_spa' },
+    { source: '/admin/:path*', destination: '/_spa' },
+  ]);
+
+  const noindex = (source) => ({ source, headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] });
+  assert.deepEqual(config.headers, [noindex('/admin'), noindex('/admin/(.*)'), noindex('/_spa'), noindex('/api/property')]);
+  assert.ok(!config.headers.some((h) => h.source.startsWith('/inmuebles')), 'las fichas públicas no deben llevar cabeceras noindex');
+
+  assert.equal(config.cleanUrls, true);
+  // Primera activación: la región de Vercel no cambia (dub1 queda pendiente para una publicación posterior).
+  assert.equal(config.regions, undefined, 'la región por defecto del proyecto no cambia');
+  assert.equal(config.functions, undefined, 'no debe haber configuración de funciones ni de regiones en esta activación');
+  assert.deepEqual(Object.keys(config).sort(), ['cleanUrls', 'headers', 'rewrites']);
 
   // La función no reconoce rutas de administración como inmuebles.
-  assert.equal((await request('admin')).status, 404);
+  for (const path of ['/admin', '/admin/inmuebles', '/admin/login', '/api/sitemap']) {
+    assert.equal((await getPath(path)).status, 404, path);
+  }
 });

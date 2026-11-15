@@ -7,7 +7,7 @@
     },
     {
       "source": "/inmuebles/:slug",
-      "destination": "/_spa"
+      "destination": "/api/property?slug=:slug"
     },
     {
       "source": "/admin",

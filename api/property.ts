@@ -5,8 +5,8 @@ declare const process: {
 };
 
 /**
- * SSR dinámico de /inmuebles/:slug (fase 1: la función existe pero NO está conectada a ninguna ruta pública;
- * vercel.json sigue enviando /inmuebles/:slug al shell de la SPA).
+ * SSR dinámico de /inmuebles/:slug. Se alcanza por el rewrite de vercel.json (/inmuebles/:slug -> /api/property?slug=:slug)
+ * y también por acceso directo a /api/property?slug=..., que lleva X-Robots-Tag: noindex mediante vercel.json.
  *
  * Reglas:
  *  - Solo usa `get_public_properties` con la clave pública (VITE_SUPABASE_PUBLISHABLE_KEY). Nunca credenciales privadas.
@@ -140,10 +140,39 @@ async function unavailable(headOnly: boolean) {
   );
 }
 
-async function handle(request: Request, headOnly: boolean) {
-  const slug = new URL(request.url).searchParams.get('slug') ?? '';
+function isValidSlug(value: string) {
+  return value.length > 0 && value.length <= MAX_SLUG_LENGTH && SLUG_PATTERN.test(value);
+}
 
-  if (!slug || slug.length > MAX_SLUG_LENGTH || !SLUG_PATTERN.test(slug)) {
+// Ruta pública tal como la pide el visitante: /inmuebles/<slug> (sin barra final).
+const PUBLIC_PATH_PATTERN = /^\/inmuebles\/([^/]+)$/;
+
+/**
+ * Determina qué inmueble se pide. Nunca puede devolver un inmueble distinto del solicitado:
+ *  - Ruta pública (rewrite): el slug sale del PATH original. La query se ignora por completo, de modo que
+ *    /inmuebles/a?slug=b, ?slug=b&slug=c o ?%73lug=b siempre muestran "a". El segmento se valida SIN decodificar:
+ *    un slug real no contiene "%", así que %2D, %2F, %00, %20... dan 404.
+ *  - Acceso directo /api/property?slug=...: debe haber exactamente un parámetro "slug". Con 0 o con 2 o más
+ *    (iguales o distintos) la petición es ambigua o manipulada y se responde 404.
+ * Devuelve null si la petición no es válida.
+ */
+function resolveSlug(request: Request): string | null {
+  const url = new URL(request.url);
+
+  const fromPath = url.pathname.match(PUBLIC_PATH_PATTERN);
+  if (fromPath) {
+    return isValidSlug(fromPath[1]) ? fromPath[1] : null;
+  }
+
+  const values = url.searchParams.getAll('slug');
+  if (values.length !== 1) return null;
+  return isValidSlug(values[0]) ? values[0] : null;
+}
+
+async function handle(request: Request, headOnly: boolean) {
+  const slug = resolveSlug(request);
+
+  if (slug === null) {
     return notFound(headOnly);
   }
 
