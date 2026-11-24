@@ -6,6 +6,8 @@ import {
   contactSourceLabels,
   contactStatusLabels,
   getContacts,
+  contactOrigin,
+  importSourceLabels,
   type Contact,
   type ContactInterest,
   type ContactStatus,
@@ -65,6 +67,10 @@ export function AdminContactsPage() {
   const [isSuperadmin, setIsSuperadmin] = useState(false);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [originFilter, setOriginFilter] = useState('all');
+  const [sheetFilter, setSheetFilter] = useState('all');
+  const [page, setPage] = useState(1);
+  const pageSize = 50;
   const [interestFilter, setInterestFilter] =
     useState<InterestFilter>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
@@ -124,13 +130,16 @@ export function AdminContactsPage() {
     return parts.join(' · ');
   }, [contacts]);
 
+  const origins = useMemo(() => Array.from(new Set(['Web', ...importSourceLabels, 'Otros', ...contacts.map(contactOrigin)])), [contacts]);
+  const sheets = useMemo(() => Array.from(new Set(contacts.filter((contact) => contactOrigin(contact) === originFilter && contact.importSheet).map((contact) => contact.importSheet as string))).sort(), [contacts, originFilter]);
+
   const filteredContacts = useMemo(() => {
     const normalizedSearch = normalizeSearch(search);
 
     return contacts.filter((contact) => {
       const matchesSearch =
         !normalizedSearch ||
-        [contact.name, contact.email, contact.phone].some((value) =>
+        [contact.name, contact.email, contact.phone, contact.importAddress, contact.importMunicipality].some((value) =>
           normalizeSearch(value ?? '').includes(normalizedSearch),
         );
       const matchesInterest =
@@ -138,12 +147,21 @@ export function AdminContactsPage() {
       const matchesStatus =
         statusFilter === 'all' || contact.status === statusFilter;
 
-      return matchesSearch && matchesInterest && matchesStatus;
+      const matchesOrigin = originFilter === 'all' || contactOrigin(contact) === originFilter;
+      const matchesSheet = sheetFilter === 'all' || contact.importSheet === sheetFilter;
+      return matchesSearch && matchesInterest && matchesStatus && matchesOrigin && matchesSheet;
     });
-  }, [contacts, interestFilter, search, statusFilter]);
+  }, [contacts, interestFilter, search, statusFilter, originFilter, sheetFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredContacts.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const visibleContacts = filteredContacts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const clearFilters = () => {
     setSearch('');
+    setOriginFilter('all');
+    setSheetFilter('all');
+    setPage(1);
     setInterestFilter('all');
     setStatusFilter('all');
   };
@@ -203,6 +221,16 @@ export function AdminContactsPage() {
           </div>
         </div>
 
+        {!isLoading && !error ? (
+          <nav aria-label="Origen de contactos" className="admin-contacts__origins" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
+            {['all', ...origins].map((origin) => (
+              <button key={origin} type="button" aria-pressed={originFilter === origin} className={originFilter === origin ? 'admin-header__primary-action' : ''} style={{ padding: '9px 14px', border: '1px solid #b9b4aa', borderRadius: 6, fontWeight: originFilter === origin ? 700 : 400, background: originFilter === origin ? '#283b38' : 'transparent', color: originFilter === origin ? '#fff' : 'inherit', cursor: 'pointer' }} onClick={() => { setOriginFilter(origin); setSheetFilter('all'); setPage(1); }}>
+                {origin === 'all' ? 'Todos' : origin} ({origin === 'all' ? contacts.length : contacts.filter((contact) => contactOrigin(contact) === origin).length})
+              </button>
+            ))}
+          </nav>
+        ) : null}
+
         {!isLoading && !error && contacts.length > 0 ? (
           <div className="admin-contacts__toolbar">
             <label className="admin-contacts__search">
@@ -210,8 +238,8 @@ export function AdminContactsPage() {
               <input
                 type="search"
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder="Buscar por nombre, email o teléfono"
+                onChange={(event) => { setSearch(event.target.value); setPage(1); }}
+                placeholder="Buscar por nombre, teléfono, email o dirección"
               />
             </label>
 
@@ -219,9 +247,7 @@ export function AdminContactsPage() {
               <span className="sr-only">Filtrar por interés</span>
               <select
                 value={interestFilter}
-                onChange={(event) =>
-                  setInterestFilter(event.target.value as InterestFilter)
-                }
+                onChange={(event) => { setInterestFilter(event.target.value as InterestFilter); setPage(1); }}
               >
                 <option value="all">Todos los intereses</option>
                 {Object.entries(contactInterestLabels).map(([value, label]) => (
@@ -234,9 +260,7 @@ export function AdminContactsPage() {
               <span className="sr-only">Filtrar por estado</span>
               <select
                 value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(event.target.value as StatusFilter)
-                }
+                onChange={(event) => { setStatusFilter(event.target.value as StatusFilter); setPage(1); }}
               >
                 <option value="all">Todos los estados</option>
                 {Object.entries(contactStatusLabels).map(([value, label]) => (
@@ -244,6 +268,9 @@ export function AdminContactsPage() {
                 ))}
               </select>
             </label>
+            {sheets.length > 1 ? (
+              <label><span className="sr-only">Filtrar por hoja de origen</span><select value={sheetFilter} onChange={(event) => { setSheetFilter(event.target.value); setPage(1); }}><option value="all">Todas las hojas</option>{sheets.map((sheet) => <option key={sheet} value={sheet}>{sheet}</option>)}</select></label>
+            ) : null}
           </div>
         ) : null}
 
@@ -274,14 +301,15 @@ export function AdminContactsPage() {
 
         {!isLoading && filteredContacts.length > 0 ? (
           <div className="admin-contacts__list">
-            {filteredContacts.map((contact) => (
+            {visibleContacts.map((contact) => (
               <article className="admin-contact-card" key={contact.id}>
                 <div className="admin-contact-card__identity">
                   <span>
                     INTERÉS: {contactInterestLabels[contact.interest]} · ORIGEN:{' '}
-                    {contactSourceLabels[contact.source]}
+                    {contact.importSource || contactSourceLabels[contact.source]}{contact.importSheet && contact.importSheet !== 'Hoja1' ? ` · ${contact.importSheet}` : ''}
                   </span>
                   <h3>{contact.name}</h3>
+                  {contact.importAddress ? <p>{contact.importAddress}{contact.importMunicipality ? ` · ${contact.importMunicipality}` : ''}</p> : null}
                   <div>
                     {contact.phone ? <a href={`tel:${contact.phone}`}>{contact.phone}</a> : null}
                     {contact.email ? <a href={`mailto:${contact.email}`}>{contact.email}</a> : null}
@@ -320,6 +348,15 @@ export function AdminContactsPage() {
                 </button>
               </article>
             ))}
+          </div>
+        ) : null}
+        {!isLoading && !error && filteredContacts.length > 0 ? (
+          <div aria-label="Paginación de contactos" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginTop: 20 }}>
+            <span>{filteredContacts.length} resultados · Página {currentPage} de {totalPages}</span>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button type="button" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)}>← Anterior</button>
+              <button type="button" disabled={currentPage >= totalPages} onClick={() => setPage(currentPage + 1)}>Siguiente →</button>
+            </div>
           </div>
         ) : null}
       </section>

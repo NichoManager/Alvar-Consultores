@@ -352,7 +352,7 @@ export function AdminContactDetailPage() {
               </select>
             </label>
             <label className="admin-property-form__field">
-              <span>Origen</span>
+              <span>{contact.importSource ? `Origen comercial (Excel: ${contact.importSource})` : 'Origen'}</span>
               <select value={form.source} onChange={(event) => updateForm('source', event.target.value as ContactSource)}>
                 {Object.entries(contactSourceLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
               </select>
@@ -387,6 +387,18 @@ export function AdminContactDetailPage() {
           <button type="submit" disabled={isSaving || isDeleting}>{isSaving ? 'Guardando...' : 'Guardar cambios'}</button>
         </div>
       </form>
+
+      {contact.importSource ? (
+        <section className="admin-property-form__section" aria-label="Datos históricos del Excel">
+          <div><span>EXCEL</span><h2>Datos de origen</h2></div>
+          <p>{contact.importSource}{contact.importSheet ? ` · ${contact.importSheet}` : ''}</p>
+          <dl style={{ display: 'grid', gap: 10, overflowWrap: 'anywhere' }}>
+            {Object.entries(contact.importData ?? {}).filter(([, value]) => value != null && value !== '').map(([key, value]) => (
+              <div key={key}><dt><strong>{key}</strong></dt><dd style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{typeof value === 'string' ? value : JSON.stringify(value)}</dd></div>
+            ))}
+          </dl>
+        </section>
+      ) : null}
 
       <section className="admin-contact-relations">
         <div className="admin-contact-relations__heading">
@@ -436,7 +448,7 @@ export function AdminContactDetailPage() {
           <strong>
             {contact.privacyAcceptedAt
               ? `Aceptada el ${formatDateTime(contact.privacyAcceptedAt)}`
-              : 'Registro manual / sin consentimiento web registrado'}
+              : contact.importSource ? 'Importado de Excel / sin consentimiento web registrado' : 'Registro manual / sin consentimiento web registrado'}
           </strong>
         </span>
       </section>

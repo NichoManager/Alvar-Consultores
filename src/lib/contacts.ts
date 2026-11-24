@@ -51,6 +51,11 @@ export type Contact = {
   createdAt: string;
   updatedAt: string;
   properties: ContactPropertySummary[];
+  importSource: string | null;
+  importSheet: string | null;
+  importAddress: string | null;
+  importMunicipality: string | null;
+  importData: Record<string, unknown> | null;
 };
 
 export type ContactInput = {
@@ -83,6 +88,11 @@ type ContactRow = {
   privacy_accepted_at: string | null;
   created_at: string;
   updated_at: string;
+  import_source: string | null;
+  import_sheet: string | null;
+  import_address: string | null;
+  import_municipality: string | null;
+  import_data?: Record<string, unknown> | null;
   contact_properties: ContactPropertyLinkRow[] | null;
 };
 
@@ -100,6 +110,10 @@ const CONTACT_SELECT = `
   privacy_accepted_at,
   created_at,
   updated_at,
+  import_source,
+  import_sheet,
+  import_address,
+  import_municipality,
   contact_properties (
     property_id,
     properties (
@@ -158,6 +172,11 @@ function mapContact(row: ContactRow): Contact {
     privacyAcceptedAt: row.privacy_accepted_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    importSource: row.import_source,
+    importSheet: row.import_sheet,
+    importAddress: row.import_address,
+    importMunicipality: row.import_municipality,
+    importData: row.import_data ?? null,
     properties: (row.contact_properties ?? [])
       .map((link) =>
         Array.isArray(link.properties)
@@ -183,21 +202,35 @@ function toDatabaseInput(input: ContactInput) {
   };
 }
 
+export const importSourceLabels = ['Alquilados', 'Vacíos', 'Potencial adquisición', 'Noticias 2026', 'Tecnocasa', 'Real Advisor', 'Nuevos encargos'] as const;
+
+export function contactOrigin(contact: Contact): string {
+  if (contact.importSource) return contact.importSource;
+  return ['contact', 'valuation', 'property', 'service'].includes(contact.source) ? 'Web' : 'Otros';
+}
+
 export async function getContacts() {
-  const { data, error } = await supabase
-    .from('contacts')
-    .select(CONTACT_SELECT)
-    .order('created_at', { ascending: false });
-
-  if (error) throw error;
-
-  return ((data ?? []) as ContactRow[]).map(mapContact);
+  const rows: ContactRow[] = [];
+  const size = 500;
+  for (let start = 0; ; start += size) {
+    const { data, error } = await supabase
+      .from('contacts')
+      .select(CONTACT_SELECT)
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: false })
+      .range(start, start + size - 1);
+    if (error) throw error;
+    const batch = (data ?? []) as ContactRow[];
+    rows.push(...batch);
+    if (batch.length < size) break;
+  }
+  return rows.map(mapContact);
 }
 
 export async function getContactById(id: string) {
   const { data, error } = await supabase
     .from('contacts')
-    .select(CONTACT_SELECT)
+    .select(`${CONTACT_SELECT}, import_data`)
     .eq('id', id)
     .maybeSingle();
 
