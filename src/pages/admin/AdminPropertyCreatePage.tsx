@@ -53,7 +53,19 @@ function createSlug(value: string) {
     .replace(
       /[\s-]+/g,
       '-',
-    );
+    )
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 120)
+    .replace(/-+$/g, '');
+}
+
+// Only retry a collision on the URL; a duplicated commercial reference must still be reported.
+function isDuplicateSlug(error: { code?: string; message?: string } | null) {
+  return error?.code === '23505' && Boolean(error.message?.includes('properties_slug_key'));
+}
+
+function nextSlug(base: string, suffix: string) {
+  return `${base.slice(0, 119 - suffix.length).replace(/-+$/g, '')}-${suffix}`;
 }
 
 function nullableText(
@@ -426,11 +438,8 @@ export function AdminPropertyCreatePage() {
       setIsSubmitting(true);
 
       try {
-        const {
-          data: createdProperty,
-          error: insertError,
-        } =
-          await supabase
+        const insertProperty = (candidateSlug: string) =>
+          supabase
             .from(
               'properties',
             )
@@ -444,7 +453,7 @@ export function AdminPropertyCreatePage() {
 
               title,
 
-              slug,
+              slug: candidateSlug,
 
               seo_title:
                 nullableText(
@@ -877,6 +886,15 @@ export function AdminPropertyCreatePage() {
             .select('id')
             .single();
 
+        let result = await insertProperty(slug);
+        for (let attempt = 2; attempt <= 10 && isDuplicateSlug(result.error); attempt++) {
+          result = await insertProperty(nextSlug(slug, String(attempt)));
+        }
+        if (isDuplicateSlug(result.error)) {
+          result = await insertProperty(nextSlug(slug, crypto.randomUUID().slice(0, 8)));
+        }
+        const { data: createdProperty, error: insertError } = result;
+
         if (insertError) {
           console.error(
             'Error creating property:',
@@ -884,7 +902,11 @@ export function AdminPropertyCreatePage() {
           );
 
           setError(
-            'No se ha podido guardar el inmueble. Revisa los datos o inténtalo de nuevo.',
+            isDuplicateSlug(insertError)
+              ? 'No se ha podido generar una URL única. Inténtalo de nuevo.'
+              : insertError.code === '23505' && insertError.message.includes('properties_reference_key')
+                ? 'Ya existe un inmueble con esa referencia. Introduce una referencia diferente.'
+                : 'No se ha podido guardar el inmueble. Revisa los datos o inténtalo de nuevo.',
           );
 
           return;
