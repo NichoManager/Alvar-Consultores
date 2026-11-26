@@ -1411,7 +1411,7 @@ export function PropertyDetailPage() {
                   </div>
                 </div>
 
-                <div className="property-map">
+                <div className={`property-map${externalContentAllowed ? '' : ' property-map--blocked'}`}>
                   {externalContentAllowed ? (
                     <iframe
                       src={
@@ -1423,25 +1423,31 @@ export function PropertyDetailPage() {
                       allowFullScreen
                     />
                   ) : (
-                    <div className="flex min-h-[320px] items-center justify-center bg-[#F8F6F0] px-6 py-12 text-center">
-                      <div className="max-w-md">
-                        <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-[#B8944D]">
-                          Contenido externo
+                    <div className="flex items-center justify-center bg-[#F8F6F0] px-5 py-7 text-center sm:px-8 sm:py-10">
+                      <div className="w-full max-w-md">
+                        <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-[#B8944D]">
+                          Ubicación del inmueble
                         </span>
 
                         <h4 className="mb-3 font-serif text-2xl font-medium text-[#111832]">
-                          Google Maps está
-                          desactivado
+                          Descubre la zona
                         </h4>
 
                         <p className="text-sm leading-6 text-[#111832]/70">
-                          Para visualizar
-                          el mapa debes
-                          permitir el
-                          contenido externo
-                          desde tus
-                          preferencias de
-                          cookies.
+                          Para ver el mapa interactivo, permite el contenido externo de Google Maps.
+                          Al activarlo, tu navegador se conectará a los servicios de Google.
+                        </p>
+
+                        <button
+                          type="button"
+                          className="mt-5 inline-flex min-h-[44px] w-full items-center justify-center rounded-sm bg-[#111832] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#263451] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#111832] sm:w-auto"
+                          onClick={() => window.dispatchEvent(new Event('alvar-enable-external-content'))}
+                        >
+                          Activar Google Maps
+                        </button>
+
+                        <p className="mt-3 text-xs leading-5 text-[#111832]/70">
+                          Puedes cambiar tu elección en «Configurar cookies».
                         </p>
                       </div>
                     </div>

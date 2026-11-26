@@ -819,6 +819,11 @@
   background: var(--ivory);
 }
 
+.property-map.property-map--blocked {
+  height: auto;
+  overflow: visible;
+}
+
 .property-map iframe {
   display: block;
   width: 100%;

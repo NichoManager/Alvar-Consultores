@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -157,9 +158,9 @@ export function SiteLayout() {
     );
   }, []);
 
-  function applyPreferences(
+  const applyPreferences = useCallback((
     externalContent: boolean,
-  ) {
+  ) => {
     const preferences = {
       externalContent,
     };
@@ -179,7 +180,14 @@ export function SiteLayout() {
     setShowPreferences(
       false,
     );
-  }
+  }, []);
+
+  // A direct, informed opt-in from a blocked map uses the same consent flow.
+  useEffect(() => {
+    const enableExternalContent = () => applyPreferences(true);
+    window.addEventListener('alvar-enable-external-content', enableExternalContent);
+    return () => window.removeEventListener('alvar-enable-external-content', enableExternalContent);
+  }, [applyPreferences]);
 
   // Reabre el panel de preferencias existente desde el Footer.
   // Solo lee el consentimiento guardado: no lo modifica.
